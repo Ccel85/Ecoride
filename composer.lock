@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "79e1da5172793ee95dcfeb544b9b04ab",
+    "content-hash": "233d0d19ebf3f0e219466eea71fe2efb",
     "packages": [
         {
             "name": "composer/semver",
@@ -2082,16 +2082,16 @@
         },
         {
             "name": "symfony/asset-mapper",
-            "version": "v7.1.8",
+            "version": "v7.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset-mapper.git",
-                "reference": "bd09ac29c8553e39832f6100a8365240c1c697a6"
+                "reference": "bb1c2f5f394c84ce5b1ac8c94d0ac213ae3ce5f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset-mapper/zipball/bd09ac29c8553e39832f6100a8365240c1c697a6",
-                "reference": "bd09ac29c8553e39832f6100a8365240c1c697a6",
+                "url": "https://api.github.com/repos/symfony/asset-mapper/zipball/bb1c2f5f394c84ce5b1ac8c94d0ac213ae3ce5f8",
+                "reference": "bb1c2f5f394c84ce5b1ac8c94d0ac213ae3ce5f8",
                 "shasum": ""
             },
             "require": {
@@ -2141,7 +2141,7 @@
             "description": "Maps directories of assets & makes them available in a public directory with versioned filenames.",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/asset-mapper/tree/v7.1.8"
+                "source": "https://github.com/symfony/asset-mapper/tree/v7.1.9"
             },
             "funding": [
                 {
@@ -2157,7 +2157,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-11-09T09:16:45+00:00"
+            "time": "2024-11-20T11:08:58+00:00"
         },
         {
             "name": "symfony/cache",

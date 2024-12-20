@@ -1,3 +1,36 @@
-body {
-    background-color: skyblue;
-}
+    body {
+        background-color: #FFFFFF;
+    }
+    .logo img {
+        width:200px;
+        height: 125px;
+    }
+    .navbarHeader{
+        font-size: 24px;
+    }
+    .navbarHeader, footer{
+        background-color: #324D4D;
+        font-style:normal;
+        font-family: "agbalumo", "arial", sans-serif;
+        color:#FFFFFF ;
+        max-width: 100% !important;
+    }
+    
+    .navBar{
+        justify-content:space-between;
+        
+    }
+    
+    .logoFooter img{
+        width:3rem;
+        
+    }
+    .icon-hover:hover, a:hover {
+        color: #FFDD00; /* Change la couleur en rouge */
+        cursor: pointer; /* Change le curseur pour indiquer une interaction */
+    }
+    .custom-links {
+        color: #FFFFFF; /* Blanc */
+        text-decoration: none; /* Supprime le soulignement */
+    }
+    
