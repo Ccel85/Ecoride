@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-    <meta charset="UTF-8">
-    <title>{% block title %}ECORIDE-Accueil{% endblock %}</title>
-    <links rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-    <!-- Integration de la police Agbalumo -->
-    <links rel="preconnect" href="https://fonts.googleapis.com">
-    <links rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <links href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
-    
-    {% block stylesheets %}
-    {% endblock %}
+        <meta charset="UTF-8">
+        <title>{% block title %}ECORIDE-Accueil{% endblock %}</title>
+        <links rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <!-- Integration de la police Agbalumo -->
+        <links rel="preconnect" href="https://fonts.googleapis.com">
+        <links rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <links href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+        
+        {% block stylesheets %}
+        {% endblock %}
 
-    {% block javascripts %}
-    {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endblock %}
-</head>
+        {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
 <body>
     <header>
         <div class="header mb-3 border-bottom">
@@ -40,33 +40,24 @@
                             </div>
                             <div class="d-flex align-items-center p-2">
                                 <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32" ></i>
-                                <a href="#" class="custom-links px-2 ">Se connecter</a>
+                                <a href="{{ path('app_login') }}" class="custom-links px-2 ">Se connecter</a>
                             </div>
                         </div>
                     </div>
-                    
                 </div>
             </div>
         </div>
     </header>
-    
     {% block body %}
     {% endblock %}
-    
-    <footer>
-        <div class="footer d-flex align-items-center justify-content-between mx-3 border-bottom sticky">
-            <div class="d-flex flex-column align-items-center gap-2">
-                <a href="#" class="custom-links"> Mention legale </a>
-                <p>ecoride@mail.com</p>
-            </div>
-            <div>
-                <p class="justify-content-center">Ecoride, le covoiturage écologique </p>
-            </div>
-            <div class="logoFooter d-flex flex-column align-items-center gap-1">
-                <img src="{{asset('logo/Logo.png')}}"; alt="logo" ; class="rounded-circle py-2">
-                <p>Ecoride,2024.</p>
-            </div>
-        </div>  
+    <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+            <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link px-2 text-body-secondary">Accueil</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Mention légale</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Contact</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">À propos</a></li>
+        </ul>
+        <p class="text-center text-body-secondary">© 2024 Ecoride</p>
     </footer>
 </body>
 </html>

@@ -1,29 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
 {% block body %}
-    <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+<div class="d-flex align-items-center py-4 justify-content-evenly "
+    <div class="form-signin w-100 m-auto">
+        
+        <form method="post" class="bg-body-tertiary p-3">
+            {% if error %}
+                <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+            {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+            <h1 class="h3 mb-3 font-weight-normal text-center">Se connecter</h1>
+            <div class="form-floating">
+                <input type="email" class="form-control" value="{{ last_username }}"  name="_username" id="username"  id="floatingInput" autocomplete="email" required autofocus placeholder="nom@exemple.com">
+                    <label for="floatingInput">
+                        <font style="vertical-align: inherit;">Adresse email</font>
+                    </label>
             </div>
-        {% endif %}
-
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-        <label for="username">Email</label>
-        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control" autocomplete="email" required autofocus>
-        <label for="password">Password</label>
-        <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
-
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}"
-        >
-
+            <div class="form-floating my-2">
+                <input type="password" name="_password" class="form-control" id="floatingPassword" autocomplete="current-password" required placeholder="Mot de passe">
+                <label for="floatingPassword"><font style="vertical-align: inherit;">Mot de passe</font></label>
+                <input type="hidden" name="_csrf_token"
+                value="{{ csrf_token('authenticate') }}">
+            </div>
+            {#<div class="row justify-content-center">
+                <div class="col-md-6 col-lg-5">
+                    <label for="username">Email</label>
+                    <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control m-2" autocomplete="email" required autofocus>
+                    <label for="password">Mot de passe</label>
+                    <input type="password" name="_password" id="password" class="form-control m-2" autocomplete="current-password" required>
+                    <input type="hidden" name="_csrf_token"
+                    value="{{ csrf_token('authenticate') }}">#}
+                
         {#
             Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
             See https://symfony.com/doc/current/security/remember_me.html
@@ -33,9 +47,11 @@
                 <label for="_remember_me">Remember me</label>
             </div>
         #}
-
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
-    </form>
+            <div class="connect text-center">
+                <button class="btn btn-primary w-100 my-2" type="submit">Se connecter</button>
+                <a href="{{ path('app_register') }}"  class="btn btn-link px-2 mt-2">Créér un compte</a>
+            </div>
+        </form>
+    </div>
+</div>    
 {% endblock %}

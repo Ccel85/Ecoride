@@ -1,6 +1,8 @@
     body {
         background-color: #FFFFFF;
     }
+
+    /* Header */
     .logo img {
         width:200px;
         height: 125px;
@@ -20,17 +22,29 @@
         justify-content:space-between;
         
     }
-    
-    .logoFooter img{
-        width:3rem;
-        
-    }
-    .icon-hover:hover, a:hover {
-        color: #FFDD00; /* Change la couleur en rouge */
-        cursor: pointer; /* Change le curseur pour indiquer une interaction */
-    }
     .custom-links {
         color: #FFFFFF; /* Blanc */
         text-decoration: none; /* Supprime le soulignement */
     }
-    
+
+    .icon-hover:hover, a:hover, button i:hover, font:hover {
+        color: #FFDD00; /* Change la couleur en rouge */
+        cursor: pointer; /* Change le curseur pour indiquer une interaction */
+    }
+
+    /* Footer */
+    .logoFooter img{
+        width:3rem;
+        
+    }
+
+/* search */
+
+i{
+    font-size: 1.5rem; 
+    color: #39B54E;
+}
+
+.btn {
+    background-color: #39B54E;
+}

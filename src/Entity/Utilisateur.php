@@ -51,10 +51,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $rate_user = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $photo_path = null;
+    private ?string $photo_path ;
 
     #[ORM\Column]
-    private ?bool $is_actif = null;
+    private ?bool $is_actif ;
 
     /**
      * @var Collection<int, Covoiturage>
