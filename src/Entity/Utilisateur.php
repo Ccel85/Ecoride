@@ -25,6 +25,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var list<string> The user roles
+     * * @ORM\Column(type="json")
      */
     #[ORM\Column]
     private array $roles = [];
