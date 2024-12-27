@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création utilisateur{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="form-group w-50 m-auto">
+        <h1 class="text-center">Création d'utilisateur</h1>
+
+        {{ form_errors(registrationForm) }}
+        
+        {{ form_start(registrationForm) }}
+
+        {{ form_row(registrationForm.nom, {
+            'label': 'Nom',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.prenom, {
+            'label': 'Prénom',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.pseudo, {
+            'label': 'Pseudo',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.email, {
+            'label': 'Adresse email',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(registrationForm.plainPassword, {
+            'label': 'Mot de passe',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+          <div class="form-check">
+            {{ form_label(registrationForm.roles, 'Rôles') }}
+            {{ form_widget(registrationForm.roles, {
+                'attr': {'class': 'form-check-input'},
+            }) }}
+          </div>
+          
+        <button type="submit" class="btn btn-primary w-100">S'enregistrer</button>
+        {{ form_end(registrationForm) }}
+    </div>
+</div>
+{% endblock %}
+

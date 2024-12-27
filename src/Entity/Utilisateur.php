@@ -54,7 +54,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $photo_path = null;
 
     #[ORM\Column]
-    private ?bool $is_actif = null;
+    private ?bool $is_actif = true;
 
     /**
      * @var Collection<int, Covoiturage>
@@ -115,8 +115,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        $roles[] = '';
 
         return array_unique($roles);
     }

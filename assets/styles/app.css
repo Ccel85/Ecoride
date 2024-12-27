@@ -1,6 +1,13 @@
     body {
         background-color: #FFFFFF;
     }
+
+    .bouton {
+        margin: 8 px;
+        background-color: #39B54E;
+        color:#FFFFFF;
+    }
+    
     .logo img {
         width:200px;
         height: 125px;
@@ -25,7 +32,7 @@
         width:3rem;
         
     }
-    .icon-hover:hover, a:hover {
+    .icon-hover:hover, a:hover,button:hover {
         color: #FFDD00; /* Change la couleur en rouge */
         cursor: pointer; /* Change le curseur pour indiquer une interaction */
     }
@@ -33,4 +40,16 @@
         color: #FFFFFF; /* Blanc */
         text-decoration: none; /* Supprime le soulignement */
     }
+
+    /* dashboard */
+    .sidebar {
+        background-color: #324D4D;
+        /*position:fixed;*/
+        width: 280px;
+        
+    }
+    /*.dashboard-content {
+        width: calc(100% - 300px);
+        margin-left: 300px;
+    }*/
     

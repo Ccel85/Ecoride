@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+{% if utilisateurs is empty %}
+<div>
+<p>Il n'y a pas d'utilisateurs d'enregistré </p>
+</div>
+{% else %}
+        <div class="card mb-6 mb-xxl-0">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="d-flex justify-content-around">
+                            <h3 class="fs-10 mb-0">Liste utilisateurs</h3>
+                            <a class="btn btn-warning " href="{{path('app_register')}}">Ajouter</a>
+                        </div>
+                    </div>
+                </div>
+            <div class="table-responsive">
+                <table class="table table-flush align-middle mb-0">
+                    <thead>
+                        <tr>
+                        <th class="fs-sm"></th>
+                        <th class="fs-sm">Nom</th>
+                        <th class="fs-sm">Email</th>
+                        <th class="fs-sm">Note</th>
+                        <th class="fs-sm">Crédits</th>
+                        <th class="fs-sm">Status</th>
+                        <th class="fs-sm">Action</th>
+                    </tr></thead>
+                    <tbody>
+                    {% for utilisateur in utilisateurs %}
+                        <tr>
+                            <td>
+                                <div class="avatar">
+                                    <img class="avatar-img" src="{{asset('logo' ~ utilisateur.photopath)}}" alt=" Photo de {{ utilisateur.nom }}">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="">
+                                        <div>{{utilisateur.nom}}</div>
+                                        <div class="fs-sm text-body-secondary">{{utilisateur.prenom}}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center text-nowrap">
+                                {{utilisateur.email}}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success">{{utilisateur.rateuser}}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success">{{utilisateur.credits}}</span>
+                            </td>
+                            <td>
+                                <span class="badge {{ utilisateur.isactif ? 'bg-success' : 'bg-danger' }} ">{{utilisateur.isactif ? 'Actif' : 'Inactif'}} </span>
+                            </td>
+                            <td>
+                                <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': utilisateur.id }) }}">
+                                <i class="bi bi-trash3"></i></a>
+                                <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': utilisateur.id }) }}">
+                                <i class="bi bi-pencil-square"></i></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+{% endif %}
+{% endblock %}

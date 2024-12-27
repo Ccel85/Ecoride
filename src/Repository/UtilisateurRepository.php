@@ -3,11 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Utilisateur;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 
 /**
  * @extends ServiceEntityRepository<Utilisateur>
@@ -33,20 +34,21 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->flush();
     }
 
-//    /**
-//     * @return Utilisateur[] Returns an array of Utilisateur objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('u')
-//            ->andWhere('u.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('u.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    
+    /**
+     * @return Utilisateur[] Returns an array of Utilisateur objects
+     */
+    public function findByRole(string $role): array
+{
+    return $this->createQueryBuilder('u')
+        ->where('u.roles IS NOT NULL') // Assurez-vous que le champ n'est pas NULL
+        ->andWhere('u.roles LIKE :role')
+        ->setParameter('role', '%"' . $role . '"%') // Correspond à un rôle dans un tableau JSON
+        ->getQuery()
+        ->getResult();
+}
+
+    }
 
 //    public function findOneBySomeField($value): ?Utilisateur
 //    {
@@ -57,4 +59,4 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
 //            ->getOneOrNullResult()
 //        ;
 //    }
-}
+
