@@ -1,20 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Ecoride-Accueil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/ccele/DEVELOPPEUR LOCAL/Ecoride/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/ccele/DEVELOPPEUR LOCAL/Ecoride/templates/home/index.html.twig</code></li>
-    </ul>
-</div>
+    <h4 class="text-center">Rechercher un voyage</h4>
+    <div class="search d-flex bg-body-tertiary justify-content-around align-items-center">
+        
+        <form class="d-flex align-items-center p-2 mb-2 "role="search" >
+            <i class="bi bi-calendar-event px-2"></i>
+            <input type="search" class="form-control" placeholder="Date" aria-label="date">
+        </form>
+        <form class=" d-flex align-items-center p-2 mb-2 " role="search" action="submit">
+            <i class="bi bi-geo-alt px-2"></i>
+            <input type="search" class="form-control" placeholder="Ville de départ" aria-label="depart">
+        </form>
+        <form class="d-flex align-items-center p-2 mb-2" role="search">
+            <i class="bi bi-geo-alt px-2"></i>
+            <input type="search" class="form-control" placeholder="Ville d'arrivée" aria-label="arrivee">
+        </form>
+        <form class="d-flex align-items-center p-2 mb-2 " role="search" >
+            <i class="bi bi-person-circle px-2"></i>
+            <input type="search" class="form-control" placeholder="Nombre de passager" aria-label="passager">
+        <button type="submit" class="btn p-0 mx-3">
+            <i class="bi bi-search "></i></button>
+        </form>
+    </div>
+    <div class="px-4 py-5 text-center d-flex align-items-center">
+        <img class="d-block mx-auto mb-4" src="{{ asset('logo/covoiturage.png') }}" alt="" width="580" height="400">
+        <div class="col-lg-6 mx-auto align-items-center">
+            <p class="lead mb-4">Concevez et personnalisez rapidement des sites mobiles réactifs avec Bootstrap, la boîte à outils open source front-end la plus populaire au monde, comprenant des variables et des mixins Sass, un système de grille réactif, de nombreux composants prédéfinis et de puissants plugins JavaScript.</font></font></p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Rechercher un voyage</button>
+                <button type="button" class="btn btn-outline-secondary btn-lg px-4"> Créer un voyage</button>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -27,7 +27,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/connect', name: 'app_connect')]
+   /* #[Route(path: '/connect', name: 'app_connect')]
 
     public function connect(Security $security): Response
     {
@@ -51,7 +51,7 @@ class SecurityController extends AbstractController
         }
         // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
         return $this->redirectToRoute('app_login');
-    }
+    }*/
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

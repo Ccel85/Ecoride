@@ -10,6 +10,15 @@ security:
                 class: App\Entity\Utilisateur
                 property: email
     firewalls:
+        secured_area:
+
+            form_login:
+                # "app_login" is the name of the route created previously
+                login_path: app_login
+                check_path: app_login
+                default_target_path: app_home # Redirection après connexion
+                enable_csrf: true
+
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false

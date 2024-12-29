@@ -32,7 +32,7 @@
         width:3rem;
         
     }
-    .icon-hover:hover, a:hover,button:hover {
+    .icon-hover:hover, a:hover, button i:hover, font:hover {
         color: #FFDD00; /* Change la couleur en rouge */
         cursor: pointer; /* Change le curseur pour indiquer une interaction */
     }
@@ -52,4 +52,13 @@
         width: calc(100% - 300px);
         margin-left: 300px;
     }*/
-    
+    /* search */
+
+i{
+    font-size: 1.5rem; 
+    color: #39B54E;
+}
+
+.btn {
+    background-color: #39B54E;
+}
