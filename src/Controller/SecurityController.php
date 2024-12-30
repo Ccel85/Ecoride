@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 class SecurityController extends AbstractController
 {
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils,Security $security): Response
     {
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -21,13 +21,48 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
+        //test
+        $utilisateur = $security->getUser();
+        
+        if ($utilisateur === null) {
+            // Si aucun utilisateur n'est connecté, afficher la page de connexion
+            return $this->render('security/login.html.twig', [
+                'last_username' => $lastUsername,
+                'error' => $error,
+            ]);
+        }
+        /* Vérifier si l'utilisateur a des rôles
+        if ($utilisateur) {
+            $roles = $utilisateur->getRoles(); // Récupère tous les rôles de l'utilisateur
+
+            // Vérifier les rôles et rediriger en fonction
+            if (in_array("ROLE_ADMIN", $roles,true)) {
+                // Si l'utilisateur est un administrateur, redirigez vers la page admin
+                return $this->redirectToRoute('app_admin_dashboard');
+            } elseif (in_array("ROLE_EMPLOYE", $roles,true)) {
+                // Si l'utilisateur est un employé, redirigez vers la page employé
+                return $this->redirectToRoute('app_utilisateur');
+            } else {
+                // Sinon, redirection vers pas accueil
+                return $this->redirectToRoute('app_home');
+            }
+        }
+        return $this->render('security/login.html.twig', [
+            'last_username' => $lastUsername,
+            'error' => $error,
+        ]);
+        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+       // return $this->redirectToRoute('app_login');
+    //}*/
+
+    
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
     }
 
-   /* #[Route(path: '/connect', name: 'app_connect')]
+        #[Route(path: '/connect', name: 'app_connect')]
 
     public function connect(Security $security): Response
     {
@@ -51,7 +86,7 @@ class SecurityController extends AbstractController
         }
         // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
         return $this->redirectToRoute('app_login');
-    }*/
+    }
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

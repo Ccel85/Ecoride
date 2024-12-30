@@ -5,7 +5,7 @@
 {% block body %}
 <div>
 {% if app.user %}
-    <p class="text-center"> Bonjour {{ app.Utilisateur.getPrenom() }} {{ app.Utilisateur.getNom() }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
+    <p class="text-center"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
     <br>
 {% endif %}
 <div class="dashboard d-flex flex-grow-1 ">

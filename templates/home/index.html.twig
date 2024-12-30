@@ -3,6 +3,11 @@
 {% block title %}Ecoride-Accueil{% endblock %}
 
 {% block body %}
+{% if app.user %}
+<h3 class="ps-5 ">Bonjour {{app.user.pseudo}}, commencé votre voyage ici!</h3>
+{% endif %}
+<hr>
+    <!--Barre de recherche -->
     <h4 class="text-center">Rechercher un voyage</h4>
     <div class="search d-flex bg-body-tertiary justify-content-around align-items-center">
         
@@ -25,6 +30,9 @@
             <i class="bi bi-search "></i></button>
         </form>
     </div>
+<hr>
+    <!-- Hero -->
+
     <div class="px-4 py-5 text-center d-flex align-items-center">
         <img class="d-block mx-auto mb-4" src="{{ asset('logo/covoiturage.png') }}" alt="" width="580" height="400">
         <div class="col-lg-6 mx-auto align-items-center">
