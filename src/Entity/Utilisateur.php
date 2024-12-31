@@ -74,6 +74,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'utilisateur')]
     private Collection $voiture;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->Covoiturage = new ArrayCollection();
@@ -317,6 +320,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
                 $voiture->setUtilisateur(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

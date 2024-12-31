@@ -46,7 +46,7 @@ class UtilisateurController extends AbstractController
         $user->setActif(false);
         $em->flush();
 
-         // Rediriger vers la liste des utilisateurs
+        /* Rediriger vers la liste des utilisateurs
          // Récupérer l'utilisateur connecté
         $utilisateur = $security->getUser();
 
@@ -65,10 +65,10 @@ class UtilisateurController extends AbstractController
                 // Sinon, redirigez vers la page par défaut (par exemple, l'accueil)
                 return $this->redirectToRoute('app_home');
             }
-        }
+        }*/
 
         // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-        return $this->redirectToRoute('app_login');
+        return $this->redirectToRoute('app_utilisateur');
     }
 
 
@@ -89,6 +89,30 @@ class UtilisateurController extends AbstractController
 
          // Rediriger vers la liste des utilisateurs
     return $this->redirectToRoute('app_utilisateur');
+    }
+
+    #[Route('/profil/{id}', name: 'app_profil_id')]
+    public function profilUtilisateur(UtilisateurRepository $utilisateurRepository,int $id): Response
+    {
+        $profil = $utilisateurRepository->find($id);
+        return $this->render('utilisateur/profil.html.twig', [
+            'utilisateurs' => $profil,
+        ]);
+    }
+
+    #[Route('/profil/{id}', name: 'app_profil')]
+    public function profil(int $id,EntityManagerInterface $em): Response
+    {
+        $repository = $em->getRepository(Utilisateur::class);
+        $user = $repository->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+
+        return $this->render('utilisateur/profil.html.twig', [
+            'utilisateurs' => $user,
+        ]);
     }
 }
 

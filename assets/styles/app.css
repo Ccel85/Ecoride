@@ -62,3 +62,9 @@ i{
 .btn {
     background-color: #39B54E;
 }
+
+/* fiche profil */
+.avatar{
+    width: 200px;
+    height: auto;
+}
