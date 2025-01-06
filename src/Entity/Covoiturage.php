@@ -47,6 +47,9 @@ class Covoiturage
     #[ORM\JoinColumn(nullable: false)]
     private ?voiture $voiture = null;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -176,6 +179,18 @@ class Covoiturage
     public function setVoiture(?voiture $voiture): static
     {
         $this->voiture = $voiture;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

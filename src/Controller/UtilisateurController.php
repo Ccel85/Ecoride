@@ -2,8 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Avis;
+use App\Entity\Voiture;
 use App\Entity\Utilisateur;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -91,16 +92,24 @@ class UtilisateurController extends AbstractController
     return $this->redirectToRoute('app_utilisateur');
     }
 
-    #[Route('/profil/{id}', name: 'app_profil_id')]
-    public function profilUtilisateur(UtilisateurRepository $utilisateurRepository,int $id): Response
+    #[Route('/profil', name: 'app_profil')]
+    public function profilUtilisateur(Security $security,EntityManagerInterface $em,): Response
     {
-        $profil = $utilisateurRepository->find($id);
+        $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
+        $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
+        $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
+
+        if (!$utilisateur) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
         return $this->render('utilisateur/profil.html.twig', [
-            'utilisateurs' => $profil,
+            'utilisateurs' => $utilisateur,
+            'commentairesUSers'=> $commentsUser,
+            'voitureUser'=> $voitureUser
         ]);
     }
 
-    #[Route('/profil/{id}', name: 'app_profil')]
+    #[Route('/profil/{id}', name: 'app_profil_id')]
     public function profil(int $id,EntityManagerInterface $em): Response
     {
         $repository = $em->getRepository(Utilisateur::class);

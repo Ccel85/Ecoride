@@ -7,8 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\HttpFoundation\Request;
-
 
 class SecurityController extends AbstractController
 {
@@ -21,7 +19,6 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        //test
         $utilisateur = $security->getUser();
         
         if ($utilisateur === null) {
@@ -31,19 +28,24 @@ class SecurityController extends AbstractController
                 'error' => $error,
             ]);
         }
-        /* Vérifier si l'utilisateur a des rôles
+        // Vérifier si l'utilisateur à des rôles et redirection:
         if ($utilisateur) {
             $roles = $utilisateur->getRoles(); // Récupère tous les rôles de l'utilisateur
 
             // Vérifier les rôles et rediriger en fonction
             if (in_array("ROLE_ADMIN", $roles,true)) {
+
                 // Si l'utilisateur est un administrateur, redirigez vers la page admin
                 return $this->redirectToRoute('app_admin_dashboard');
+
             } elseif (in_array("ROLE_EMPLOYE", $roles,true)) {
+
                 // Si l'utilisateur est un employé, redirigez vers la page employé
                 return $this->redirectToRoute('app_utilisateur');
+
             } else {
-                // Sinon, redirection vers pas accueil
+
+                // Sinon, redirection vers page d'accueil
                 return $this->redirectToRoute('app_home');
             }
         }
@@ -51,18 +53,9 @@ class SecurityController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
-        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-       // return $this->redirectToRoute('app_login');
-    //}*/
-
-    
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
     }
 
-        #[Route(path: '/connect', name: 'app_connect')]
+        /* #[Route(path: '/connect', name: 'app_connect')]
 
     public function connect(Security $security): Response
     {
@@ -81,12 +74,12 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('app_utilisateur');
             } else {
                 // Sinon, redirigez vers la page par défaut (par exemple, l'accueil)
-                return $this->redirectToRoute('app_register');
+                return $this->redirectToRoute('app_home');
             }
         }
         // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
         return $this->redirectToRoute('app_login');
-    }
+    }*/
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

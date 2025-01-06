@@ -6,52 +6,63 @@
     {% if app.user is empty%}
     <p>Aucun profil identifié</p>
     {% else %}
-    <div class="card" style="width: 18rem;">
-      <img src="{{ asset('logo/model_gars.jpg') }}" class="avatar rounded-circle " alt="...">
-      <div class="card-body">
-        <h3 class="card-title text-center">Mon profil</h3>
-          <h3 class="card-text text-center">{{app.user.pseudo}}</h3>
-          <p class="card-text text-center">Crédits: {{app.user.credits}}</p>
+    <div class="card container" >
+      <div class="card-header row justify-content-evenly align-items-center">
+          <img src="{{ asset('download/'~ app.user.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
+          <div class="col-6 text-center">
+            <h3 class="card-title text-center">Mon profil</h3>
+            <h3 class="card-text text-center">{{app.user.pseudo}}</h3>
+            <p class="card-text text-center text-secondary fs-6">Crédits: {{app.user.credits}}</p>
+          </div>
       </div>
       <!-- body -->
-      <div class="d-flex ">
-        <div class="infoUser" >
-          <ul>
-            <li>Membre depuis 2022 </li>
-            <li>Chauffeur / Passager </li>
-            <li>
-            <i class="bi bi-star-fill"> {{app.user.rateUser}}/5</i>
-            </li>
-            <li>Mon vehicule: </li>
-            <li>Immatriculé: </li>
-            <li>Date de 1ere mise en circulation: </li>
-            <li>Place disponible: </li>
-            <li>Non fumeur </li>
-            <li>Pas d'animal </li>
-          </ul>
-          <hr>
-          <p> Autre commentaire:</p>
-          <p>J'adore le cinéma et les mangas</p>
-        </div>
-        <div class="avis">
-          <!--{ if comments is empty %}-->
-          <p>Il n'y a pas d'avis.</p>
-          <!--{ else %}-->
-          <p class="text-decoration-underline"> Derniers avis clients:</p>
-          <!--{ for comment in comments %}-->
-          <div>
-            <div class="rate">
-              <i class="bi bi-star-fill"> {app.avis.rate}/5</i>
-            </div>
-            <div>{app.avis.createdAt}
-            </div>
-            <div>
-              <p>{app.avis.comment}</p>
-            </div>
+      <div class="card-body">
+        <div class="row justify-content-around ">
+          <div class="infoUser col-6" >
+            <ul>
+              <li>Membre depuis 2022 </li>
+              <li>Chauffeur / Passager </li>
+              <li>
+              <i class="bi bi-star-fill"> {{app.user.rateUser}}/5</i>
+              </li>
+              {% if voitureUser is not null %}
+                {% for voiture in voitureUser %}
+                <li>Mon véhicule: {{ voiture.constructeur }} {{ voiture.modele }}</li>
+                <li>Immatriculé: {{ voiture.immat }} </li>
+                <li>Date de 1ère mise en circulation: {{ voiture.firstImmat|date('d-m-Y') }} </li>
+                <li>Place disponible: {{ voiture.nbrePlace }} </li>
+                <li>Non fumeur </li>
+                <li>Pas d'animal </li>
+                <hr>
+                {% endfor %}
+              {% else %}
+              <li>Pas de véhicule enregistré.</li>
+              {% endif %}
+            </ul>
+            <p class="text-center"> Autre commentaire:</p>
+            <p class="text-center">J'adore le cinéma et les mangas</p>
           </div>
-          <!--{ endfor %}-->
-          <!--{ endif %}-->
+            <div class="avis col-6">
+              {% if commentairesUSers is empty %}
+              <p>Il n'y a pas d'avis.</p>
+              {% else %}
+              <p class="text-decoration-underline"> Derniers avis clients:</p>
+              {% for commentairesUSer in commentairesUSers %}
+              <div class="card mb-3 p-3">
+                <div class="rate">
+                  <i class="bi bi-star-fill"> {{ commentairesUSer.rateComments }}/5</i>
+                </div>
+                <div class="text-secondary fs-6">{{ commentairesUSer.createdAt|date('d-m-Y') }}
+                </div>
+                <div>
+                  <p>{{ commentairesUSer.comments }}</p>
+                </div>
+              </div>
+              {% endfor %}
+              {% endif %}
+            </div>
         </div>
       </div>
+    </div>
     {% endif %}
   {% endblock %}
