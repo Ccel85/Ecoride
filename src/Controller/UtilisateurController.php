@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Avis;
 use App\Entity\Voiture;
+use App\Entity\Covoiturage;
 use App\Entity\Utilisateur;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
@@ -98,14 +99,16 @@ class UtilisateurController extends AbstractController
         $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
         $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
-
+        $covoiturages = $utilisateur->getCovoiturage();
+        
         if (!$utilisateur) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
         return $this->render('utilisateur/profil.html.twig', [
             'utilisateurs' => $utilisateur,
             'commentairesUSers'=> $commentsUser,
-            'voitureUser'=> $voitureUser
+            'voitureUser'=> $voitureUser,
+            'covoiturages'=> $covoiturages
         ]);
     }
 

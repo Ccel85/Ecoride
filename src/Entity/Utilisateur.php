@@ -60,7 +60,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, Covoiturage>
      */
     #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'utilisateurs')]
-    private Collection $Covoiturage;
+    private Collection $covoiturage;
 
     /**
      * @var Collection<int, Avis>
@@ -79,7 +79,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->Covoiturage = new ArrayCollection();
+        $this->covoiturage = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->voiture = new ArrayCollection();
     }
@@ -246,20 +246,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getCovoiturage(): Collection
     {
-        return $this->Covoiturage;
+        return $this->covoiturage;
     }
 
     public function addCovoiturage(Covoiturage $covoiturage): static
     {
-        if (!$this->Covoiturage->contains($covoiturage)) {
-            $this->Covoiturage->add($covoiturage);
+        if (!$this->covoiturage->contains($covoiturage)) {
+            $this->covoiturage->add($covoiturage);
         }
         return $this;
     }
 
     public function removeCovoiturage(Covoiturage $covoiturage): static
     {
-        $this->Covoiturage->removeElement($covoiturage);
+        $this->covoiturage->removeElement($covoiturage);
 
         return $this;
     }
@@ -272,22 +272,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->avis;
     }
 
-    public function addAvi(Avis $avi): static
+    public function addAvi(Avis $avis): static
     {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setUtilisateur($this);
+        if (!$this->avis->contains($avis)) {
+            $this->avis->add($avis);
+            $avis->setUtilisateur($this);
         }
 
         return $this;
     }
 
-    public function removeAvi(Avis $avi): static
+    public function removeAvi(Avis $avis): static
     {
-        if ($this->avis->removeElement($avi)) {
+        if ($this->avis->removeElement($avis)) {
             // set the owning side to null (unless already changed)
-            if ($avi->getUtilisateur() === $this) {
-                $avi->setUtilisateur(null);
+            if ($avis->getUtilisateur() === $this) {
+                $avis->setUtilisateur(null);
             }
         }
 

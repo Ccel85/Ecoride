@@ -3,10 +3,11 @@
 {% block title %}Profil utilisateur{% endblock %}
 
 {% block body %}
+  <div class="page-profil d-flex flex-column align-items-center justify-content-center g-2 p-4">
     {% if app.user is empty%}
     <p>Aucun profil identifié</p>
     {% else %}
-    <div class="card container" >
+    <div class="card container m-4 profil" >
       <div class="card-header row justify-content-evenly align-items-center">
           <img src="{{ asset('download/'~ app.user.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
           <div class="col-6 text-center">
@@ -23,8 +24,9 @@
               <li>Membre depuis 2022 </li>
               <li>Chauffeur / Passager </li>
               <li>
-              <i class="bi bi-star-fill"> {{app.user.rateUser}}/5</i>
+              <i class="bi bi-star-fill star"> {{app.user.rateUser}}/5</i>
               </li>
+              <br>
               {% if voitureUser is not null %}
                 {% for voiture in voitureUser %}
                 <li>Mon véhicule: {{ voiture.constructeur }} {{ voiture.modele }}</li>
@@ -39,20 +41,20 @@
               <li>Pas de véhicule enregistré.</li>
               {% endif %}
             </ul>
-            <p class="text-center"> Autre commentaire:</p>
+            <p class="text-center text-decoration-underline"> Autre commentaire:</p>
             <p class="text-center">J'adore le cinéma et les mangas</p>
           </div>
             <div class="avis col-6">
               {% if commentairesUSers is empty %}
               <p>Il n'y a pas d'avis.</p>
               {% else %}
-              <p class="text-decoration-underline"> Derniers avis clients:</p>
+              <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
               {% for commentairesUSer in commentairesUSers %}
               <div class="card mb-3 p-3">
                 <div class="rate">
-                  <i class="bi bi-star-fill"> {{ commentairesUSer.rateComments }}/5</i>
+                  <i class="bi bi-star-fill star"> {{ commentairesUSer.rateComments }}/5</i>
                 </div>
-                <div class="text-secondary fs-6">{{ commentairesUSer.createdAt|date('d-m-Y') }}
+                <div class="text-secondary fs-7">Le {{ commentairesUSer.createdAt|date('d-m-Y') }}
                 </div>
                 <div>
                   <p>{{ commentairesUSer.comments }}</p>
@@ -65,4 +67,53 @@
       </div>
     </div>
     {% endif %}
+    <div class="MesVoyages col-12 p-4">
+    {% if covoiturages is empty %}
+      <p>Il n'y a pas de voyage effectué.</p>
+      {% else %}
+      <div class="d-flex justify-content-center align-items-center flex-column">
+        <h4 class="text-decoration-underline text-start"> Mes voyages: </h4>
+        {% for covoiturage in covoiturages %}
+        <div class="card container m-4 ">
+          <div class="voyage text-decoration-underline text-secondary ">
+            <p>Le {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
+          </div>
+          <div class="d-flex justify-content-evenly align-items-center">
+            <div class="depart d-flex flex-column text-center">
+              <div class="fs-3 fw-bold">
+              {{ covoiturage.heureDepart|date('H:i') }}
+              </div>
+              <div class="fs-3 fw-bold">
+              {{ covoiturage.lieuDepart }}
+              </div>
+            </div>
+            <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
+              <!-- Premier cercle -->
+              <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+              <!-- Ligne -->
+              <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
+              <!-- Deuxième cercle -->
+              <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+            </svg>
+            <div class="arrivée d-flex flex-column text-center">
+              <div class="fs-3 fw-bold">
+              {{ covoiturage.heureArrivee|date('H:i') }}
+              </div>
+              <div class="fs-3 fw-bold">
+              {{ covoiturage.lieuArrivee }}
+              </div>
+            </div>
+            <div class="">
+              <a class="btn btn-danger" href="">
+                <i class="bi bi-trash3"></i></a>
+              <a class="btn btn-success" href="">
+                <i class="bi bi-pencil-square"></i></a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
   {% endblock %}

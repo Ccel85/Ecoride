@@ -54,7 +54,7 @@
     }*/
     /* search */
 
-i{
+.icon-hover , .star{
     font-size: 1.5rem; 
     color: #39B54E;
 }
@@ -68,3 +68,11 @@ i{
     width: 200px;
     height: auto;
 }
+
+.page-profil{
+    min-height: 100vh;
+    }
+
+.profil, .MesVoyages {
+    width: 100%; 
+    }

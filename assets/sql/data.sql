@@ -28,8 +28,8 @@ INSERT INTO `avis` values (8,'1','Site permettant le covoiturage donc de réduir
 INSERT INTO `avis` values (9,'1','Site permettant le covoiturage donc de réduire les frais lors de déplacements (notamment entre grandes villes) ; le site est fiabilisé et permet soit de proposer des places ou bien de chercher des places... grand choix de propositions, prix attractifs et une utilité indéniable pour les amateurs(trices) de ce type de déplacements.','5','6','2024-12-30');
 INSERT INTO `avis` values (10,'1','J\'ai utilisé ce site une fois, ça marche bien et j\'ai trouvé une personne pour m\'emmener.','5','9','2024-11-12');
 
-INSERT INTO `covoiturage` VALUES (1, '5', '2025-03-10', 'Angers', '09:00', 'Nantes', '1', '4', '1', '2024-12-30');
-INSERT INTO `covoiturage` VALUES (2, '2', '2025-01-10', 'Nantes', '12:00', 'Aubigny', '1', '2', '2', '2024-11-30');
-INSERT INTO `covoiturage` VALUES (3, '10', '2025-01-12', 'Pornic', '14:30', 'Nantes', '1', '4', '3', '2024-12-10');
-INSERT INTO `covoiturage` VALUES (4, '3', '2025-02-01', 'Montaigu', '17:00', 'Nantes', '1', '3', '4', '2024-11-20');
-INSERT INTO `covoiturage` VALUES (5, '5', '2025-01-20', 'Nantes', '18:45', 'Angers', '1', '4', '5', '2024-11-30');
+INSERT INTO `covoiturage` VALUES (1, '5', '2025-03-10', 'Angers', '09:00', 'Nantes', '1', '4', '1', '2024-12-30','10:00');
+INSERT INTO `covoiturage` VALUES (2, '2', '2025-01-10', 'Nantes', '12:00', 'Aubigny', '1', '2', '2', '2024-11-30','08:15');
+INSERT INTO `covoiturage` VALUES (3, '10', '2025-01-12', 'Pornic', '14:30', 'Nantes', '1', '4', '3', '2024-12-10','13:00');
+INSERT INTO `covoiturage` VALUES (4, '3', '2025-02-01', 'Montaigu', '17:00', 'Nantes', '1', '3', '4', '2024-11-20','17:00');
+INSERT INTO `covoiturage` VALUES (5, '5', '2025-01-20', 'Nantes', '18:45', 'Angers', '1', '4', '5', '2024-11-30','21:00');

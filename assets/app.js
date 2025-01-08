@@ -6,7 +6,6 @@ import 'bootstrap';
 
 // Import des fichiers CSS personnalisés
 import './styles/app.css';
-import './styles/styles.css';
 
 // Import des icônes Bootstrap
 import 'bootstrap-icons/font/bootstrap-icons.min.css';
