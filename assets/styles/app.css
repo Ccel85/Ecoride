@@ -76,3 +76,7 @@
 .profil, .MesVoyages {
     width: 100%; 
     }
+.custom-bg {
+    background-color: #39B54E !important; 
+    color:#FFFFFF ;
+}

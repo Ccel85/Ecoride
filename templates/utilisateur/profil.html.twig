@@ -4,7 +4,74 @@
 
 {% block body %}
   <div class="page-profil d-flex flex-column align-items-center justify-content-center g-2 p-4">
-    {% if app.user is empty%}
+    {% if id is defined and id > 0 %}
+      <div class="card container m-4 profil" >
+        <div class="card-header row justify-content-evenly align-items-center">
+            <img src="{{ asset('download/'~ utilisateurs.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
+            <div class="col-6 text-center">
+              <h3 class="card-title text-center">Mon profil</h3>
+              <h3 class="card-text text-center">{{utilisateurs.pseudo}}</h3>
+              <p class="card-text text-center text-secondary fs-6">Crédits: {{utilisateurs.credits}}</p>
+            </div>
+        </div>
+        <!-- body -->
+        <div class="card-body">
+          <div class="row justify-content-around ">
+            <div class="infoUser col-6" >
+              <ul>
+                <li>Membre depuis {{ utilisateurs.createdAt | date ('Y')}} </li>
+                {# {% if covoiturage.conducteur == utilisateurs.id  %}
+                  <li>Chauffeur </li>
+                {% endif %} #}
+                {# {% if utilisateurs.id > 0 %}
+                  <li>Passager </li>
+                {% else %}
+                  <li>Pas de voyage effectué </li>
+                {% endif %} #}
+                <li>
+                <i class="bi bi-star-fill star"> {{utilisateurs.rateUser}}/5</i>
+                </li>
+                <br>
+                {% if voitureUser is not null %}
+                  {% for voiture in voitureUser %}
+                  <li>Mon véhicule: {{ voiture.constructeur }} {{ voiture.modele }}</li>
+                  <li>Immatriculé: {{ voiture.immat }} </li>
+                  <li>Date de 1ère mise en circulation: {{ voiture.firstImmat|date('d-m-Y') }} </li>
+                  <li>Place disponible: {{ voiture.nbrePlace }} </li>
+                  <hr>
+                  {% endfor %}
+                {% else %}
+                <li>Pas de véhicule enregistré.</li>
+                {% endif %}
+              </ul>
+              {% if utilisateurs.observation > 0 %}
+              <p class="text-center text-decoration-underline"> Autre commentaire:</p>
+              <p class="text-center">{{ utilisateurs.observation}}</p>
+              {% endif %}
+            </div>
+              <div class="avis col-6">
+                {% if commentairesUSers is empty %}
+                <p>Il n'y a pas d'avis.</p>
+                {% else %}
+                <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
+                {% for commentairesUSer in commentairesUSers %}
+                <div class="card mb-3 p-3">
+                  <div class="rate">
+                    <i class="bi bi-star-fill star"> {{ commentairesUSer.rateComments }}/5</i>
+                  </div>
+                  <div class="text-secondary fs-7">Le {{ commentairesUSer.createdAt|date('d-m-Y') }}
+                  </div>
+                  <div>
+                    <p>{{ commentairesUSer.comments }}</p>
+                  </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+              </div>
+          </div>
+        </div>
+      </div>
+    {% elseif app.user is empty%}
     <p>Aucun profil identifié</p>
     {% else %}
     <div class="card container m-4 profil" >
@@ -21,7 +88,7 @@
         <div class="row justify-content-around ">
           <div class="infoUser col-6" >
             <ul>
-              <li>Membre depuis 2022 </li>
+              <li>Membre depuis {{ app.user.createdAt | date ('Y')}}  </li>
               <li>Chauffeur / Passager </li>
               <li>
               <i class="bi bi-star-fill star"> {{app.user.rateUser}}/5</i>
@@ -78,42 +145,59 @@
           <div class="voyage text-decoration-underline text-secondary ">
             <p>Le {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
           </div>
-          <div class="d-flex justify-content-evenly align-items-center">
-            <div class="depart d-flex flex-column text-center">
-              <div class="fs-3 fw-bold">
-              {{ covoiturage.heureDepart|date('H:i') }}
-              </div>
-              <div class="fs-3 fw-bold">
-              {{ covoiturage.lieuDepart }}
+          <div class="voyage container">
+              <div class="row">
+                {% if covoiturage.conducteur %}
+                <div class="conducteur d-flex justify-content-center flex-column align-items-center p-2">
+                  <p class="m-0">Conducteur:</p>
+                  <a href="{{ path('app_profil_id', {'id': covoiturage.conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ covoiturage.conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
+                </div>
+                {% endif %}
+                <div class="itineraire d-flex justify-content-evenly align-items-center">
+                  <div class="depart d-flex flex-column text-center">
+                    <div class="fs-3 fw-bold">
+                    {{ covoiturage.heureDepart|date('H:i') }}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                    {{ covoiturage.lieuDepart }}
+                    </div>
+                  </div>
+                  <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Premier cercle -->
+                    <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+                    <!-- Ligne -->
+                    <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
+                    <!-- Deuxième cercle -->
+                    <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+                  </svg>
+                  <div class="arrivée d-flex flex-column text-center">
+                    <div class="fs-3 fw-bold">
+                    {{ covoiturage.heureArrivee|date('H:i') }}
+                    </div>
+                    <div class="fs-3 fw-bold">
+                    {{ covoiturage.lieuArrivee }}
+                    </div>
+                  </div>
+                  {% if covoiturage.conducteur.id == app.user.id and covoiturage.dateFuture %}
+                  <div class="boutons">
+                    <a class="btn btn-danger" href="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
+                        <i class="bi bi-trash3"></i>
+                    </a>
+                    <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn custom-bg btn-success">
+                        <i class="bi bi-car-front-fill "></i>
+                    </a>
+                  </div>
+                  {% endif %}
+                </div>
               </div>
             </div>
-            <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
-              <!-- Premier cercle -->
-              <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
-              <!-- Ligne -->
-              <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
-              <!-- Deuxième cercle -->
-              <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
-            </svg>
-            <div class="arrivée d-flex flex-column text-center">
-              <div class="fs-3 fw-bold">
-              {{ covoiturage.heureArrivee|date('H:i') }}
-              </div>
-              <div class="fs-3 fw-bold">
-              {{ covoiturage.lieuArrivee }}
-              </div>
-            </div>
-            <div class="">
-              <a class="btn btn-danger" href="">
-                <i class="bi bi-trash3"></i></a>
-              <a class="btn btn-success" href="">
-                <i class="bi bi-pencil-square"></i></a>
-            </div>
-          </div>
         </div>
         {% endfor %}
       </div>
-      {% endif %}
+    {% endif %}
     </div>
   </div>
   {% endblock %}

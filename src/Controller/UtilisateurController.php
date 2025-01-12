@@ -48,27 +48,6 @@ class UtilisateurController extends AbstractController
         $user->setActif(false);
         $em->flush();
 
-        /* Rediriger vers la liste des utilisateurs
-         // Récupérer l'utilisateur connecté
-        $utilisateur = $security->getUser();
-
-        // Vérifier si l'utilisateur a des rôles
-        if ($utilisateur) {
-            $roles = $utilisateur->getRoles(); // Récupère tous les rôles de l'utilisateur
-
-            // Vérifier les rôles et rediriger en fonction
-            if (in_array('ROLE_ADMIN', $roles)) {
-                // Si l'utilisateur est un administrateur, redirigez vers la page admin
-                return $this->redirectToRoute('app_employe');
-            } elseif (in_array('ROLE_EMPLOYE', $roles)) {
-                // Si l'utilisateur est un éditeur, redirigez vers la page de l'éditeur
-                return $this->redirectToRoute('app_utilisateur');
-            } else {
-                // Sinon, redirigez vers la page par défaut (par exemple, l'accueil)
-                return $this->redirectToRoute('app_home');
-            }
-        }*/
-
         // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
         return $this->redirectToRoute('app_utilisateur');
     }
@@ -94,13 +73,21 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/profil', name: 'app_profil')]
+    
     public function profilUtilisateur(Security $security,EntityManagerInterface $em,): Response
     {
         $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
         $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
-        
+
+        //selectionner les dates futures à la date du jour
+        foreach ($covoiturages as $covoiturage) {
+            $now = new \DateTime();
+            $dateFuture = $covoiturage->getDateDepart() > $now;
+            $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
+        }
+
         if (!$utilisateur) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
@@ -108,7 +95,8 @@ class UtilisateurController extends AbstractController
             'utilisateurs' => $utilisateur,
             'commentairesUSers'=> $commentsUser,
             'voitureUser'=> $voitureUser,
-            'covoiturages'=> $covoiturages
+            'covoiturages'=> $covoiturages,
+            'dateFuture'=> $dateFuture,
         ]);
     }
 
@@ -117,14 +105,30 @@ class UtilisateurController extends AbstractController
     {
         $repository = $em->getRepository(Utilisateur::class);
         $user = $repository->find($id);
+        $utilisateur = $em->getRepository(Utilisateur::class)->find($id);
+        $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
+        $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
+        $covoiturages = $utilisateur->getCovoiturage();
+
+        //selectionner les dates futures à la date du jour
+        foreach ($covoiturages as $covoiturage) {
+            $now = new \DateTime();
+            $dateFuture = $covoiturage->getDateDepart() > $now;
+            $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
+        }
 
         if (!$user) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
 
         return $this->render('utilisateur/profil.html.twig', [
-            'utilisateurs' => $user,
+            'utilisateurs' => $utilisateur,
+            'commentairesUSers'=> $commentsUser,
+            'voitureUser'=> $voitureUser,
+            'covoiturages'=> $covoiturages,
+            'dateFuture'=> $dateFuture,
+            'id' => $id, // Envoie l'ID à la vue
         ]);
-    }
+    } 
 }
 

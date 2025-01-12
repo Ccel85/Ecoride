@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CovoiturageRepository::class)]
+#[ORM\HasLifecycleCallbacks()]
 class Covoiturage
 {
     #[ORM\Id]
@@ -34,8 +35,8 @@ class Covoiturage
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $heureArrivee = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    #[ORM\Column()]
+    private ?bool $status = true;
 
     #[ORM\Column(nullable: true)]
     private ?int $placeDispo = null;
@@ -43,7 +44,7 @@ class Covoiturage
     /**
      * @var Collection<int, Utilisateur>
      */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'Covoiturage')]
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'covoiturage')]
     private Collection $utilisateurs;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
@@ -52,6 +53,10 @@ class Covoiturage
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "conducteur_id", referencedColumnName: "id")]
+    private ?Utilisateur $conducteur = null;
 
     public function __construct()
     {
@@ -135,12 +140,12 @@ class Covoiturage
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): static
+    public function setStatus(bool $status): static
     {
         $this->status = $status;
 
@@ -209,5 +214,24 @@ class Covoiturage
 
         return $this;
     }
+    #[ORM\PrePersist]
+    public function setCreatedAtValue()
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
+    }
 
+    public function getConducteur(): ?Utilisateur
+    {
+        return $this->conducteur;
+    }
+
+    public function setConducteur(?Utilisateur $conducteur): self
+    {
+        $this->conducteur = $conducteur;
+
+        return $this;
+    }
+    
 }

@@ -77,6 +77,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $observation = null;
+
     public function __construct()
     {
         $this->covoiturage = new ArrayCollection();
@@ -272,7 +275,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->avis;
     }
 
-    public function addAvi(Avis $avis): static
+    public function addAvis(Avis $avis): static
     {
         if (!$this->avis->contains($avis)) {
             $this->avis->add($avis);
@@ -282,7 +285,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeAvi(Avis $avis): static
+    public function removeAvis(Avis $avis): static
     {
         if ($this->avis->removeElement($avis)) {
             // set the owning side to null (unless already changed)
@@ -335,4 +338,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getObservation(): ?string
+    {
+        return $this->observation;
+    }
+
+    public function setObservation(?string $observation): static
+    {
+        $this->observation = $observation;
+
+        return $this;
+    }
+
+
 }
