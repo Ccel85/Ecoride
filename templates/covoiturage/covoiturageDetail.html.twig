@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Covoiturage en détail{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div>
+      <a class="btn btn-success mx-4" href= "{{path('app_covoiturage')}}" >Retour</a>
+      <p class="text-center">Voyage prévu le <span>{{ covoiturage.dateDepart|date('d-m-Y') }}</span> à <span> {{ covoiturage.heureDepart|date('H:i') }}</span>
+      au départ de <span> {{ covoiturage.lieuDepart }}</span> .</p>
+    </div>
+    <div class="card container m-4 ">
+      <div class="text-decoration-underline text-secondary ">
+        <p>Le {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
+      </div>
+      <div class="voyage container">
+        <div class="row itineraire">
+          <div class="itineraire d-flex justify-content-evenly align-items-center">
+            <div class="depart d-flex flex-column text-center">
+              <div class="fs-3 fw-bold">
+                {{ covoiturage.heureDepart|date('H:i') }}
+              </div>
+              <div class="fs-3 fw-bold">
+                {{ covoiturage.lieuDepart }}
+              </div>
+            </div>
+            <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
+              <!-- Premier cercle -->
+              <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+              <!-- Ligne -->
+              <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
+              <!-- Deuxième cercle -->
+              <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+            </svg>
+            <div class="arrivée d-flex flex-column text-center">
+                <div class="fs-3 fw-bold">
+                {{ covoiturage.heureArrivee|date('H:i') }}
+                </div>
+                <div class="fs-3 fw-bold">
+                {{ covoiturage.lieuArrivee }}
+                </div>
+            </div>
+            <div class="participer">
+                <a class="btn btn-success" href="{{ path('app_covoiturage_id', {id: covoiturage.id}) }}" >
+                Participer</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profil card container m-4 " >
+      <div class="card-header row justify-content-evenly align-items-center">
+        <img src="{{ asset('download/'~ conducteur.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
+        <div class="col-6 text-center">
+          <h3 class="card-title text-center">Conducteur:</h3>
+          <h3 class="card-text text-center">{{conducteur.pseudo}}</h3>
+        </div>
+      </div>
+      <!-- body -->
+      <div class="card-body">
+        <div class="row justify-content-around ">
+          <div class="infoUser col-6" >
+            <ul>
+              <li>Membre depuis {{ conducteur.createdAt | date ('Y')}} </li>
+              <li>
+                <i class="bi bi-star-fill star"> {{conducteur.rateUser}}/5</i>
+              </li>
+              <br>
+              {% if voitures is empty %}
+                <li>Pas de véhicule enregistré.</li>
+                {% else %}
+                  {% for voiture in voitures %}
+                  <li>Mon véhicule: {{ voiture.constructeur }} {{ voiture.modele }}</li>
+                  <li>Immatriculé: {{ voiture.immat }} </li>
+                  <li>Date de 1ère mise en circulation: {{ voiture.firstImmat|date('d-m-Y') }} </li>
+                  <li>Place disponible: {{ voiture.nbrePlace }} </li>
+                  <hr>
+                  {% endfor %}
+              {% endif %}
+            </ul>
+            {% if observations is not empty %}
+              <p class="text-center text-decoration-underline">Autres commentaires :</p>
+              {% for observation in observations %}
+                  <p class="text-start">{{ observation }}</p>
+              {% endfor %}
+            {% else %}
+                <p>Aucune observation enregistrée pour ce conducteur.</p>
+            {% endif %}
+          </div>
+          <div class="commentaires col-6">
+            {% if commentaires is empty %}
+              <p>Il n'y a pas d'avis.</p>
+              {% else %}
+              <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
+              {% for commentaire in commentaires %}
+              <div class="card commentaire mb-3 p-3">
+                <div class="rate">
+                  <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
+                </div>
+                <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
+                </div>
+                <div>
+                  <p>{{ commentaire.comments }}</p>
+                </div>
+              </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

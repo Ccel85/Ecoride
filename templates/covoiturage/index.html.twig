@@ -1,62 +1,65 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Création de voyage{% endblock %}
+{% block title %}Les covoiturages{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="form-group w-50 m-auto">
-        <h1 class="text-center">Création de covoiturage</h1>
-
-        {{ form_errors(form) }}
-        
-        {{ form_start(form) }}
-
-        {{ form_row(form.dateDepart, {
-            'label': 'Date de départ',
-            'attr': {'class': 'form-control'}
-        }) }}
-
-        {{ form_row(form.lieuDepart, {
-            'label': 'Lieu de départ',
-            'attr': {'class': 'form-control'}
-        }) }}
-
-        {{ form_row(form.heureDepart, {
-            'label': 'Heure de départ',
-            'attr': {'class': 'form-control'}
-        }) }}
-
-        {{ form_row(form.lieuArrivee, {
-            'label': 'Lieu d\'arrivée',
-            'attr': {'class': 'form-control'}
-        }) }}
-
-        {{ form_row(form.heureArrivee, {
-            'label': 'Heure d\'arrivée',
-            'attr': {'class': 'form-control'}
-        }) }}
-
-        {{ form_row(form.placeDispo,{
-        'label' : 'Place disponible',
-        'attr' : {'class': 'form-control'}
-        }) }}
-
-        {{ form_row(form.voiture, {
-        'attr': {'class': 'form-control'},
-        }) }}
-
-        {{ form_row(form.prix,{
-        'label' : 'Prix par personne',
-        'attr' : {'class': 'form-control'}
-        }) }}
-        <div class="d-flex justify-content-evenly">
-            <button type="submit" class="btn btn-primary ">Enregistrer</button>
-        {{ form_end(form) }}
-            <button class="btn btn-primary" href="{{ path('app_profil') }}" >
-            <i class="bi bi-arrow-return-left"> Retour</i></button>
+<!--Barre de recherche -->
+    <h4 class="text-center">Rechercher un voyage</h4>
+    <form method="get" action="{{ path('app_covoiturage_recherche') }}" d-flex bg-body-tertiary justify-content-around align-items-center">
+        <div class="d-flex align-items-center p-2 mb-2 "role="search" aria-label="date">
+            <i class="bi bi-calendar-event px-2"></i>
+            <input name="date" type="date" class="form-control" placeholder="Date" aria-label="date">
         </div>
+        <div class=" d-flex align-items-center p-2 mb-2 " role="search" action="submit" aria-label="depart">
+            <i class="bi bi-geo-alt px-2"></i>
+            <input name="depart"type="search" class="form-control" placeholder="Ville de départ" aria-label="depart">
+        </div>
+        <div class="d-flex align-items-center p-2 mb-2" role="search" aria-label="arrivee">
+            <i class="bi bi-geo-alt px-2"></i>
+            <input name="arrivee" type="search" class="form-control" placeholder="Ville d'arrivée" aria-label="arrivee">
+        </div>
+        <div class="d-flex align-items-center p-2 mb-2 " role="search"  aria-label="passager" >
+            <i class="bi bi-person-circle px-2"></i>
+            <input name="placeDispo" type="search" class="form-control" placeholder="Nombre de passager" aria-label="passager">
+        </div>
+        <button type="submit" class="btn p-0 mx-3">
+            <i class="bi bi-search "></i></button>
+    </form>
     </div>
-    
+<div class="cards gap-4 m-3">
+{% if covoiturages is empty %}
+    <p>Il n'y a pas de voyage </p>
+    {% else %}
+    {% for covoiturage in covoiturages %}
+        <div class="card">
+            <div class="card-header">
+                <div class="conducteur d-flex justify-content-center flex-column align-items-center p-2">
+                    <p class="m-0">Conducteur:</p>
+                    <a href="{{ path('app_profil_id', {'id': covoiturage.conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ covoiturage.conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li>Membre depuis {{ covoiturage.conducteur.createdAt | date ('Y')}} </li>
+                    <li>
+                    <i class="bi bi-star-fill star"> {{covoiturage.conducteur.rateUser}}/5</i>
+                    </li>
+                    <li>Lieu de départ: {{ covoiturage.lieuDepart}} </li>
+                    <li>Lieu d'arrivée: {{ covoiturage.lieuArrivee}} </li>
+                    <li>Date de départ: {{ covoiturage.datedepart|date('d-m-Y')}} </li>
+                    <li>Place dispo: {{ covoiturage.placeDispo}} </li>
+                    <li>Prix: {{ covoiturage.prix}} € </li>
+                    <li>Heure de départ: {{ covoiturage.heureDepart|date('H:i')}} </li>
+                    <li>Heure d'arrivée: {{ covoiturage.heureArrivee|date('H:i')}} </li>
+                    <li>Trajet écologique {{ covoiturage.heureArrivee|date('H:i')}} </li>
+                </ul>  
+            </div>
+            <div class="card-footer d-flex justify-content-center">
+                <a class="btn btn-success " href="{{ path('app_covoiturage_id', {id: covoiturage.id}) }}" >
+                Détail</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
 </div>
-
 {% endblock %}

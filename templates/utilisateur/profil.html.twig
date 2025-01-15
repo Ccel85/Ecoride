@@ -7,12 +7,12 @@
     {% if id is defined and id > 0 %}
       <div class="card container m-4 profil" >
         <div class="card-header row justify-content-evenly align-items-center">
-            <img src="{{ asset('download/'~ utilisateurs.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
-            <div class="col-6 text-center">
-              <h3 class="card-title text-center">Mon profil</h3>
-              <h3 class="card-text text-center">{{utilisateurs.pseudo}}</h3>
-              <p class="card-text text-center text-secondary fs-6">Crédits: {{utilisateurs.credits}}</p>
-            </div>
+          <img src="{{ asset('download/'~ utilisateurs.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
+          <div class="col-6 text-center">
+            <h3 class="card-title text-center">Mon profil</h3>
+            <h3 class="card-text text-center">{{utilisateurs.pseudo}}</h3>
+            <p class="card-text text-center text-secondary fs-6">Crédits: {{utilisateurs.credits}}</p>
+          </div>
         </div>
         <!-- body -->
         <div class="card-body">
@@ -40,17 +40,19 @@
                   <li>Place disponible: {{ voiture.nbrePlace }} </li>
                   <hr>
                   {% endfor %}
-                {% else %}
-                <li>Pas de véhicule enregistré.</li>
+                  {% else %}
+                  <li>Pas de véhicule enregistré.</li>
                 {% endif %}
               </ul>
-              {% if utilisateurs.observation > 0 %}
-              <p class="text-center text-decoration-underline"> Autre commentaire:</p>
-              <p class="text-center">{{ utilisateurs.observation}}</p>
-              {% endif %}
+                {% if utilisateurs.observation > 0 %}
+                  <p class="text-center text-decoration-underline"> Autre commentaire:</p>
+                  {% for observation in observations %}
+                    <p class="text-start">{{ observation}}</p>
+                  {% endfor %}
+                {% endif %}
             </div>
-              <div class="avis col-6">
-                {% if commentairesUSers is empty %}
+            <div class="avis col-6">
+              {% if commentairesUSers is empty %}
                 <p>Il n'y a pas d'avis.</p>
                 {% else %}
                 <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
@@ -66,22 +68,22 @@
                   </div>
                 </div>
                 {% endfor %}
-                {% endif %}
-              </div>
+              {% endif %}
+            </div>
           </div>
         </div>
       </div>
     {% elseif app.user is empty%}
-    <p>Aucun profil identifié</p>
+      <p>Aucun profil identifié</p>
     {% else %}
     <div class="card container m-4 profil" >
       <div class="card-header row justify-content-evenly align-items-center">
-          <img src="{{ asset('download/'~ app.user.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
-          <div class="col-6 text-center">
-            <h3 class="card-title text-center">Mon profil</h3>
-            <h3 class="card-text text-center">{{app.user.pseudo}}</h3>
-            <p class="card-text text-center text-secondary fs-6">Crédits: {{app.user.credits}}</p>
-          </div>
+        <img src="{{ asset('download/'~ app.user.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
+        <div class="col-6 text-center">
+          <h3 class="card-title text-center">Mon profil</h3>
+          <h3 class="card-text text-center">{{app.user.pseudo}}</h3>
+          <p class="card-text text-center text-secondary fs-6">Crédits: {{app.user.credits}}</p>
+        </div>
       </div>
       <!-- body -->
       <div class="card-body">
@@ -100,22 +102,24 @@
                 <li>Immatriculé: {{ voiture.immat }} </li>
                 <li>Date de 1ère mise en circulation: {{ voiture.firstImmat|date('d-m-Y') }} </li>
                 <li>Place disponible: {{ voiture.nbrePlace }} </li>
-                <li>Non fumeur </li>
-                <li>Pas d'animal </li>
                 <hr>
                 {% endfor %}
               {% else %}
               <li>Pas de véhicule enregistré.</li>
               {% endif %}
             </ul>
-            <p class="text-center text-decoration-underline"> Autre commentaire:</p>
-            <p class="text-center">J'adore le cinéma et les mangas</p>
+            {% if utilisateurs.observation > 0 %}
+                <p class="text-center text-decoration-underline"> Autre commentaire:</p>
+                {% for observation in observations %}
+                  <p class="text-start">{{ observation}}</p>
+                {% endfor %}
+            {% endif %}
           </div>
             <div class="avis col-6">
               {% if commentairesUSers is empty %}
-              <p>Il n'y a pas d'avis.</p>
-              {% else %}
-              <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
+                <p>Il n'y a pas d'avis.</p>
+                {% else %}
+                <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
               {% for commentairesUSer in commentairesUSers %}
               <div class="card mb-3 p-3">
                 <div class="rate">

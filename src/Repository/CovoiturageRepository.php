@@ -16,20 +16,27 @@ class CovoiturageRepository extends ServiceEntityRepository
         parent::__construct($registry, Covoiturage::class);
     }
 
-//    /**
-//     * @return Covoiturage[] Returns an array of Covoiturage objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+   /**
+    * @return Covoiturage[] Returns an array of Covoiturage objects
+    */
+    public function findBySearch($date,$depart,$arrivee,$placeDispo): array
+    {
+    return $this->createQueryBuilder('c')
+        ->andWhere('c.date = :date')
+        ->andWhere('c.depart = :depart')
+        ->andWhere('c.arrivee = :arrivee')
+        ->andWhere('c.placeDispo = :placeDispo')
+        ->setParameter('date', $date)
+        ->setParameter('depart', $depart)
+        ->setParameter('arrivee', $arrivee)
+        ->setParameter('placeDispo', $placeDispo)
+        //->orderBy('c.id', 'ASC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult()
+    ;
+    
+    }
 
 //    public function findOneBySomeField($value): ?Covoiturage
 //    {

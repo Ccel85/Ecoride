@@ -1,7 +1,10 @@
     body {
         background-color: #FFFFFF;
     }
-
+span{
+color :#39B54E;
+font-weight: bold;
+}
     .bouton {
         margin: 8 px;
         background-color: #39B54E;
@@ -79,4 +82,11 @@
 .custom-bg {
     background-color: #39B54E !important; 
     color:#FFFFFF ;
+}
+div.cards{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+.card-header{
+    height: 7rem;
 }

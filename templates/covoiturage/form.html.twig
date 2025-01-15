@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création de voyage{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="form-group w-50 m-auto">
+        <h1 class="text-center">Création de covoiturage</h1>
+
+        {{ form_errors(form) }}
+        
+        {{ form_start(form) }}
+
+        {{ form_row(form.dateDepart, {
+            'label': 'Date de départ',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.lieuDepart, {
+            'label': 'Lieu de départ',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.heureDepart, {
+            'label': 'Heure de départ',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.lieuArrivee, {
+            'label': 'Lieu d\'arrivée',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.heureArrivee, {
+            'label': 'Heure d\'arrivée',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.placeDispo,{
+        'label' : 'Place disponible',
+        'attr' : {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.voiture, {
+        'attr': {'class': 'form-control'},
+        }) }}
+
+        {{ form_row(form.prix,{
+        'label' : 'Prix par personne',
+        'attr' : {'class': 'form-control'}
+        }) }}
+        <div class="d-flex justify-content-evenly">
+            <button type="submit" class="btn btn-primary ">Enregistrer</button>
+        {{ form_end(form) }}
+            <button class="btn btn-primary" href="{{ path('app_profil') }}" >
+            <i class="bi bi-arrow-return-left"> Retour</i></button>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}

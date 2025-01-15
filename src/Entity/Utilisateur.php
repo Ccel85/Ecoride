@@ -252,7 +252,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->covoiturage;
     }
 
-    public function addCovoiturage(Covoiturage $covoiturage): static
+    public function addCovoiturage(Covoiturage $covoiturage): self
     {
         if (!$this->covoiturage->contains($covoiturage)) {
             $this->covoiturage->add($covoiturage);
@@ -260,7 +260,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function removeCovoiturage(Covoiturage $covoiturage): static
+    public function removeCovoiturage(Covoiturage $covoiturage): self
     {
         $this->covoiturage->removeElement($covoiturage);
 

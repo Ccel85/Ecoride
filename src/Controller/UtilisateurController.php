@@ -35,7 +35,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/utilisateur/{id}/archive', name: 'app_utilisateur_archive')]
-    public function archiveUtilisateur(int $id,EntityManagerInterface $em,Security $security): Response
+    public function archiveUtilisateur(int $id,EntityManagerInterface $em): Response
     {
         
         $repository = $em->getRepository(Utilisateur::class);
@@ -74,12 +74,22 @@ class UtilisateurController extends AbstractController
 
     #[Route('/profil', name: 'app_profil')]
     
-    public function profilUtilisateur(Security $security,EntityManagerInterface $em,): Response
+    public function profilUtilisateur(Security $security,EntityManagerInterface $em): Response
     {
         $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
+
+        if (!$utilisateur) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
+        // Récuperation des données:
+
         $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
+        $observations = $utilisateur->getObservation();
+
+        // Scinder le texte par les virgules
+        $observationExplode = explode(',' ,$observations);
 
         //selectionner les dates futures à la date du jour
         foreach ($covoiturages as $covoiturage) {
@@ -88,37 +98,39 @@ class UtilisateurController extends AbstractController
             $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
         }
 
-        if (!$utilisateur) {
-            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
-        }
         return $this->render('utilisateur/profil.html.twig', [
             'utilisateurs' => $utilisateur,
             'commentairesUSers'=> $commentsUser,
             'voitureUser'=> $voitureUser,
             'covoiturages'=> $covoiturages,
             'dateFuture'=> $dateFuture,
+            'observations'=>$observationExplode,
         ]);
     }
 
     #[Route('/profil/{id}', name: 'app_profil_id')]
     public function profil(int $id,EntityManagerInterface $em): Response
     {
-        $repository = $em->getRepository(Utilisateur::class);
-        $user = $repository->find($id);
         $utilisateur = $em->getRepository(Utilisateur::class)->find($id);
+        
+        if (!$utilisateur) {
+            throw $this->createNotFoundException('Utilisateur non trouvé.');
+        }
+        
+        // Récuperation des données:
         $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
+        $observations = $utilisateur->getObservation();
+
+        // Scinder le texte par les virgules
+        $observationExplode = explode(',' ,$observations);
 
         //selectionner les dates futures à la date du jour
         foreach ($covoiturages as $covoiturage) {
             $now = new \DateTime();
             $dateFuture = $covoiturage->getDateDepart() > $now;
             $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
-        }
-
-        if (!$user) {
-            throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
 
         return $this->render('utilisateur/profil.html.twig', [
@@ -128,7 +140,8 @@ class UtilisateurController extends AbstractController
             'covoiturages'=> $covoiturages,
             'dateFuture'=> $dateFuture,
             'id' => $id, // Envoie l'ID à la vue
+            'observations'=>$observationExplode,
         ]);
-    } 
+    }
 }
 
