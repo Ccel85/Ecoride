@@ -1,10 +1,16 @@
     body {
         background-color: #FFFFFF;
     }
-span{
-color :#39B54E;
-font-weight: bold;
-}
+    span {
+    color :#39B54E;
+    font-weight: bold;
+    }
+
+    h1{
+        color :#39B54E !important;
+        font-weight: bold;
+        }
+
     .bouton {
         margin: 8 px;
         background-color: #39B54E;
@@ -47,7 +53,7 @@ font-weight: bold;
     /* dashboard */
     .sidebar {
         background-color: #324D4D;
-        /*position:fixed;*/
+
         width: 280px;
         
     }

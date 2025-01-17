@@ -18,7 +18,7 @@ class CovoiturageFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $user = $options['user']; // Récupérer l'utilisateur passé dans les options
+        $utilisateur = $options['utilisateur']; // Récupérer l'utilisateur passé dans les options
 
         $builder
             ->add('prix', IntegerType::class)
@@ -45,20 +45,19 @@ class CovoiturageFormType extends AbstractType
             ])*/
             ->add('voiture', EntityType::class, [
                 'class' => Voiture::class,
-                'choices' => $options['voitures'], // Passe les voitures via les options
+                'choices' => $options['voitures'], // Passe bien les voitures récupérées dans le contrôleur
                 'choice_label' => function (Voiture $voiture) {
-                    return $voiture->getConstructeur() . ' - ' . $voiture->getModele();
+                    return $voiture->getConstructeur() . ' ' . $voiture->getModele();
                 },
                 'placeholder' => 'Sélectionnez un véhicule',
-            ])
-        ;
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Covoiturage::class,
-            'user' => null,
+            'utilisateur' => null,
             'voitures' => [], // Ajoute une option personnalisée
         ]);
     }

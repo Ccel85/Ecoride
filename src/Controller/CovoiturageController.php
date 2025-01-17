@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Avis;
 use App\Entity\Voiture;
 use App\Entity\Covoiturage;
+use App\Entity\Utilisateur;
 use Doctrine\ORM\EntityManager;
 use App\Form\CovoiturageFormType;
 use App\Repository\VoitureRepository;
@@ -26,10 +27,6 @@ class CovoiturageController extends AbstractController
         $covoiturages = $repository->findAll();
         $voitures = $voituresRepository->findAll();
 
-        if (!$covoiturages) {
-            throw $this->createNotFoundException("Il n'y a pas de covoiturage à afficher");
-        }
-        
         return $this->render('covoiturage/index.html.twig', [
             'covoiturages'=>$covoiturages,
             'voitures'=>$voitures,
@@ -65,17 +62,28 @@ class CovoiturageController extends AbstractController
     }
 
     //Création covoiturage
+
     #[Route('/covoiturage/new', name: 'app_covoiturage_new')]
 
-    public function NewCovoiturage(Request $request,EntityManagerInterface $entityManager,Security $security): Response
+    public function NewCovoiturage(Request $request, EntityManagerInterface $entityManager, Security $security, VoitureRepository $voitureRepository): Response
     {
+        $utilisateur = $security->getUser();
+
+        if ($utilisateur) {
+
+        // Récupérer les voitures associées à l'utilisateur
+        $voitures = $voitureRepository->findBy(['utilisateur' => $utilisateur]);
+
         $covoiturage = new Covoiturage();
         $form = $this->createForm(CovoiturageFormType::class, $covoiturage,[
-            'user' => $this->getUser(),]); // Passer l'utilisateur connecté);
+            'utilisateur' => $utilisateur, // Passer l'utilisateur connecté);
+            'voitures' => $voitures // Passe les voitures au formulaire
+        ]);
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Récupérez l'utilisateur connecté
+             //Récupérez l'utilisateur connecté
         $utilisateur = $security->getUser();
 
         // Ajoutez l'utilisateur au covoiturage
@@ -86,13 +94,20 @@ class CovoiturageController extends AbstractController
             $entityManager->persist($covoiturage);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Covoiturage créé avec succès!');
+            $this->addFlash('success', 'Le covoiturage a été créé avec succès!');
             return $this->redirectToRoute('app_profil');
         }
-        return $this->render('covoiturage/form.html.twig', [
+        return $this->render('covoiturage/new.html.twig', [
             'form' => $form->createView(),
-            'covoiturage' => $form,
+            //'covoiturage' => $form,
+            'utilisateur' => $utilisateur,
+            'voitures' => $voitures,
         ]);
+    } else {
+        $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
+        return $this->redirectToRoute('app_login');
+    }
+
     }
     //Suppression Covoiturage
     #[Route('/covoiturage/{id}/remove', name: 'app_covoiturage_remove' , requirements: ['id' => '\d+']) ]
@@ -127,7 +142,7 @@ class CovoiturageController extends AbstractController
     //Mise à jour des covoiturages proprietaire
     #[Route('/covoiturage/{id}/update', name: 'app_covoiturage_update', requirements: ['id' => '\d+'])]
 
-    public function UpdateCovoiturage(Security $security,Request $request,EntityManagerInterface $entityManager,Covoiturage $covoiturage,VoitureRepository $voiture): Response
+    public function UpdateCovoiturage(Security $security,Request $request,EntityManagerInterface $entityManager,Covoiturage $covoiturage,CovoiturageRepository $repository,VoitureRepository $voiture): Response
     {
         $utilisateur = $security->getUser();
         
@@ -135,7 +150,7 @@ class CovoiturageController extends AbstractController
         $this->addFlash('error', 'Utilisateur non connecté.');
         return $this->redirectToRoute('app_login');
     }
-
+    //$voitures = $repository->rechercheVoiture($utilisateur);
     $voitures = $voiture->createQueryBuilder('v')
     ->where('v.utilisateur = :utilisateur')
     ->setParameter('utilisateur', $utilisateur)
@@ -159,7 +174,7 @@ class CovoiturageController extends AbstractController
         $this->addFlash('success', 'Covoiturage mis à jour avec succès.');
         return $this->redirectToRoute('app_profil'); // Redirection après succès
     }
-        return $this->render('covoiturage/form.html.twig', [
+        return $this->render('covoiturage/new.html.twig', [
             'covoiturage' => $covoiturage,
             'form' => $form->createView(),
             'voitures' => $voitures
@@ -199,9 +214,9 @@ class CovoiturageController extends AbstractController
 
         
 
-        if (!$covoiturages) {
-            $this->addFlash('warning', 'Il n\'y a pas de covoiturage avec ces critères.');
-        }
+        //if (!$covoiturages) {
+          //  $this->addFlash('warning', 'Il n\'y a pas de covoiturage avec ces critères.');
+       // }
 
         /*  $covoiturages = $repository->findAll();
         $form = $this->createForm(CovoiturageRepository::class, $covoiturages);

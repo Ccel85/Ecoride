@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modification de profil{% endblock %}
+
+{% block body %}
+<div class="container p-4">
+    <h1 class="text-center p-4">Modification de profil</h1>
+    <div class="form-group w-50 m-auto">
+
+        {{ form_errors(form) }}
+        
+        {{ form_start(form) }}
+
+        {{ form_row(form.nom, {
+            'label': 'Nom',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.prenom, {
+            'label': 'Prénom',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.pseudo, {
+            'label': 'pseudo',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.email, {
+            'label': 'pseudo',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.observation, {
+            'label': 'Observations',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {# {{ form_row(form.photoPath, {
+            'label': 'Photo',
+            'attr': {'class': 'form-control'}
+        }) }} #}
+
+        {#  {{ form_row(form.voiture, {
+            'label': 'Mes voitures',
+            'attr': {'class': 'form-control'}
+        }) }} #}
+
+        <div class="d-flex justify-content-evenly">
+            <button type="submit" class="btn btn-success ">Enregistrer</button>
+        {{ form_end(form) }}
+            <button class="btn btn-success" href="{{ path('app_profil') }}" >
+            Retour</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

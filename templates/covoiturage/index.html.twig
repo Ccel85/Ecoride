@@ -5,31 +5,31 @@
 {% block body %}
 <!--Barre de recherche -->
     <h4 class="text-center">Rechercher un voyage</h4>
-    <form method="get" action="{{ path('app_covoiturage_recherche') }}" d-flex bg-body-tertiary justify-content-around align-items-center">
+    <form method="get" action="{{ path('app_covoiturage_recherche') }}" class="d-flex bg-body-tertiary justify-content-around align-items-center flex-wrap">
         <div class="d-flex align-items-center p-2 mb-2 "role="search" aria-label="date">
-            <i class="bi bi-calendar-event px-2"></i>
+            <i class="bi bi-calendar-event icon-hover px-2"></i>
             <input name="date" type="date" class="form-control" placeholder="Date" aria-label="date">
         </div>
         <div class=" d-flex align-items-center p-2 mb-2 " role="search" action="submit" aria-label="depart">
-            <i class="bi bi-geo-alt px-2"></i>
+            <i class="bi bi-geo-alt icon-hover px-2"></i>
             <input name="depart"type="search" class="form-control" placeholder="Ville de départ" aria-label="depart">
         </div>
         <div class="d-flex align-items-center p-2 mb-2" role="search" aria-label="arrivee">
-            <i class="bi bi-geo-alt px-2"></i>
-            <input name="arrivee" type="search" class="form-control" placeholder="Ville d'arrivée" aria-label="arrivee">
+            <i class="bi bi-geo-alt icon-hover px-2"></i>
+            <input name="arrivee" type="search" class="form-control" placeholder="Ville d'arrivée" aria-label="arrivee" >
         </div>
         <div class="d-flex align-items-center p-2 mb-2 " role="search"  aria-label="passager" >
-            <i class="bi bi-person-circle px-2"></i>
+            <i class="bi bi-person-circle icon-hover px-2"></i>
             <input name="placeDispo" type="search" class="form-control" placeholder="Nombre de passager" aria-label="passager">
         </div>
         <button type="submit" class="btn p-0 mx-3">
-            <i class="bi bi-search "></i></button>
+            <i class="bi bi-search icon-hover "></i></button>
     </form>
-    </div>
-<div class="cards gap-4 m-3">
+
 {% if covoiturages is empty %}
-    <p>Il n'y a pas de voyage </p>
+    <p class="text-center fw-bold">Il n'y a pas de covoiturages avec ces criteres,veuillez modifier votre recherche .</p>
     {% else %}
+<div class="cards gap-4 m-3">
     {% for covoiturage in covoiturages %}
         <div class="card">
             <div class="card-header">
@@ -39,20 +39,52 @@
                 </div>
             </div>
             <div class="card-body">
-                <ul>
-                    <li>Membre depuis {{ covoiturage.conducteur.createdAt | date ('Y')}} </li>
-                    <li>
+                    <p>Membre depuis <strong>{{ covoiturage.conducteur.createdAt | date ('Y')}}</strong> </p>
+                    <p>
                     <i class="bi bi-star-fill star"> {{covoiturage.conducteur.rateUser}}/5</i>
-                    </li>
-                    <li>Lieu de départ: {{ covoiturage.lieuDepart}} </li>
-                    <li>Lieu d'arrivée: {{ covoiturage.lieuArrivee}} </li>
-                    <li>Date de départ: {{ covoiturage.datedepart|date('d-m-Y')}} </li>
-                    <li>Place dispo: {{ covoiturage.placeDispo}} </li>
-                    <li>Prix: {{ covoiturage.prix}} € </li>
-                    <li>Heure de départ: {{ covoiturage.heureDepart|date('H:i')}} </li>
-                    <li>Heure d'arrivée: {{ covoiturage.heureArrivee|date('H:i')}} </li>
-                    <li>Trajet écologique {{ covoiturage.heureArrivee|date('H:i')}} </li>
-                </ul>  
+                    </p>
+                    <div class="itineraire d-flex justify-content-evenly align-items-center">
+                        <div class="depart d-flex flex-column text-center">
+                            <div class="fs-3 fw-bold">
+                                {{ covoiturage.heureDepart|date('H:i') }}
+                            </div>
+                            <div class="fs-3 fw-bold">
+                                {{ covoiturage.lieuDepart }}
+                            </div>
+                        </div>
+                        <svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Premier cercle -->
+                            <circle cx="10" cy="50" r="5" stroke="#324D4D" fill="#FFFFFF" />
+                            <!-- Ligne -->
+                            <line x1="15" y1="50" x2="80" y2="50" stroke="#39B54E" stroke-width="2" />
+                            <!-- Deuxième cercle -->
+                            <circle cx="80" cy="50" r="5" stroke="#324D4D" fill="#FFFFFF" />
+                        </svg>
+                        <div class="arrivée d-flex flex-column text-center">
+                            <div class="fs-3 fw-bold">
+                            {{ covoiturage.heureArrivee|date('H:i') }}
+                            </div>
+                            <div class="fs-3 fw-bold">
+                            {{ covoiturage.lieuArrivee }}
+                            </div>
+                        </div>
+                    </div>
+                    <p>Place disponible:<strong> {{ covoiturage.placeDispo}}</strong> </p>
+                    <p>Prix:<strong> {{ covoiturage.prix}} € </strong></p>
+                    <div  class="d-flex align-items-center">
+                        <span>Trajet écologique: {{covoiturage.voiture.energie}} </span>
+                        {% if covoiturage.voiture.energie == 'Electrique' or covoiturage.voiture.energie == 'Hybride'  %}
+                        <div class="form-check form-switch m-4 ">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  checked disabled>
+                            <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                        </div>  
+                        {% else %}
+                        <div class="form-check form-switch m-4 ">
+                            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  disabled>
+                            <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                        </div> 
+                        {% endif %}
+                    </div>
             </div>
             <div class="card-footer d-flex justify-content-center">
                 <a class="btn btn-success " href="{{ path('app_covoiturage_id', {id: covoiturage.id}) }}" >

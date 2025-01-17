@@ -4,11 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Avis;
 use App\Entity\Voiture;
-use App\Entity\Covoiturage;
 use App\Entity\Utilisateur;
+use App\Form\ProfilUpdateFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -141,6 +142,45 @@ class UtilisateurController extends AbstractController
             'dateFuture'=> $dateFuture,
             'id' => $id, // Envoie l'ID à la vue
             'observations'=>$observationExplode,
+        ]);
+    }
+
+    #[Route('/profil/{id}/update', name: 'app_profil_update')]
+    
+    public function profilUtilisateurUpdate(int $id,Security $security,EntityManagerInterface $em,Request $request): Response
+    {
+        //$utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
+
+        $utilisateur = $em->getRepository(Utilisateur::class)->find($id);
+
+        if (!$utilisateur) {
+            throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
+        }
+
+        // Récuperation des données:
+        $observations = $utilisateur->getObservation();
+        $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
+
+        //création form
+        $form = $this->createForm(ProfilUpdateFormType::class,$utilisateur);
+
+        // Gérer la soumission du formulaire
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Persister les modifications
+            $em->flush();
+
+            // Rediriger après la sauvegarde
+            return $this->redirectToRoute('app_profil', ['id' => $utilisateur->getId()]);
+        }
+
+        // Afficher le formulaire
+        return $this->render('utilisateur/update.html.twig', [
+            'form' => $form->createView(),
+            'utilisateurs' => $utilisateur,
+            'voitureUser'=> $voitureUser,
+            'observations'=>$observations,
         ]);
     }
 }

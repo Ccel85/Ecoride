@@ -3,9 +3,9 @@
 {% block title %}Création de voyage{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container p-4">
+    <h1 class="text-center p-4">Création de covoiturage</h1>
     <div class="form-group w-50 m-auto">
-        <h1 class="text-center">Création de covoiturage</h1>
 
         {{ form_errors(form) }}
         
@@ -50,10 +50,10 @@
         'attr' : {'class': 'form-control'}
         }) }}
         <div class="d-flex justify-content-evenly">
-            <button type="submit" class="btn btn-primary ">Enregistrer</button>
+            <button type="submit" class="btn btn-success ">Enregistrer</button>
         {{ form_end(form) }}
-            <button class="btn btn-primary" href="{{ path('app_profil') }}" >
-            <i class="bi bi-arrow-return-left"> Retour</i></button>
+            <button class="btn btn-success" href="{{ path('app_profil') }}" >
+            Retour</button>
         </div>
     </div>
     

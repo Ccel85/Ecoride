@@ -35,9 +35,15 @@ class CovoiturageRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult()
     ;
-    
+        }
+    public function rechercheVoiture($utilisateur)
+    {
+        return $this->createQueryBuilder('v')
+        ->where('v.utilisateur = :utilisateur')
+        ->setParameter('utilisateur', $utilisateur)
+        ->getQuery()
+        ->getResult();
     }
-
 //    public function findOneBySomeField($value): ?Covoiturage
 //    {
 //        return $this->createQueryBuilder('c')

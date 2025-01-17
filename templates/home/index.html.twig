@@ -4,42 +4,40 @@
 
 {% block body %}
 {% if app.user %}
-<h3 class="ps-5 ">Bonjour {{app.user.pseudo}}, commencez votre voyage ici!</h3>
+<h3 class="ps-5 ">Bonjour <span>{{app.user.prenom}}</span>, commencez votre voyage ici!</h3>
 {% endif %}
 <hr>
     <!--Barre de recherche -->
     <h4 class="text-center">Rechercher un voyage</h4>
-    <div class="search d-flex bg-body-tertiary justify-content-around align-items-center">
-        
-        <form class="d-flex align-items-center p-2 mb-2 "role="search" >
-            <i class="bi bi-calendar-event px-2"></i>
-            <input type="search" class="form-control" placeholder="Date" aria-label="date">
-        </form>
-        <form class=" d-flex align-items-center p-2 mb-2 " role="search" action="submit">
-            <i class="bi bi-geo-alt px-2"></i>
-            <input type="search" class="form-control" placeholder="Ville de départ" aria-label="depart">
-        </form>
-        <form class="d-flex align-items-center p-2 mb-2" role="search">
-            <i class="bi bi-geo-alt px-2"></i>
-            <input type="search" class="form-control" placeholder="Ville d'arrivée" aria-label="arrivee">
-        </form>
-        <form class="d-flex align-items-center p-2 mb-2 " role="search" >
-            <i class="bi bi-person-circle px-2"></i>
-            <input type="search" class="form-control" placeholder="Nombre de passager" aria-label="passager">
+    <form method="get" action="{{ path('app_covoiturage_recherche') }}" class="d-flex bg-body-tertiary justify-content-around align-items-center flex-wrap">
+        <div class="d-flex align-items-center p-2 mb-2 "role="search" aria-label="date">
+            <i class="bi bi-calendar-event icon-hover px-2"></i>
+            <input name="date" type="date" class="form-control" placeholder="Date" aria-label="date">
+        </div>
+        <div class=" d-flex align-items-center p-2 mb-2 " role="search" action="submit" aria-label="depart">
+            <i class="bi bi-geo-alt icon-hover px-2"></i>
+            <input name="depart"type="search" class="form-control" placeholder="Ville de départ" aria-label="depart">
+        </div>
+        <div class="d-flex align-items-center p-2 mb-2" role="search" aria-label="arrivee">
+            <i class="bi bi-geo-alt icon-hover px-2"></i>
+            <input name="arrivee" type="search" class="form-control" placeholder="Ville d'arrivée" aria-label="arrivee" >
+        </div>
+        <div class="d-flex align-items-center p-2 mb-2 " role="search"  aria-label="passager" >
+            <i class="bi bi-person-circle icon-hover px-2"></i>
+            <input name="placeDispo" type="search" class="form-control" placeholder="Nombre de passager" aria-label="passager">
+        </div>
         <button type="submit" class="btn p-0 mx-3">
-            <i class="bi bi-search "></i></button>
-        </form>
-    </div>
+            <i class="bi bi-search icon-hover "></i></button>
+    </form>
 <hr>
     <!-- Hero -->
-
     <div class="px-4 py-5 text-center d-flex align-items-center">
         <img class="d-block mx-auto mb-4" src="{{ asset('logo/covoiturage.png') }}" alt="" width="580" height="400">
         <div class="col-lg-6 mx-auto align-items-center">
             <p class="lead mb-4">Concevez et personnalisez rapidement des sites mobiles réactifs avec Bootstrap, la boîte à outils open source front-end la plus populaire au monde, comprenant des variables et des mixins Sass, un système de grille réactif, de nombreux composants prédéfinis et de puissants plugins JavaScript.</font></font></p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Rechercher un voyage</button>
-                <button type="button" class="btn btn-outline-secondary btn-lg px-4"> Créer un voyage</button>
+                <a type="button" href="{{path('app_covoiturage')}}" class="btn btn-outline-secondary btn-lg px-4">Rechercher un voyage</a>
+                <a type="button" href="{{path('app_covoiturage_new')}}" class="btn btn-outline-secondary btn-lg px-4"> Créer un voyage</a>
             </div>
         </div>
     </div>
