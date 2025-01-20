@@ -224,7 +224,7 @@
         {% for covoiturage in covoiturages %}
         <div class="card container m-4 ">
           <div class="voyage text-decoration-underline text-secondary ">
-            <p>Le {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
+            <a  href="{{path('app_covoiturage_id',{'id': covoiturage.id}) }}">Le {{ covoiturage.dateDepart|date('d-m-Y') }}</a>
           </div>
           <div class="voyage container">
               <div class="row">

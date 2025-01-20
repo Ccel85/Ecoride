@@ -31,6 +31,7 @@
     {% else %}
 <div class="cards gap-4 m-3">
     {% for covoiturage in covoiturages %}
+        {% if covoiturage.dateFuture and covoiturage.placeDispo > 0 %}
         <div class="card">
             <div class="card-header">
                 <div class="conducteur d-flex justify-content-center flex-column align-items-center p-2">
@@ -98,6 +99,7 @@
                 Détail</a>
             </div>
         </div>
+        {% endif %}
     {% endfor %}
 {% endif %}
 </div>

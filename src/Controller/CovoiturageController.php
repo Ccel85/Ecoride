@@ -231,6 +231,15 @@ class CovoiturageController extends AbstractController
             ->setParameter('prix',$prix);
         }
         $covoiturages = $queryBuilder->getQuery()->getResult();
+
+        //Apparaitre que les covoiturages futur
+        if ($covoiturages !== null) {
+            foreach ($covoiturages as $covoiturage) {
+                $now = new \DateTime();
+                $dateFuture = $covoiturage->getDateDepart() > $now;
+                $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
+            }
+        }
         
         return $this->render('covoiturage/index.html.twig', [
             'covoiturages'=>$covoiturages,
@@ -250,6 +259,8 @@ class CovoiturageController extends AbstractController
         $prix = $covoiturage->getPrix();
         $credit = $user->getCredits();
         $majPrix = $credit - $prix;
+        $placeDispo = $covoiturage->getPlaceDispo();
+        $majPlace = $placeDispo - 1;
 
         if (!$user){
             $this->addFlash('warning','Vous devez vous connecter avant de réserver un covoiturage');
@@ -260,9 +271,15 @@ class CovoiturageController extends AbstractController
             return $this->redirectToRoute('app_profil');
         }
 
+        if ($placeDispo = 0) {
+            $this->addFlash('warning', 'Il n\'y a plus de place de disponible.');
+            return $this->redirectToRoute('app_profil');
+        }
+
         $user->setCredits($majPrix);
         $user->setPassager(true);
         $covoiturage->addUtilisateur($user);
+        $covoiturage->setPlaceDispo($majPlace);
 
         $entityManager->persist($user);
         $entityManager->persist($covoiturage);
@@ -286,6 +303,8 @@ class CovoiturageController extends AbstractController
             $prix = $covoiturage->getPrix();
             $credit = $user->getCredits();
             $majPrix = $credit + $prix;
+            $placeDispo = $covoiturage->getPlaceDispo();
+            $majPlace = $placeDispo + 1;
     
             if (!$user){
                 $this->addFlash('warning','Vous devez vous connecter avant d\'annuler un covoiturage');
@@ -295,6 +314,7 @@ class CovoiturageController extends AbstractController
             $user->setCredits($majPrix);
             $user->setPassager(false);
             $covoiturage->removeUtilisateur($user);
+            $covoiturage->setPlaceDispo($majPlace);
     
             $entityManager->persist($user);
             $entityManager->persist($covoiturage);
