@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="participer">
-                <a class="btn btn-success" href="{{ path('app_covoiturage_id', {id: covoiturage.id}) }}" >
+                <a class="btn btn-success" href="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" >
                 Participer</a>
             </div>
           </div>
@@ -50,7 +50,7 @@
     </div>
     <div class="profil card container m-4 " >
       <div class="card-header row justify-content-evenly align-items-center">
-        <img src="{{ asset('download/'~ conducteur.photoPath) }}" class=" col-1 avatar rounded-circle" alt="...">
+        <img src="{{ asset('download/'~ conducteur.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
         <div class="col-6 text-center">
           <h3 class="card-title text-center">Conducteur:</h3>
           <h3 class="card-text text-center">{{conducteur.prenom}}</h3>
@@ -76,7 +76,7 @@
                     <li>Energie: {{ covoiturage.voiture.energie }} </li>
                     <div  class="d-flex align-items-center">
                       <li class="m-0">Trajet écologique:</li>
-                      {% if covoiturage.voiture.energie == 'Electrique' or covoiturage.voiture.energie == 'Hybride'  %}
+                      {% if covoiturage.voiture.energie == 'Electrique' %}
                           <div class="form-check form-switch mx-4 ">
                               <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  checked disabled>
                               <label class="form-check-label" for="flexSwitchCheckDefault"></label>

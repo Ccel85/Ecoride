@@ -13,6 +13,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[ORM\HasLifecycleCallbacks]
+
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -45,12 +47,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $pseudo = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $credits = null;
+    private ?int $credits = 0;
 
     #[ORM\Column(nullable: true)]
     private ?int $rate_user = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255,nullable: true)]
     private ?string $photo_path = null;
 
     #[ORM\Column]
@@ -73,12 +75,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: Voiture::class, mappedBy: 'utilisateur')]
     private Collection $voiture;
-
-    #[ORM\Column]
+    
+    #[ORM\Column(type: 'datetime_immutable', nullable: false)]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $observation = null;
+
+    #[ORM\Column]
+    private ?bool $isConducteur = false;
+
+    #[ORM\Column]
+    private ?bool $isPassager = false;
 
     public function __construct()
     {
@@ -332,11 +340,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
 
     public function getObservation(): ?string
@@ -347,6 +356,30 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setObservation(?string $observation): static
     {
         $this->observation = $observation;
+
+        return $this;
+    }
+
+    public function isConducteur(): ?bool
+    {
+        return $this->isConducteur;
+    }
+
+    public function setConducteur(bool $isConducteur): self
+    {
+        $this->isConducteur = $isConducteur;
+
+        return $this;
+    }
+
+    public function isPassager(): ?bool
+    {
+        return $this->isPassager;
+    }
+
+    public function setPassager(bool $isPassager): static
+    {
+        $this->isPassager = $isPassager;
 
         return $this;
     }

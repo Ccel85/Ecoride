@@ -51,22 +51,17 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
-            ])
-            ->add('roles', ChoiceType::class, [
+            ]);
+            /* ->add('roles', ChoiceType::class, [
                 'choices' => [
                     'Utilisateur' => 'ROLE_USER',
                     'Employé' => 'ROLE_EMPLOYE',
                 ],
                 'multiple' => true,  // Permet la sélection multiple
                 'expanded' => true,  // Affiche des cases à cocher
-                'mapped' => true,    // Associe la valeur du champ à l'entité
-            ])
-            ->add('observation',TextType::class,[
-                'mapped' => true,
-            ])
-            ->add('photoPath',TextType::class,[
-                'mapped' => true,
-            ]);
+                'mapped' => true,// Associe la valeur du champ à l'entité
+                'required' => false,
+            ]); */
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Voiture;
 use App\Entity\Covoiturage;
+use App\Entity\Utilisateur;
 use App\Repository\VoitureRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,14 +36,7 @@ class CovoiturageFormType extends AbstractType
             ])
             
             ->add('placeDispo',IntegerType::class)
-            /*->add('createdAt', null, [
-                'widget' => 'single_text'
-            ])*/
-            /*->add('utilisateurs', EntityType::class, [
-                'class' => Utilisateur::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])*/
+            
             ->add('voiture', EntityType::class, [
                 'class' => Voiture::class,
                 'choices' => $options['voitures'], // Passe bien les voitures récupérées dans le contrôleur

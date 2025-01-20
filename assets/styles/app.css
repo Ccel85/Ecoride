@@ -41,7 +41,7 @@
         width:3rem;
         
     }
-    .icon-hover:hover, a:hover, button i:hover, font:hover {
+    .icon-hover:hover, a:hover,.lien:hover, button i:hover, font:hover {
         color: #FFDD00; /* Change la couleur en rouge */
         cursor: pointer; /* Change le curseur pour indiquer une interaction */
     }
@@ -73,9 +73,9 @@
 }
 
 /* fiche profil */
-.avatar{
-    width: 200px;
-    height: auto;
+.avatar, i.avatar{
+    width: 100px;
+    height: 100px;
 }
 
 .page-profil{
@@ -94,5 +94,5 @@ div.cards{
     grid-template-columns: repeat(3, 1fr);
 }
 .card-header{
-    height: 7rem;
+    height: 8rem;
 }

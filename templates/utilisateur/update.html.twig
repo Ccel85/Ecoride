@@ -27,7 +27,12 @@
         }) }}
 
         {{ form_row(form.email, {
-            'label': 'pseudo',
+            'label': 'Email',
+            'attr': {'class': 'form-control'}
+        }) }}
+
+        {{ form_row(form.isConducteur, {
+            'label': 'Type d\'utilisateur',
             'attr': {'class': 'form-control'}
         }) }}
 
