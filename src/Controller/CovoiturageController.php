@@ -291,7 +291,7 @@ class CovoiturageController extends AbstractController
 
         $entityManager->flush();
 
-        $this->addFlash('success', 'Vous êtes enregistré pour ce covoiturage');
+        $this->addFlash('success', 'Vous êtes enregistré pour ce covoiturage.');
         return $this->redirectToRoute('app_profil'); // Redirection après succès
         
     }
