@@ -253,9 +253,14 @@ class CovoiturageController extends AbstractController
     public function participate(Security $security,EntityManagerInterface $entityManager,Covoiturage $covoiturages) : Response
     
     {
+        $user = $security->getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
         //on recupere le covoiturage selon son ID
         $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($covoiturages->getId());
-        $user = $security->getUser();
         $prix = $covoiturage->getPrix();
         $credit = $user->getCredits();
         $majPrix = $credit - $prix;
