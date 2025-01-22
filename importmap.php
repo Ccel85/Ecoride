@@ -42,4 +42,7 @@ return [
     'bootstrap/dist/js/bootstrap.min.js' => [
         'version' => '5.3.3',
     ],
+    'sweetalert2' => [
+        'version' => '11.15.10',
+    ],
 ];

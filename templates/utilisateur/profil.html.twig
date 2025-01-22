@@ -265,7 +265,7 @@
                   </div>
                   {% if covoiturage.conducteur is not null and covoiturage.conducteur.id == app.user.id and covoiturage.dateFuture %}
                   <div class="boutons d-flex flex-column ">
-                    <a class="btn btn-danger m-2" href="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
+                    <a  class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
                         <i class="bi bi-trash3 "></i>
                     </a>
                     <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">
@@ -277,7 +277,7 @@
                   </div>
                   {% elseif  covoiturage.id is not null and covoiturage.dateFuture  %}
                   <div class="boutons d-flex">
-                  <a class="btn btn-danger m-2" href="{{ path('app_covoiturage_noparticipate', { 'id': covoiturage.id }) }}">
+                  <a id='trash' class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_noparticipate', { 'id': covoiturage.id }) }}">
                         <i class="bi bi-trash3 "></i>
                     </a>
                   </div>
@@ -291,7 +291,5 @@
     {% endif %}
     </div>
   </div>
-   {% block javascripts %}
-        <script>'./js/confirm.js'</script>
-        {% endblock %}
+    
   {% endblock %}

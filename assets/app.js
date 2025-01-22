@@ -13,6 +13,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
 import './js/confirm.js';
+import './js/sweetAlert.js';
 
 // Vérification que le fichier est chargé
 console.log('This log comes from assets/app.js - welcome to AssetMapper! 🎉');
