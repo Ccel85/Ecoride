@@ -271,7 +271,7 @@
                     <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">
                         <i class="bi bi-pencil-square "></i>
                     </a>
-                    <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn custom-bg btn-success m-2">
+                    <a id='carGo' data-url="{{ path('app_covoiturage_go',{ 'id': covoiturage.id }) }}" class="btn custom-bg btn-success m-2">
                         <i class="bi bi-car-front-fill "></i>
                     </a>
                   </div>

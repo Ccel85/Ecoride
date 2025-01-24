@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         Swal.fire({
               title: 'Confirmation !',
-              text: 'Confirmez vous l\'annulation de ce covoiturage ?',
+              text: 'Confirmez vous l\'annulation de la réservation de ce covoiturage ?',
               icon: 'question',
               showCancelButton: true,
               confirmButtonText: 'Annuler',

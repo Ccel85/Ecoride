@@ -67,7 +67,6 @@ class CovoiturageController extends AbstractController
     public function NewCovoiturage(Request $request, EntityManagerInterface $entityManager, Security $security, VoitureRepository $voitureRepository,UtilisateurRepository $utilisateurRepository): Response
     {
             $utilisateur = $security->getUser();
-            $credits = $utilisateur->getCredits();
             // Récupérer les voitures associées à l'utilisateur
             $voitures = $voitureRepository->findBy(['utilisateur' => $utilisateur]);
             
@@ -75,6 +74,7 @@ class CovoiturageController extends AbstractController
                 $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
                 return $this->redirectToRoute('app_login');
             }
+            $credits = $utilisateur->getCredits();
             
             if ($credits < 2){
                 $this->addFlash('warning','Vous n\'avez pas assez de crédits pour créér un covoiturage');
@@ -330,5 +330,33 @@ class CovoiturageController extends AbstractController
             return $this->redirectToRoute('app_profil'); // Redirection après succès
             
         }
+
+        #[Route('/covoiturage/{id}/go', name:'app_covoiturage_go', requirements:['id'=>'\d+'])]
     
-}
+        public function carGO(int $id,Covoiturage $covoiturage,EntityManagerInterface $entityManager,Security $security):Response
+
+        {
+            $user = $security->getUser();
+
+            if (!$user){
+                $this->addFlash('warning','Vous devez être connecté a votre compte.');
+                $this->redirectToRoute('app_login');
+            }
+
+            //on recupere le covoiturage selon son ID
+
+        $entityManager->getRepository(Covoiturage::class)->find($id);
+        
+        if (!$covoiturage) {
+            throw $this->createNotFoundException("Le covoiturage avec l'ID {$id} n'existe pas.");
+        }
+
+        $covoiturage->setGo( 1 );
+
+        $entityManager->persist($covoiturage);
+        $entityManager->flush();
+
+        $this->addFlash('success','Votre voyage voyage est en cours,bonne route.');
+        return $this->redirectToRoute('app_profil');
+    }
+        }

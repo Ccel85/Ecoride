@@ -58,6 +58,9 @@ class Covoiturage
     #[ORM\JoinColumn(name: "conducteur_id", referencedColumnName: "id")]
     private ?Utilisateur $conducteur = null;
 
+    #[ORM\Column]
+    private ?bool $isGo = null;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -230,6 +233,18 @@ class Covoiturage
     public function setConducteur(?Utilisateur $conducteur): self
     {
         $this->conducteur = $conducteur;
+
+        return $this;
+    }
+
+    public function isGo(): ?bool
+    {
+        return $this->isGo;
+    }
+
+    public function setGo(bool $isGo): static
+    {
+        $this->isGo = $isGo;
 
         return $this;
     }
