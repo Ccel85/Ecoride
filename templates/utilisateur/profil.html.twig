@@ -263,22 +263,40 @@
                     {{ covoiturage.lieuArrivee }}
                     </div>
                   </div>
-                  {% if covoiturage.conducteur is not null and covoiturage.conducteur.id == app.user.id and covoiturage.dateFuture %}
-                  <div class="boutons d-flex flex-column ">
-                    <a  class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
+                  {# si le covoiturage appartient au profil connecté #}
+                  {% if covoiturage.conducteur is not null 
+                  and covoiturage.conducteur.id == app.user.id 
+                  and covoiturage.dateFuture %}
+                    {% if covoiturage.isGo 
+                    and covoiturage.isArrived == false %}
+                      <a id='carStop' data-url="{{ path('app_covoiturage_stop',{ 'id': covoiturage.id }) }}" class="btn btn-warning m-2">
+                        <i class="bi bi-sign-stop"></i></a>
+                    {#  Covoiturage terminé #}
+                    {% elseif covoiturage.isGo  
+                    and covoiturage.isArrived  %}
+                        <i class="check bi bi-check-lg fs-1"></i>
+                    {% else %}
+                    <div class="boutons d-flex flex-column ">
+                      <a  class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
                         <i class="bi bi-trash3 "></i>
-                    </a>
-                    <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">
-                        <i class="bi bi-pencil-square "></i>
-                    </a>
-                    <a id='carGo' data-url="{{ path('app_covoiturage_go',{ 'id': covoiturage.id }) }}" class="btn custom-bg btn-success m-2">
+                      </a>
+                      <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">
+                          <i class="bi bi-pencil-square "></i>
+                      </a>
+                      {% if covoiturage.dateDepart|date('Y-m-d') == "now"|date('Y-m-d')
+                        %}
+                      <a id='carGo' data-url="{{ path('app_covoiturage_go',{ 'id': covoiturage.id }) }}" class="btn custom-bg btn-success m-2">
                         <i class="bi bi-car-front-fill "></i>
-                    </a>
-                  </div>
-                  {% elseif  covoiturage.id is not null and covoiturage.dateFuture  %}
+                      </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                  {# sinon bouton pour annuler la participation au covoiturage #}
+                  {% elseif  covoiturage.id is not null 
+                  and covoiturage.dateFuture  %}
                   <div class="boutons d-flex">
-                  <a id='trash' class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_noparticipate', { 'id': covoiturage.id }) }}">
-                        <i class="bi bi-trash3 "></i>
+                    <a id='trash' class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_noparticipate', { 'id': covoiturage.id }) }}">
+                      <i class="bi bi-trash3 "></i>
                     </a>
                   </div>
                   {% endif %}

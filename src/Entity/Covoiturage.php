@@ -61,6 +61,9 @@ class Covoiturage
     #[ORM\Column]
     private ?bool $isGo = null;
 
+    #[ORM\Column]
+    private ?bool $isArrived = null;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -245,6 +248,18 @@ class Covoiturage
     public function setGo(bool $isGo): static
     {
         $this->isGo = $isGo;
+
+        return $this;
+    }
+
+    public function isArrived(): ?bool
+    {
+        return $this->isArrived;
+    }
+
+    public function setArrived(bool $isArrived): static
+    {
+        $this->isArrived = $isArrived;
 
         return $this;
     }

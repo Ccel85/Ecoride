@@ -359,4 +359,42 @@ class CovoiturageController extends AbstractController
         $this->addFlash('success','Votre voyage voyage est en cours,bonne route.');
         return $this->redirectToRoute('app_profil');
     }
+
+    #[Route('/covoiturage/{id}/stop', name:'app_covoiturage_stop', requirements:['id'=>'\d+'])]
+    
+    public function carStop(int $id,Covoiturage $covoiturage,EntityManagerInterface $entityManager,Security $security):Response
+
+    {
+        $user = $security->getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté a votre compte.');
+            $this->redirectToRoute('app_login');
+        }
+
+    //on recupere le covoiturage selon son ID
+
+    $entityManager->getRepository(Covoiturage::class)->find($id);
+    
+    if (!$covoiturage) {
+        throw $this->createNotFoundException("Le covoiturage avec l'ID {$id} n'existe pas.");
+    }
+    
+    $go = $covoiturage->isGo();
+
+    if ($go === false){
+
+        $this->addFlash('warning','Ce covoiturage n\'a pas démarré');
+        $this->redirectToRoute('app_login');
+
+    } else {
+    $covoiturage->setArrived( 1 );
+    
+    $entityManager->persist($covoiturage);
+    $entityManager->flush();
+    }
+
+    $this->addFlash('success','Votre voyage est terminé.');
+    return $this->redirectToRoute('app_profil');
+}
         }

@@ -69,7 +69,7 @@
 }
 
 .btn {
-    background-color: #39B54E;
+    color: #FFFFFF !important;
 }
 
 /* fiche profil */
@@ -95,4 +95,8 @@ div.cards{
 }
 .card-header{
     height: 8rem;
+}
+
+.check{
+    color:#39B54E;
 }
