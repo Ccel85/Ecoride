@@ -356,7 +356,7 @@ class CovoiturageController extends AbstractController
         $entityManager->persist($covoiturage);
         $entityManager->flush();
 
-        $this->addFlash('success','Votre voyage voyage est en cours,bonne route.');
+        $this->addFlash('success','Votre voyage est en cours,bonne route.');
         return $this->redirectToRoute('app_profil');
     }
 
@@ -373,7 +373,6 @@ class CovoiturageController extends AbstractController
         }
 
     //on recupere le covoiturage selon son ID
-
     $entityManager->getRepository(Covoiturage::class)->find($id);
     
     if (!$covoiturage) {
@@ -392,9 +391,10 @@ class CovoiturageController extends AbstractController
     
     $entityManager->persist($covoiturage);
     $entityManager->flush();
+
     }
 
     $this->addFlash('success','Votre voyage est terminé.');
-    return $this->redirectToRoute('app_profil');
+    return $this->redirectToRoute('app_send_email', ['id' => $covoiturage->getId()]);
 }
         }

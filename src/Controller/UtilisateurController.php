@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Avis;
 use App\Entity\Voiture;
+use App\Entity\Covoiturage;
 use App\Entity\Utilisateur;
 use App\Form\ProfilFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -83,7 +84,6 @@ class UtilisateurController extends AbstractController
     public function profilUtilisateur(Security $security,EntityManagerInterface $em): Response
     {
         $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
-    
 
         if (!$utilisateur) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
@@ -108,8 +108,16 @@ class UtilisateurController extends AbstractController
         foreach ($covoiturages as $covoiturage) {
             $now = new \DateTime();
             $dateFuture = $covoiturage->getDateDepart() > $now;
-            $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
+            $covoiturage->dateFuture = $dateFuture;
+            
+            $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
+            $covoiturage->dateAujourdhui = $dateAujourdhui;
+            /* var_dump($dateAujourdhui);
+            var_dump($covoiturage->getDateDepart()->format('Y-m-d'));
+            var_dump($now->format('Y-m-d')); */
+
         }
+            
     }
 
         return $this->render('utilisateur/profil.html.twig', [
@@ -117,10 +125,11 @@ class UtilisateurController extends AbstractController
             'commentairesUSers'=> $commentsUser,
             'voitureUser'=> $voitureUser,
             'covoiturages'=> $covoiturages,
-            //'dateFuture'=> $dateFuture,
             'observations'=>$observationExplode,
+            'dateAujourdhui'=>$dateAujourdhui,
         ]);
     }
+
     //affichage profil selon Id
     #[Route('/profil/{id}', name: 'app_profil_id')]
     public function profil(int $id,EntityManagerInterface $em): Response
