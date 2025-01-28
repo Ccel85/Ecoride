@@ -397,4 +397,47 @@ class CovoiturageController extends AbstractController
     $this->addFlash('success','Votre voyage est terminé.');
     return $this->redirectToRoute('app_send_email', ['id' => $covoiturage->getId()]);
 }
+
+//validation du covoiturage par les voyageurs
+#[Route('/covoiturage/{id}/validate', name:'app_covoiturage_validate', requirements:['id'=>'\d+'])]
+    
+    public function validateCovoiturage(int $id,EntityManagerInterface $entityManager,Security $security):Response
+    {
+        $user = $security->getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté a votre compte.');
+            $this->redirectToRoute('app_login');
         }
+
+        //on recupere le covoiturage selon son ID
+        $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($id);
+        
+        if (!$covoiturage) {
+            throw $this->createNotFoundException("Le covoiturage avec l'ID {$id} n'existe pas.");
+        }
+        $isValidate = $user->getValidateCovoiturages()->contains($covoiturage);
+       // Vérifiez si l'utilisateur a déjà validé ce covoiturage
+        if ($isValidate) {
+
+        $this->addFlash('warning', 'Vous avez déjà validé ce voyage.');
+        return $this->redirectToRoute('app_profil');
+        
+        } else {
+        // Ajouter l'utilisateur aux validateUsers
+            $covoiturage->addValidateUser($user);
+
+            $conducteur = $covoiturage->getConducteur();
+            $prix = $covoiturage->getPrix();
+            $newCredit = $conducteur->setCredits($conducteur->getCredits() + $prix);
+
+            $entityManager->persist($covoiturage);
+            $entityManager->persist($newCredit);
+            $entityManager->flush();
+        
+            $this->addFlash('success', 'Covoiturage validé avec succès !');
+        
+            return $this->redirectToRoute('app_profil');
+        }
+    }
+}

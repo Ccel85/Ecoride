@@ -94,7 +94,7 @@ class UtilisateurController extends AbstractController
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
         $observations = $utilisateur->getObservation();
-
+        $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturages);
         // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
 
@@ -108,10 +108,12 @@ class UtilisateurController extends AbstractController
         foreach ($covoiturages as $covoiturage) {
             $now = new \DateTime();
             $dateFuture = $covoiturage->getDateDepart() > $now;
-            $covoiturage->dateFuture = $dateFuture;
+            $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
             
             $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
-            $covoiturage->dateAujourdhui = $dateAujourdhui;
+            if ($dateAujourdhui){
+            $dateAujourdhui = $covoiturage->setDateAujourdhui();
+            }
             /* var_dump($dateAujourdhui);
             var_dump($covoiturage->getDateDepart()->format('Y-m-d'));
             var_dump($now->format('Y-m-d')); */
@@ -127,6 +129,7 @@ class UtilisateurController extends AbstractController
             'covoiturages'=> $covoiturages,
             'observations'=>$observationExplode,
             'dateAujourdhui'=>$dateAujourdhui,
+            'isValidate'=>$isValidate,
         ]);
     }
 
@@ -145,12 +148,13 @@ class UtilisateurController extends AbstractController
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
         $observations = $utilisateur->getObservation();
+        $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturages);
 
-        if (!$voitureUser && $utilisateur->isConducteur(true)){
+       /*  if (!$voitureUser && $utilisateur->isConducteur(true)){
              // Rediriger a la création de vehicule
             $this->addFlash('danger', 'Veuillez ajouter un véhicule');
             return $this->redirectToRoute('app_voiture_new');
-        }
+        } */
         // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
 
@@ -158,9 +162,13 @@ class UtilisateurController extends AbstractController
         foreach ($covoiturages as $covoiturage) {
             $now = new \DateTime();
             $dateFuture = $covoiturage->getDateDepart() > $now;
-            $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
+            $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
+            
+            $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
+            if ($dateAujourdhui){
+            $dateAujourdhui = $covoiturage->setDateAujourdhui();
+            }
         }
-
         return $this->render('utilisateur/profil.html.twig', [
             'utilisateurs' => $utilisateur,
             'commentairesUSers'=> $commentsUser,
@@ -169,6 +177,8 @@ class UtilisateurController extends AbstractController
             'dateFuture'=> $dateFuture,
             'id' => $id, // Envoie l'ID à la vue
             'observations'=>$observationExplode,
+            'dateAujourdhui'=>$dateAujourdhui,
+            'isValidate'=>$isValidate,
         ]);
     }
 

@@ -18,3 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const validateButton = document.getElementById('validate');
+
+  if (validateButton) {
+    validateButton.addEventListener('click', () => {
+        Swal.fire({
+              title: 'Merci',
+              text: 'Souhaitez vous déposer un avis ? ',
+              icon: 'question',
+              confirmButtonText: 'Ok',
+              showCancelButton: true,
+              cancelButtonText: 'Non',
+              }).then((result) => {
+                          if (result.isConfirmed) {
+                            window.location.href = validateButton.getAttribute('data-url')
+                        }
+          })
+        }
+    )}
+  });

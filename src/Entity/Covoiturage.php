@@ -64,9 +64,19 @@ class Covoiturage
     #[ORM\Column]
     private ?bool $isArrived = null;
 
+    /**
+     * @var Collection<int, utilisateur>
+     */
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'validateCovoiturages')]
+    private Collection $validateUsers;
+
+    private ?bool $dateFuture = null;
+    private ?bool $dateAujourdhui = null;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
+        $this->validateUsers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -260,6 +270,54 @@ class Covoiturage
     public function setArrived(bool $isArrived): static
     {
         $this->isArrived = $isArrived;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, utilisateur>
+     */
+    public function getValidateUsers(): Collection
+    {
+        return $this->validateUsers;
+    }
+
+    public function addValidateUser(utilisateur $validateUser): static
+    {
+        if (!$this->validateUsers->contains($validateUser)) {
+            $this->validateUsers->add($validateUser);
+        }
+
+        return $this;
+    }
+
+    public function removeValidateUser(utilisateur $validateUser): static
+    {
+        $this->validateUsers->removeElement($validateUser);
+
+        return $this;
+    }
+
+    public function isDateFuture(): ?bool
+    {
+        return $this->dateFuture;
+    }
+
+    public function setDateFuture(?bool $dateFuture): self
+    {
+        $this->dateFuture = $dateFuture;
+
+        return $this;
+    }
+
+    public function isDateAujourdhui(): ?bool
+    {
+        return $this->dateAujourdhui;
+    }
+
+    public function setDateAujourdhui(?bool $dateAujourdhui): self
+    {
+        $this->dateAujourdhui = $dateAujourdhui;
 
         return $this;
     }

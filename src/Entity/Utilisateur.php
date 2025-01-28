@@ -88,11 +88,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isPassager = false;
 
+    /**
+     * @var Collection<int, Covoiturage>
+     */
+    #[ORM\ManyToMany(targetEntity: Covoiturage::class, mappedBy: 'validateUsers')]
+    private Collection $validateCovoiturages;
+
     public function __construct()
     {
         $this->covoiturage = new ArrayCollection();
         $this->avis = new ArrayCollection();
         $this->voiture = new ArrayCollection();
+        $this->validateCovoiturages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -380,6 +387,33 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassager(bool $isPassager): static
     {
         $this->isPassager = $isPassager;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Covoiturage>
+     */
+    public function getValidateCovoiturages(): Collection
+    {
+        return $this->validateCovoiturages;
+    }
+
+    public function addValidateCovoiturage(Covoiturage $validateCovoiturage): static
+    {
+        if (!$this->validateCovoiturages->contains($validateCovoiturage)) {
+            $this->validateCovoiturages->add($validateCovoiturage);
+            $validateCovoiturage->addValidateUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeValidateCovoiturage(Covoiturage $validateCovoiturage): static
+    {
+        if ($this->validateCovoiturages->removeElement($validateCovoiturage)) {
+            $validateCovoiturage->removeValidateUser($this);
+        }
 
         return $this;
     }
