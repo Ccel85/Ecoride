@@ -26,9 +26,10 @@
             <i class="bi bi-search icon-hover "></i></button>
     </form>
 
-{% if covoiturages is empty %}
+    <p class="text-start fs-5 ms-4">Voici les résultats pour votre recherche du {{ dateDepart|date('d-m-Y') }} au départ de {{ lieuDepart}}, arrivée à {{ lieuArrivee }} :</p>
+{# {% if covoiturages is empty %}
     <p class="text-center fw-bold">Il n'y a pas de covoiturages avec ces criteres,veuillez modifier votre recherche .</p>
-    {% else %}
+    {% else %} #}
 <div class="cards gap-4 m-3">
     {% for covoiturage in covoiturages %}
         {% if covoiturage.dateFuture and covoiturage.placeDispo > 0 %}
@@ -101,6 +102,6 @@
         </div>
         {% endif %}
     {% endfor %}
-{% endif %}
+{# {% endif %} #}
 </div>
 {% endblock %}
