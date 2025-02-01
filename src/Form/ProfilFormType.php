@@ -32,7 +32,6 @@ class ProfilFormType extends AbstractType
                     ])
             /* ->add('photo_path') */
             ->add('observation',TextType::class,[
-                
                 'required' => false,
             ])
         ;

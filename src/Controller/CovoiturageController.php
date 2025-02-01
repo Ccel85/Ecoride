@@ -5,8 +5,6 @@ namespace App\Controller;
 use App\Entity\Avis;
 use App\Entity\Voiture;
 use App\Entity\Covoiturage;
-use App\Entity\Utilisateur;
-use Doctrine\ORM\EntityManager;
 use App\Form\CovoiturageFormType;
 use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,13 +14,16 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CovoiturageController extends AbstractController
 {
     //lister les covoiturages
     #[Route('/covoiturage', name: 'app_covoiturage')]
+    
     public function index(CovoiturageRepository $repository,VoitureRepository $voituresRepository): Response
+    
     {
         $covoiturages = $repository->findAll();
         $voitures = $voituresRepository->findAll();
@@ -34,7 +35,9 @@ class CovoiturageController extends AbstractController
     }
     // voir un covoiturage selon son Id
     #[Route('/covoiturage/{id}', name: 'app_covoiturage_id', requirements: ['id' => '\d+'])]
+    
     public function détail(EntityManagerInterface $em,int $id): Response
+    
     {
         //on recupere le covoiturage selon son ID
         $covoiturage = $em->getRepository(Covoiturage::class)->find($id);
@@ -65,6 +68,7 @@ class CovoiturageController extends AbstractController
     #[Route('/covoiturage/new', name: 'app_covoiturage_new')]
     
     public function NewCovoiturage(Request $request, EntityManagerInterface $entityManager, Security $security, VoitureRepository $voitureRepository,UtilisateurRepository $utilisateurRepository): Response
+    
     {
             $utilisateur = $security->getUser();
             // Récupérer les voitures associées à l'utilisateur
@@ -127,36 +131,50 @@ class CovoiturageController extends AbstractController
     //Suppression Covoiturage
     #[Route('/covoiturage/{id}/remove', name: 'app_covoiturage_remove' , requirements: ['id' => '\d+']) ]
 
-    public function RemoveCovoiturage(Security $security,Request $request,EntityManagerInterface $entityManager,Covoiturage $covoiturage): Response
+    public function RemoveCovoiturage( Security $security,Request $request,EntityManagerInterface $entityManager,
+        SessionInterface $session, // 🔹 Injecter la session
+        Covoiturage $covoiturage): Response
     {
-        $utilisateur = $security->getUser();
-        $credits = $utilisateur->getCredits();
 
-        if (!$utilisateur) {
+        $user = $security->getUser();
+        $credits = $user->getCredits();
+
+        if (!$user) {
             $this->addFlash('error', 'Utilisateur non connecté.');
             return $this->redirectToRoute('app_login');
         }
         // Vérifier si l'utilisateur est autorisé à supprimer ce covoiturage
-        if (!$utilisateur->getCovoiturage()->contains($covoiturage)) {
+        if (!$user->getCovoiturage()->contains($covoiturage)) {
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer ce covoiturage.');
             return $this->redirectToRoute('app_profil');
         }
-            // Supprimez le covoiturage de l\'utilisateur
+        // 🔹 Récupérer les emails des utilisateurs participants
+        $emails = [];
+        foreach ($covoiturage->getUtilisateurs() as $utilisateur) {
+            if ($utilisateur->getEmail()) {
+                $emails[] = $utilisateur->getEmail();
+            }
+        }
 
+        // 🔹 Stocker les emails en session
+        $session->set('emails_utilisateurs', $emails);
+
+        // 🔹 Stocker l'ID avant de supprimer l'entité
+        $covoiturageId = $covoiturage->getId();
+
+        // Supprimez le covoiturage de l\'utilisateur et mise a jour du crédit
         $majCredits =$credits + 2;
-        
-        $utilisateur->setCredits($majCredits);
-        $utilisateur->removeCovoiturage($covoiturage);
+        $user->setCredits($majCredits);
+        $user->removeCovoiturage($covoiturage);
 
         $entityManager->remove($covoiturage);
-
 
         // Sauvegardez les modifications
         $entityManager->flush();
 
         $this->addFlash('success', 'Covoiturage supprimé avec succès!');
 
-        return $this->redirectToRoute('app_profil');
+        return $this->redirectToRoute('app_send_email_remove', ['id' => $covoiturageId]);
 
     }
 
@@ -164,6 +182,7 @@ class CovoiturageController extends AbstractController
     #[Route('/covoiturage/{id}/update', name: 'app_covoiturage_update', requirements: ['id' => '\d+'])]
 
     public function UpdateCovoiturage(Security $security,Request $request,EntityManagerInterface $entityManager,Covoiturage $covoiturage,CovoiturageRepository $repository,VoitureRepository $voiture): Response
+    
     {
         $utilisateur = $security->getUser();
         
@@ -203,8 +222,12 @@ class CovoiturageController extends AbstractController
 
     //Recherche covoiturage
     #[Route('/covoiturageRecherche', name: 'app_covoiturage_recherche', methods: ['GET'])]
+
     public function covoiturageRecherche(CovoiturageRepository $repository, Request $request): Response
+    
     {
+        $dateFuture = false; // Valeur par défaut
+
         // Récupérer les données du formulaire
         $dateDepart = $request->query->get('date');
         $lieuDepart = $request->query->get('depart');
@@ -213,36 +236,44 @@ class CovoiturageController extends AbstractController
         
         // Construction la requête pour filtrer les covoiturages
         $queryBuilder = $repository->createQueryBuilder('c');
-
-        if ($dateDepart){
-            $queryBuilder->andWhere('c.dateDepart = :dateDepart')
-            ->setParameter('dateDepart', $dateDepart );
-        }
-        if ($lieuDepart){
-            $queryBuilder->andWhere('c.lieuDepart LIKE :lieuDepart')
-            ->setParameter('lieuDepart', '%' . $lieuDepart . '%');
-        }
-        if ($lieuArrivee){
-            $queryBuilder->andWhere('c.lieuArrivee LIKE :lieuArrivee')
-            ->setParameter('lieuArrivee', '%' . $lieuArrivee . '%');
-        }
-        if ($prix){
-            $queryBuilder->andWhere('c.prix <= :prix')
-            ->setParameter('prix',$prix);
-        }
-        $covoiturages = $queryBuilder->getQuery()->getResult();
-
-        //Apparaitre que les covoiturages futur
-        if ($covoiturages !== null) {
-            foreach ($covoiturages as $covoiturage) {
-                $now = new \DateTime();
-                $dateFuture = $covoiturage->getDateDepart() > $now;
-                $covoiturage->dateFuture = $dateFuture;  // Ajoute la propriété `dateFuture`
+            if ($dateDepart){
+                $queryBuilder->andWhere('c.dateDepart = :dateDepart')
+                ->setParameter('dateDepart', $dateDepart );
             }
+            if ($lieuDepart){
+                $queryBuilder->andWhere('c.lieuDepart LIKE :lieuDepart')
+                ->setParameter('lieuDepart', '%' . $lieuDepart . '%');
+            }
+            if ($lieuArrivee){
+                $queryBuilder->andWhere('c.lieuArrivee LIKE :lieuArrivee')
+                ->setParameter('lieuArrivee', '%' . $lieuArrivee . '%');
+            }
+            if ($prix){
+                $queryBuilder->andWhere('c.prix <= :prix')
+                ->setParameter('prix',$prix);
+            }
+        $covoiturages = $queryBuilder->orderBy('c.dateDepart', 'ASC')->getQuery()->getResult();
+
+         // Vérifier si les covoiturages sont futurs
+        foreach ($covoiturages as $covoiturage) {
+            $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
+    }
+
+    // Si aucun covoiturage trouvé, chercher une date proche
+    if (empty($covoiturages)) {
+
+        $covoiturages = $repository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee);
+        foreach ($covoiturages as $covoiturage) {
+            $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
         }
+    }
         
         return $this->render('covoiturage/index.html.twig', [
             'covoiturages'=>$covoiturages,
+            'dateFuture'=>$dateFuture,
+            'dateDepart'=>$dateDepart,
+            'lieuDepart'=>$lieuDepart,
+            'lieuArrivee'=>$lieuArrivee,
             
         ]);
     }
@@ -297,45 +328,45 @@ class CovoiturageController extends AbstractController
     }
 
      //validation participation covoiturage
-        #[Route('/covoiturage/{id}/noParticipate', name: 'app_covoiturage_noparticipate', requirements: ['id'=>'\d+'])]
+    #[Route('/covoiturage/{id}/noParticipate', name: 'app_covoiturage_noparticipate', requirements: ['id'=>'\d+'])]
 
-        public function noParticipate(Security $security,EntityManagerInterface $entityManager,Covoiturage $covoiturages) : Response
+    public function noParticipate(Security $security,EntityManagerInterface $entityManager,Covoiturage $covoiturages) : Response
         
-        {
-            //on recupere le covoiturage selon son ID
-            $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($covoiturages->getId());
-            $user = $security->getUser();
-            $prix = $covoiturage->getPrix();
-            $credit = $user->getCredits();
-            $majPrix = $credit + $prix;
-            $placeDispo = $covoiturage->getPlaceDispo();
-            $majPlace = $placeDispo + 1;
-    
-            if (!$user){
-                $this->addFlash('warning','Vous devez vous connecter avant d\'annuler un covoiturage');
-                return $this->redirectToRoute('app_login');
-            }
-            
-            $user->setCredits($majPrix);
-            $user->setPassager(false);
-            $covoiturage->removeUtilisateur($user);
-            $covoiturage->setPlaceDispo($majPlace);
-    
-            $entityManager->persist($user);
-            $entityManager->persist($covoiturage);
-    
-            $entityManager->flush();
-    
-            $this->addFlash('success', 'Votre particiption à ce covoiturage est annulée.');
-            return $this->redirectToRoute('app_profil'); // Redirection après succès
-            
+    {
+        //on recupere le covoiturage selon son ID
+        $covoiturage = $entityManager->getRepository(Covoiturage::class)->find($covoiturages->getId());
+        $user = $security->getUser();
+        $prix = $covoiturage->getPrix();
+        $credit = $user->getCredits();
+        $majPrix = $credit + $prix;
+        $placeDispo = $covoiturage->getPlaceDispo();
+        $majPlace = $placeDispo + 1;
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez vous connecter avant d\'annuler un covoiturage');
+            return $this->redirectToRoute('app_login');
         }
+        
+        $user->setCredits($majPrix);
+        $user->setPassager(false);
+        $covoiturage->removeUtilisateur($user);
+        $covoiturage->setPlaceDispo($majPlace);
 
-        #[Route('/covoiturage/{id}/go', name:'app_covoiturage_go', requirements:['id'=>'\d+'])]
+        $entityManager->persist($user);
+        $entityManager->persist($covoiturage);
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Votre particiption à ce covoiturage est annulée.');
+        return $this->redirectToRoute('app_profil'); // Redirection après succès
+        
+    }
+
+    #[Route('/covoiturage/{id}/go', name:'app_covoiturage_go', requirements:['id'=>'\d+'])]
     
-        public function carGO(int $id,Covoiturage $covoiturage,EntityManagerInterface $entityManager,Security $security):Response
+    public function carGO(int $id,Covoiturage $covoiturage,EntityManagerInterface $entityManager,Security $security):Response
 
-        {
+    {
             $user = $security->getUser();
 
             if (!$user){
@@ -372,31 +403,31 @@ class CovoiturageController extends AbstractController
             $this->redirectToRoute('app_login');
         }
 
-    //on recupere le covoiturage selon son ID
-    $entityManager->getRepository(Covoiturage::class)->find($id);
-    
-    if (!$covoiturage) {
-        throw $this->createNotFoundException("Le covoiturage avec l'ID {$id} n'existe pas.");
+        //on recupere le covoiturage selon son ID
+        $entityManager->getRepository(Covoiturage::class)->find($id);
+        
+        if (!$covoiturage) {
+            throw $this->createNotFoundException("Le covoiturage avec l'ID {$id} n'existe pas.");
+        }
+        
+        $go = $covoiturage->isGo();
+
+        if ($go === false){
+
+            $this->addFlash('warning','Ce covoiturage n\'a pas démarré');
+            $this->redirectToRoute('app_login');
+
+        } else {
+        $covoiturage->setArrived( 1 );
+        
+        $entityManager->persist($covoiturage);
+        $entityManager->flush();
+
+        }
+
+        $this->addFlash('success','Votre voyage est terminé.');
+        return $this->redirectToRoute('app_send_email', ['id' => $covoiturage->getId()]);
     }
-    
-    $go = $covoiturage->isGo();
-
-    if ($go === false){
-
-        $this->addFlash('warning','Ce covoiturage n\'a pas démarré');
-        $this->redirectToRoute('app_login');
-
-    } else {
-    $covoiturage->setArrived( 1 );
-    
-    $entityManager->persist($covoiturage);
-    $entityManager->flush();
-
-    }
-
-    $this->addFlash('success','Votre voyage est terminé.');
-    return $this->redirectToRoute('app_send_email', ['id' => $covoiturage->getId()]);
-}
 
 //validation du covoiturage par les voyageurs
 #[Route('/covoiturage/{id}/validate', name:'app_covoiturage_validate', requirements:['id'=>'\d+'])]
@@ -422,7 +453,7 @@ class CovoiturageController extends AbstractController
 
         $this->addFlash('warning', 'Vous avez déjà validé ce voyage.');
         return $this->redirectToRoute('app_profil');
-        
+
         } else {
         // Ajouter l'utilisateur aux validateUsers
             $covoiturage->addValidateUser($user);
@@ -434,7 +465,8 @@ class CovoiturageController extends AbstractController
             $entityManager->persist($covoiturage);
             $entityManager->persist($newCredit);
             $entityManager->flush();
-        
+
+           /*  return new JsonResponse(['success' => true, 'message' => 'Covoiturage validé']); */
             $this->addFlash('success', 'Covoiturage validé avec succès !');
         
             return $this->redirectToRoute('app_profil');

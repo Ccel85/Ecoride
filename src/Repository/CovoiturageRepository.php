@@ -16,6 +16,29 @@ class CovoiturageRepository extends ServiceEntityRepository
         parent::__construct($registry, Covoiturage::class);
     }
 
+    public function findCovoiturageByDateOrdered()
+    {
+        return $this->createQueryBuilder('c')
+        ->orderBy('c.dateDepart', 'ASC')  // 🔹 'ASC' pour ordre croissant, 'DESC' pour décroissant
+        ->getQuery()
+        ->getResult();
+}
+
+public function findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee)
+    {
+        return $this->createQueryBuilder('c')
+        ->andWhere('c.dateDepart > :dateDepart')
+        ->andWhere('c.lieuDepart = :lieuDepart')
+        ->andWhere('c.lieuArrivee = :lieuArrivee')
+        ->setParameter('dateDepart', $dateDepart)
+        ->setParameter('lieuDepart', $lieuDepart)
+        ->setParameter('lieuArrivee', $lieuArrivee)
+        ->orderBy('c.dateDepart', 'ASC')  // 🔹 'ASC' pour ordre croissant, 'DESC' pour décroissant
+        ->getQuery()
+        ->getResult();
+}
+
+
    /**
     * @return Covoiturage[] Returns an array of Covoiturage objects
     */
@@ -30,7 +53,7 @@ class CovoiturageRepository extends ServiceEntityRepository
         ->setParameter('depart', $depart)
         ->setParameter('arrivee', $arrivee)
         ->setParameter('placeDispo', $placeDispo)
-        //->orderBy('c.id', 'ASC')
+        ->orderBy('c.dateDepart', 'ASC')
         ->setMaxResults(10)
         ->getQuery()
         ->getResult()

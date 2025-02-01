@@ -59,10 +59,10 @@ class Covoiturage
     private ?Utilisateur $conducteur = null;
 
     #[ORM\Column]
-    private ?bool $isGo = null;
+    private ?bool $isGo = false;
 
     #[ORM\Column]
-    private ?bool $isArrived = null;
+    private ?bool $isArrived = false;
 
     /**
      * @var Collection<int, utilisateur>

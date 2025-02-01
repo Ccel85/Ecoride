@@ -26,7 +26,7 @@ class VoitureController extends AbstractController
     {
         $voiture = $em->getRepository(Voiture::class)->find($id);
 
-          // Récupérer l'utilisateur lié à la voiture (si la relation est définie)
+        // Récupérer l'utilisateur lié à la voiture
         $utilisateur = $voiture->getUtilisateur();
 
         if (!$voiture) {
