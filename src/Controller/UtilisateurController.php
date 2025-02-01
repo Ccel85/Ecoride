@@ -90,14 +90,15 @@ class UtilisateurController extends AbstractController
         }
 
         // Récuperation des données:
-        $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
+        $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($utilisateur);
+     /*    $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]); */
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
+        $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
         $observations = $utilisateur->getObservation();
-        $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturages);
         // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
-
+        
         //Verification si Chauffeur qu'un véhicule soit enregistré
         if ($utilisateur->isConducteur(true) && !$voitureUser){
             $this->addFlash('warning', 'Vous êtes un conducteur, vous devez ajouter un véhicule !');
@@ -105,26 +106,33 @@ class UtilisateurController extends AbstractController
         }
         //selectionner les dates futures à la date du jour
         if ($covoiturages !== null) {
-        foreach ($covoiturages as $covoiturage) {
-            $now = new \DateTime();
-            $dateFuture = $covoiturage->getDateDepart() > $now;
-            $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
-            
-            $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
-            if ($dateAujourdhui){
-            $dateAujourdhui = $covoiturage->setDateAujourdhui();
+            foreach ($covoiturages as $covoiturage) {
+                $now = new \DateTime();
+                $dateFuture = $covoiturage->getDateDepart() > $now;
+                $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
+                dump($dateFuture);
+                $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
+                if ($dateAujourdhui){
+                    $dateAujourdhui = $covoiturage->setDateAujourdhui();
+                }
+                dump($dateAujourdhui);
+                /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
+                // Affiche tous les covoiturages validés par l'utilisateur
+                 // Vérifie si le covoiturage en question est validé
+                $isValidate= false;
+                if ($isValidate = $validatedCovoiturages->contains($covoiturage)){
+                $isValidate = true;
+                break;
+                /*  dump($validatedCovoiturages);
+                dump($isValidate);
+                die(); */
             }
-            /* var_dump($dateAujourdhui);
-            var_dump($covoiturage->getDateDepart()->format('Y-m-d'));
-            var_dump($now->format('Y-m-d')); */
-
-        }
             
     }
 
         return $this->render('utilisateur/profil.html.twig', [
-            'utilisateurs' => $utilisateur,
-            'commentairesUSers'=> $commentsUser,
+            'utilisateur' => $utilisateur,
+            'commentairesUSer'=> $commentairesUser,
             'voitureUser'=> $voitureUser,
             'covoiturages'=> $covoiturages,
             'observations'=>$observationExplode,
@@ -132,6 +140,7 @@ class UtilisateurController extends AbstractController
             'isValidate'=>$isValidate,
         ]);
     }
+}
 
     //affichage profil selon Id
     #[Route('/profil/{id}', name: 'app_profil_id')]
@@ -144,34 +153,51 @@ class UtilisateurController extends AbstractController
         }
         
         // Récuperation des données:
-        $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]);
+        $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($utilisateur);
+        /* $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]); */
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
         $observations = $utilisateur->getObservation();
-        $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturages);
-
-       /*  if (!$voitureUser && $utilisateur->isConducteur(true)){
-             // Rediriger a la création de vehicule
+        $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
+        /*  if (!$voitureUser && $utilisateur->isConducteur(true)){
+            // Rediriger a la création de vehicule
             $this->addFlash('danger', 'Veuillez ajouter un véhicule');
             return $this->redirectToRoute('app_voiture_new');
-        } */
-        // Scinder le texte par les virgules
-        $observationExplode = explode(',' ,$observations);
-
-        //selectionner les dates futures à la date du jour
-        foreach ($covoiturages as $covoiturage) {
-            $now = new \DateTime();
-            $dateFuture = $covoiturage->getDateDepart() > $now;
-            $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
+            } */
+           // Scinder le texte par les virgules
+            $observationExplode = explode(',' ,$observations);
             
-            $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
-            if ($dateAujourdhui){
-            $dateAujourdhui = $covoiturage->setDateAujourdhui();
+            //selectionner les dates futures à la date du jour
+            foreach ($covoiturages as $covoiturage) {
+                $now = new \DateTime();
+                $dateFuture = $covoiturage->getDateDepart() > $now;
+                $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
+                /*  dump($dateFuture);
+                dump($now); 
+                die; */
+                $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
+                /* dump($dateAujourdhui) ;
+                    die;*/
+                if ($dateAujourdhui){
+                    $dateAujourdhui = $covoiturage->setDateAujourdhui();
+                    
+                }
+                
+            /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
+                // Affiche tous les covoiturages validés par l'utilisateur
+                 // Vérifie si le covoiturage en question est validé
+                $isValidate= false;
+                if ($isValidate = $validatedCovoiturages->contains($covoiturage)){
+                $isValidate = true;
+                break;
+                /*  dump($validatedCovoiturages);
+                dump($isValidate);
+                die(); */
             }
         }
         return $this->render('utilisateur/profil.html.twig', [
-            'utilisateurs' => $utilisateur,
-            'commentairesUSers'=> $commentsUser,
+            'utilisateur' => $utilisateur,
+            'commentairesUSer'=> $commentairesUser,
             'voitureUser'=> $voitureUser,
             'covoiturages'=> $covoiturages,
             'dateFuture'=> $dateFuture,

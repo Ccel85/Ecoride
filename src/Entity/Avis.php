@@ -6,28 +6,31 @@ use App\Repository\AvisRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
+#[ORM\HasLifecycleCallbacks]
+
 class Avis
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    
     #[ORM\Column]
-    private ?bool $isValid = null;
-
+    private ?bool $isValid = false;
+    
     #[ORM\Column(length: 255)]
     private ?string $comments = null;
-
+    
     #[ORM\Column(nullable: true)]
     private ?int $rateComments = null;
-
+    
     #[ORM\ManyToOne(inversedBy: 'avis')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    private ?Utilisateur $utilisateur = null;// Celui qui reçoit l'avis (le conducteur)
 
+    
     #[ORM\Column]
-    private ?\DateTimeImmutable $CreatedAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int
     {
@@ -84,13 +87,15 @@ class Avis
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->CreatedAt;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $CreatedAt): static
+    #[ORM\PrePersist]
+    public function setCreatedAt(): void
     {
-        $this->CreatedAt = $CreatedAt;
-
-        return $this;
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
+
 }

@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 
+//valider participation au covoiturage
 document.addEventListener('DOMContentLoaded', () => {
   const validButton = document.getElementById('participer');
 
@@ -26,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 });
-
+//annuler réservation 
 document.addEventListener('DOMContentLoaded', () => {
   const trashButton = document.getElementById('trash');
 
@@ -37,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         Swal.fire({
               title: 'Confirmation !',
-              text: 'Confirmez vous l\'annulation de la réservation de ce covoiturage ?',
+              text: 'Confirmez vous l\'annulation du covoiturage ?',
               icon: 'question',
               showCancelButton: true,
               confirmButtonText: 'Annuler',
@@ -60,3 +61,67 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// Validation passager Voyage terminé 
+document.addEventListener('DOMContentLoaded', () => {
+  const validateButton = document.getElementById('validate');
+
+  if (validateButton) {
+    validateButton.addEventListener('click', (event) => {
+
+      event.preventDefault(); // Empêche la redirection immédiate
+
+      Swal.fire({
+        title: 'Merci',
+        text: 'Souhaitez-vous valider votre voyage ?',
+        icon: 'question',
+        confirmButtonText: 'Oui',
+        showCancelButton: true,
+        cancelButtonText: 'Non',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Récupération de l'URL de validation (route Symfony)
+          const validationUrl = validateButton.getAttribute('data-url');
+
+          // Redirection vers le contrôleur Symfony pour validation
+          window.location.href = validationUrl;
+
+          // Affichage d'une alerte après redirection (optionnel, dépend de ton contrôleur)
+          setTimeout(() => {
+            Swal.fire({
+              title: 'Validation réussie !',
+              text: 'Votre voyage a bien été validé.',
+              icon: 'success'
+            })
+          })
+        }
+      })
+    })
+  }
+})
+
+    //Ajouter avis
+    document.addEventListener('DOMContentLoaded', () => {
+      const avisButton = document.getElementById('checkAvis');
+
+      if (avisButton) {
+        avisButton.addEventListener('click', (event) => {
+
+          event.preventDefault(); // Empêche la redirection immédiate
+        
+            // Affichage de l'alerte pour laisser un avis
+            Swal.fire({
+              text: 'Souhaitez-vous laisser un avis ?',
+              icon: 'question',
+              confirmButtonText: 'Oui',
+              showCancelButton: true,
+              cancelButtonText: 'Non',
+            }).then((reviewResult) => {
+              if (reviewResult.isConfirmed) {
+                // Redirection vers la page d'avis
+                window.location.href = avisButton.getAttribute('data-url'); 
+              }
+            })
+          })
+        }
+      });

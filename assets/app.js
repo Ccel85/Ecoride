@@ -12,7 +12,6 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
-import './js/confirm.js';
 import './js/sweetAlert.js';
 import './js/carGo.js';
 

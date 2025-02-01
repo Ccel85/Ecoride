@@ -9,20 +9,20 @@
     {% if id is defined and id > 0 %}
       <div class="card container m-4 profil" >
         <div class="card-header row justify-content-evenly align-items-center">
-          {% if utilisateurs.photoPath is not empty %}
+          {% if utilisateur.photoPath is not empty %}
             <div class="col-2 p-2">
-                <a href="{{ path('app_profil',{'id': utilisateurs.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateurs.photoPath) }}" alt="" width="64" height="64" ></a>
+                <a href="{{ path('app_profil',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
             </div>
             {% else %}
             <div class="col-2 p-2">
                 <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32"> </i></a>
             </div>
           {% endif %}
-          {# <img src="{{ asset('download/'~ utilisateurs.photoPath) }}" class=" col-1 avatar rounded-circle" alt="..."> #}
+          {# <img src="{{ asset('download/'~ utilisateur.photoPath) }}" class=" col-1 avatar rounded-circle" alt="..."> #}
           <div class="col-10 text-center">
             <h3 class="card-title text-center">Mon profil</h3>
-            <h3 class="card-text text-center">{{utilisateurs.prenom}}</h3>
-            <p class="card-text text-center text-secondary fs-6">Crédits: {{utilisateurs.credits}}</p>
+            <h3 class="card-text text-center">{{utilisateur.prenom}}</h3>
+            <p class="card-text text-center text-secondary fs-6">Crédits: {{utilisateur.credits}}</p>
           </div>
         </div>
         <!-- body -->
@@ -30,18 +30,18 @@
           <div class="row justify-content-around ">
             <div class="infoUser col-6" >
               <ul>
-                <li>Membre depuis {{ utilisateurs.createdAt | date ('Y')}} </li>
-              {% if utilisateurs.isConducteur == 1 and utilisateurs.isPassager == 0 %}
+                <li>Membre depuis {{ utilisateur.createdAt | date ('Y')}} </li>
+              {% if utilisateur.isConducteur == 1 and utilisateur.isPassager == 0 %}
                 <li>Conducteur</li>
-              {% elseif utilisateurs.isConducteur == 1 and utilisateurs.isPassager ==  1 %}
+              {% elseif utilisateur.isConducteur == 1 and utilisateur.isPassager ==  1 %}
                 <li>Conducteur et passager</li>
-              {% elseif utilisateurs.isConducteur == 0 and utilisateurs.isPassager ==  1 %}
+              {% elseif utilisateur.isConducteur == 0 and utilisateur.isPassager ==  1 %}
                 <li>Passager</li>
               {% endif %}
 
-                {% if utilisateurs.rateUser > 0 %}
+                {% if utilisateur.rateUser > 0 %}
                   <li>
-                    <i class="bi bi-star-fill star"> {{utilisateurs.rateUser}}/5</i>
+                    <i class="bi bi-star-fill star"> {{utilisateur.rateUser}}/5</i>
                   </li>
                 {% endif %}
                 <br>
@@ -61,7 +61,7 @@
               </ul>
               <!--observations-->
                 <hr>
-                {% if utilisateurs.observation > 0 %}
+                {% if utilisateur.observation > 0 %}
                   <p class="text-center text-decoration-underline"> Autre commentaire :</p>
                   {% for observation in observations %}
                     <p class="text-start">{{ observation}}</p>
@@ -72,21 +72,23 @@
             </div>
             <!--avis-->
             <div class="avis col-6">
-              {% if commentairesUSers is empty %}
+              {% if commentairesUSer is empty %}
                 <p class="text-center">Il n'y a pas d'avis.</p>
                 {% else %}
                 <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
-                {% for commentairesUSer in commentairesUSers %}
+                {% for commentaire in commentairesUSer %}
+                {% if commentaire.isValid == true %}
                 <div class="card mb-3 p-3">
                   <div class="rate">
-                    <i class="bi bi-star-fill star"> {{ commentairesUSer.rateComments }}/5</i>
+                    <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
                   </div>
-                  <div class="text-secondary fs-7">Le {{ commentairesUSer.createdAt|date('d-m-Y') }}
+                  <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
                   </div>
                   <div>
-                    <p>{{ commentairesUSer.comments }}</p>
+                    <p>{{ commentaire.comments }}</p>
                   </div>
                 </div>
+                {% endif %}
                 {% endfor %}
               {% endif %}
             </div>
@@ -164,7 +166,7 @@
 
               <!-- observations-->
             <hr>
-            {% if utilisateurs.observation > 0 %}
+            {% if utilisateur.observation > 0 %}
                 <p class="text-start text-decoration-underline"> Autre commentaire :</p>
                 <div class="d-flex justify-content-between align-items-center flex-wrap"> 
                   <ul>
@@ -183,21 +185,23 @@
 
           <!--avis-->
             <div class="avis col-6">
-              {% if commentairesUSers is empty %}
+              {% if commentairesUSer is empty %}
                 <p>Il n'y a pas encore d'avis.</p>
                 {% else %}
                 <h4 class="text-decoration-underline text-center"> Derniers avis clients:</h4>
-              {% for commentairesUSer in commentairesUSers %}
+              {% for commentaire in commentairesUSer %}
+              {% if commentaire.isValid == true %}
               <div class="card mb-3 p-3">
                 <div class="rate">
-                  <i class="bi bi-star-fill star"> {{ commentairesUSer.rateComments }}/5</i>
+                  <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
                 </div>
-                <div class="text-secondary fs-7">Le {{ commentairesUSer.createdAt|date('d-m-Y') }}
+                <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
                 </div>
                 <div>
-                  <p>{{ commentairesUSer.comments }}</p>
+                  <p>{{ commentaire.comments }}</p>
                 </div>
               </div>
+              {% endif %}
               {% endfor %}
               {% endif %}
             </div>
@@ -210,13 +214,13 @@
     <div class="MesVoyages col-12 p-4">
     {% if covoiturages is empty %}
         <p class="text-center">Il n'y a pas de voyage pour lequel vous participez.</p>
-        {% if utilisateurs.isConducteur == true or (app.user and app.user.isConducteur == true)  %}
+        {% if utilisateur.isConducteur == true or (app.user and app.user.isConducteur == true)  %}
           <a href="{{path('app_covoiturage_new')}}" class="text-center">Créer un voyage</a>
         {% endif %}
       {% else %}
       <div class="d-flex justify-content-center align-items-center flex-column">
         <h4 class="text-decoration-underline"> Mes voyages: </h4>
-        {% if utilisateurs.isConducteur == true or (app.user and app.user.isConducteur == true)  %}
+        {% if utilisateur.isConducteur == true or (app.user and app.user.isConducteur == true)  %}
           <div class="d-flex container p-2 align-items-center">
             <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="32" height="32" class="rounded-circle"></i> 
             <a href="{{ path('app_covoiturage_new') }}" class="icon-hover px-2">Publier un voyage</a>
@@ -240,24 +244,32 @@
                     {% endif %}
                   </div>
                     {# Bouton validation voyage #}
-                {# <div>
-                  <p>covoiturage.id : {{ covoiturage.id }}</p>
-                  <p>covoiturage.conducteur.id : {{ covoiturage.conducteur.id }}</p>
-                  <p>app.user.id : {{ app.user.id }}</p>
-                  <p>utilisateur.id : {{ utilisateurs.id }}</p>
-                  <p>covoiturage.isArrived : {{ covoiturage.isArrived ? 'true' : 'false' }}</p>
-                </div> #}
                 {% if  covoiturage.id is not null 
                   and covoiturage.conducteur.id != app.user.id   
+                  and utilisateur.id == app.user.id  
                   and covoiturage.isArrived 
-                  and isValidate 
-                  and utilisateurs.id == app.user.id  %}
+                  and not isValidate %}
                   <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Valider votre voyage:</p>
                     <a  id='validate' 
                     class="btn btn-success m-2" 
-                    href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" 
-                    data-url ="#">
+                    {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
+                    data-url ="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}">
+                      <i class="bi bi-check-lg"></i>
+                    </a>
+                  </div>
+                {% endif %}
+                {% if  covoiturage.id is not null 
+                  and covoiturage.conducteur.id != app.user.id 
+                  and utilisateur.id == app.user.id  
+                  and covoiturage.isArrived 
+                  and isValidate %}                    
+                  <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
+                    <p class="m-0">Laisser un avis</p>
+                    <a  id='checkAvis' 
+                    class="btn btn-success m-2" 
+                    {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
+                    data-url ="{{ path('app_avis_new',{ 'id': covoiturage.id }) }}">
                       <i class="bi bi-check-lg"></i>
                     </a>
                   </div>
@@ -304,12 +316,20 @@
                         <i class="check bi bi-check-lg fs-1"></i>
                   {% endif %}
                 {% endif %}
-                {# Covoiturage futur sur profil connecté #}
+                <div>
+                  <p>covoiturage.id : {{ covoiturage.id }}</p>
+                  <p>covoiturage.conducteur.id : {{ covoiturage.conducteur.id }}</p>
+                  <p>app.user.id : {{ app.user.id }}</p>
+                  <p>dateFuture : {{ covoiturage.dateFuture }}</p>
+                  <p>covoiturage.isArrived : {{ covoiturage.isArrived ? 'true' : 'false' }}</p>
+                </div>
+                {# Covoiturage futur sur profil connecté 
+                !!!ajouter dateFuture #}
                 {% if covoiturage.conducteur is not null 
                   and covoiturage.conducteur.id == app.user.id 
-                  and covoiturage.dateFuture %}
+                  %}
                     <div class="boutons d-flex flex-column ">
-                      <a  class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
+                      <a  id= 'trash' class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
                         <i class="bi bi-trash3 "></i>
                       </a>
                       <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">
@@ -337,7 +357,6 @@
                     </a>
                   </div>
                 {% endif %}
-                
                 </div>
               </div>
             </div>
