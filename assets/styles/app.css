@@ -1,6 +1,17 @@
-    body {
+    html , body {
         background-color: #FFFFFF;
+        height: 100%; /* Permet d'occuper toute la hauteur de la page */
+        margin: 0;
+        display: flex;
+        flex-direction: column;
     }
+
+    .containerHtml {
+        flex: 1 !important;/* Permet au contenu de s'étendre pour pousser le footer en bas */
+        display: flex;
+        flex-direction: column;
+    } 
+
     span {
     color :#39B54E;
     font-weight: bold;

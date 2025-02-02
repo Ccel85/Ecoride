@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class CovoiturageController extends AbstractController
 {
@@ -223,7 +224,7 @@ class CovoiturageController extends AbstractController
     //Recherche covoiturage
     #[Route('/covoiturageRecherche', name: 'app_covoiturage_recherche', methods: ['GET'])]
 
-    public function covoiturageRecherche(CovoiturageRepository $repository, Request $request): Response
+    public function covoiturageRecherche(CovoiturageRepository $repository, Request $request,UserInterface $utilisateur): Response
     
     {
         $dateFuture = false; // Valeur par défaut
@@ -233,7 +234,17 @@ class CovoiturageController extends AbstractController
         $lieuDepart = $request->query->get('depart');
         $lieuArrivee = $request->query->get('arrivee');
         $prix = $request->query->get('prix');
-        
+        $dureeMax = $request->query->get('dureeMax');
+        $rate = $request->query->get('rate');
+
+        if ($dureeMax) {
+            // Convertir les heures en minutes pour la comparaison
+            $intervalMax = new \DateInterval('PT' . ((int) $dureeMax) . 'H');
+        }
+       /*  $rate = $request->query->get('rate'); */
+        $submit = $request->query->has('date') || $request->query->has('depart') || $request->query->has('arrivee') || $request->query->has('prix');
+
+
         // Construction la requête pour filtrer les covoiturages
         $queryBuilder = $repository->createQueryBuilder('c');
             if ($dateDepart){
@@ -252,21 +263,42 @@ class CovoiturageController extends AbstractController
                 $queryBuilder->andWhere('c.prix <= :prix')
                 ->setParameter('prix',$prix);
             }
+
         $covoiturages = $queryBuilder->orderBy('c.dateDepart', 'ASC')->getQuery()->getResult();
 
-         // Vérifier si les covoiturages sont futurs
-        foreach ($covoiturages as $covoiturage) {
+        foreach ($covoiturages as $key => $covoiturage) {
+            
+            // Vérifier si les covoiturages sont futurs
             $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
+            
+            //calculer la durée du voyage
+            $dureeVoyage =  $covoiturage->getHeureDepart()->diff($covoiturage->getHeureArrivee());
+
+            //rechercher la note utilisateur
+            $conducteur = $covoiturage->getConducteur(); // Récupérer l'unique conducteur
+            $rateUser = $conducteur->getRateUser(); // Appeler la méthode sur l'objet conducteur
+
+            if (isset($intervalMax) && ($dureeVoyage->h > $intervalMax->h)) {
+                unset($covoiturages [$key]); // Supprimer ce covoiturage
+            } else {
+                $covoiturage->duree = $dureeVoyage->format('%h h %i min');
+            }
+
+            if (isset($rate) && ($rateUser < $rate)) {
+                unset($covoiturages [$key]); // Supprimer ce covoiturage
+            } else {
+                $covoiturage->rate = $rateUser;
+            }
     }
 
-    // Si aucun covoiturage trouvé, chercher une date proche
-    if (empty($covoiturages)) {
+        // Si aucun covoiturage trouvé, chercher une date proche
+        if (empty($covoiturages)) {
 
-        $covoiturages = $repository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee);
-        foreach ($covoiturages as $covoiturage) {
-            $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
+            $covoiturages = $repository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee);
+            foreach ($covoiturages as $covoiturage) {
+                $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
+            }
         }
-    }
         
         return $this->render('covoiturage/index.html.twig', [
             'covoiturages'=>$covoiturages,
@@ -274,6 +306,10 @@ class CovoiturageController extends AbstractController
             'dateDepart'=>$dateDepart,
             'lieuDepart'=>$lieuDepart,
             'lieuArrivee'=>$lieuArrivee,
+            'dureeMax'=>$dureeMax,
+            'dureeVoyage'=>$dureeVoyage,
+            'rateUser'=>$rateUser,
+            'submit' => $submit,
             
         ]);
     }

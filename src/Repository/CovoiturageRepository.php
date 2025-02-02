@@ -38,6 +38,12 @@ public function findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee)
         ->getResult();
 }
 
+public function covoiturageDuree($covoiturage)
+    {
+        return $dureeVoyage = $covoiturage->getHeureArrivee() - $covoiturage->getHeureDepart();
+
+}
+
 
    /**
     * @return Covoiturage[] Returns an array of Covoiturage objects
