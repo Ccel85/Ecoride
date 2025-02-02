@@ -231,6 +231,7 @@
           <div class="voyage text-decoration-underline text-secondary ">
             <a  href="{{path('app_covoiturage_id',{'id': covoiturage.id}) }}">Le {{ covoiturage.dateDepart|date('d-m-Y') }}</a>
           </div>
+          <span>Prix: {{ covoiturage.prix }} € </span>
           <div class="voyage container">
               <div class="row">
                 {% if covoiturage.conducteur %}
