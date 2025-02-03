@@ -1,12 +1,12 @@
 -- Active: 1715943590648@@127.0.0.1@3306@ecoride
 CREATE USER 'user'@'localhost' IDENTIFIED BY 'test';
 GRANT ALL PRIVILEGES ON `ECORIDE`.* TO 'user'@'localhost';
-INSERT INTO `utilisateur` values (11,'jean@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','jean','User','jeanU','12','4','Logo.png','1','2024-12-30');
-INSERT INTO `utilisateur` values (6,'marie@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','marie','User','marieU','3','5','Logo.png','1','2024-12-30');
-INSERT INTO `utilisateur` values (7,'annie@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','annie','User','annieU','8','3','Logo.png','1','2024-12-30');
-INSERT INTO `utilisateur` values (8,'david@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','david','User','davidU','0','4','Logo.png','1','2024-12-30');
-INSERT INTO `utilisateur` values (9,'sophie@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','sophie','User','sophieU','8','4','Logo.png','1','2024-12-30');
-INSERT INTO `utilisateur` values (10,'chloe@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','chloe','User','chloeU','2','4','Logo.png','1','2024-12-30');
+INSERT INTO `utilisateur` values (11,'jean@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','jean','User','jeanU','12','Logo.png','1','2024-12-30');
+INSERT INTO `utilisateur` values (6,'marie@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','marie','User','marieU','3','Logo.png','1','2024-12-30');
+INSERT INTO `utilisateur` values (7,'annie@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','annie','User','annieU','8','Logo.png','1','2024-12-30');
+INSERT INTO `utilisateur` values (8,'david@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','david','User','davidU','0','Logo.png','1','2024-12-30');
+INSERT INTO `utilisateur` values (9,'sophie@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','sophie','User','sophieU','8','Logo.png','1','2024-12-30');
+INSERT INTO `utilisateur` values (10,'chloe@mail.com','["ROLE_USER"]','$2y$13$SJLhFPUOVYAZlc0FXEnKN.TAaY5CHk1EePucY8Gg3wD0DdkcUhOpq','chloe','User','chloeU','2','Logo.png','1','2024-12-30');
 
 INSERT INTO `voiture` values (1,'DE-555-RT','2020-12-02','RENAULT','Megane','noire','Diesel','climatisation','4','6','2024-12-30');
 INSERT INTO `voiture` values (2,'DE-556-ZS','2021-03-02','RENAULT','clio','blanche','Essence','climatisation','3','7','2024-12-30');

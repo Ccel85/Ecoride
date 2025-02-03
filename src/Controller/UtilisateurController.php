@@ -96,6 +96,7 @@ class UtilisateurController extends AbstractController
         $covoiturages = $utilisateur->getCovoiturage();
         $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
         $observations = $utilisateur->getObservation();
+        $rateUser =round($em->getRepository(Avis::class)->rateUser($utilisateur),1);
         // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
         
@@ -138,6 +139,7 @@ class UtilisateurController extends AbstractController
             'observations'=>$observationExplode,
             'dateAujourdhui'=>$dateAujourdhui,
             'isValidate'=>$isValidate,
+            'rate'=>$rateUser,
         ]);
     }
 }
@@ -153,17 +155,22 @@ class UtilisateurController extends AbstractController
         }
         
         // Récuperation des données:
-        $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($utilisateur);
-        /* $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]); */
-        $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
         $observations = $utilisateur->getObservation();
+        /* $avisValide = $em->getRepository(Avis::class)->findBy(['isValid'=>1]); */
+        $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($utilisateur);
+        $rateUser =round($em->getRepository(Avis::class)->rateUser($utilisateur),1);
+        /* $isValidRate = $em->getRepository(Avis::class)->getIsValid(); */
+        $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
+        /* $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]); */
+        
         /*  if (!$voitureUser && $utilisateur->isConducteur(true)){
             // Rediriger a la création de vehicule
             $this->addFlash('danger', 'Veuillez ajouter un véhicule');
             return $this->redirectToRoute('app_voiture_new');
             } */
+        
            // Scinder le texte par les virgules
             $observationExplode = explode(',' ,$observations);
             
@@ -205,6 +212,7 @@ class UtilisateurController extends AbstractController
             'observations'=>$observationExplode,
             'dateAujourdhui'=>$dateAujourdhui,
             'isValidate'=>$isValidate,
+            'rate'=>$rateUser,
         ]);
     }
 
@@ -223,7 +231,7 @@ class UtilisateurController extends AbstractController
         // Récuperation des données:
         $observations = $utilisateur->getObservation();
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
-
+        /* $rateUser = $em->getRepository(Avis::class)->rateUser(['utilisateur'=>$utilisateur]); */
         //création form
         $form = $this->createForm(ProfilFormType::class,$utilisateur);
     
@@ -262,6 +270,7 @@ class UtilisateurController extends AbstractController
             'utilisateurs' => $utilisateur,
             'voitureUser'=> $voitureUser,
             'observations'=>$observations,
+            /* 'rateUser'=>$rateUser, */
         ]);
     }
     

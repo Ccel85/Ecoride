@@ -16,6 +16,7 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class MailerController extends AbstractController
 {
+    //envoi mail suite stop voyage
     #[Route('/sendEmail/{id}', name: 'app_send_email')]
 public function sendEmail(int $id,MailerInterface $mailer,EntityManagerInterface $em): Response
 {
@@ -50,14 +51,10 @@ public function sendEmail(int $id,MailerInterface $mailer,EntityManagerInterface
     $this->addFlash('success', 'Email envoyé avec succès !');
     return $this->redirectToRoute('app_profil'); // Remplacez 'home' par la route souhaitée
 }
-
+    //envoi mail lors de la suppression d'un voyage
 #[Route('/sendEmail/{id}/remove', name: 'app_send_email_remove')]
-public function sendEmailRemove(
-    int $id,
-    Security $security,
-    MailerInterface $mailer,
-    SessionInterface $session // 🔹 Injecter la session
-): Response {
+public function sendEmailRemove(int $id,Security $security,MailerInterface $mailer,SessionInterface $session ): Response// 🔹 Injecter la session
+{
     try {
         $user = $security->getUser();
         if (!$user) {

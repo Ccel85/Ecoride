@@ -26,6 +26,17 @@ class AvisRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
 }
+
+public function rateUser(Utilisateur $utilisateur): ?float
+{
+    return $this->createQueryBuilder('a')
+    ->select('AVG(a.rateComments) as avgRate') // Moyenne arrondie à 1 décimale
+    ->where('a.utilisateur = :utilisateur')
+    ->andWhere('a.isValid = true') // Ne prend que les avis valides
+    ->setParameter('utilisateur', $utilisateur)
+    ->getQuery()
+    ->getSingleScalarResult();
+}
 //    /**
 //     * @return Avis[] Returns an array of Avis objects
 //     */

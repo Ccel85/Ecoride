@@ -27,10 +27,11 @@ final class AvisController extends AbstractController{
 
     #[Route('/avis/new/{id}', name: 'app_avis_new', requirements: ['id' => '\d+'])]
 
-    
     public function avisNew(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
     {
         $utilisateur = $security->getUser();
+
+       /*  $rate = $request->query->get('rate'); */
 
         if (!$utilisateur) {
             $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
@@ -54,8 +55,8 @@ final class AvisController extends AbstractController{
             if ($form->isSubmitted() && $form->isValid()) {
             
                 $avis->setUtilisateur($conducteur);
-                $avis->addAvis($utilisateur);
-                /* $avis->setConducteur($conducteur); // Associe l'avis au conducteur  */
+                
+               /*  $avis->addAvis($utilisateur); */
                 
                 $em->persist($avis);
                 $em->flush();
@@ -66,6 +67,7 @@ final class AvisController extends AbstractController{
             return $this->render('avis/new.html.twig', [
                 'form' => $form->createView(),
                 'conducteur'=> $conducteur,
+               /*  'rate'=>$rateComments, */
             ]);
     }
 }

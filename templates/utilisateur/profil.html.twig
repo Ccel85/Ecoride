@@ -39,9 +39,9 @@
                 <li>Passager</li>
               {% endif %}
 
-                {% if utilisateur.rateUser > 0 %}
+                {% if rate > 0 %}
                   <li>
-                    <i class="bi bi-star-fill star"> {{utilisateur.rateUser}}/5</i>
+                    <i class="bi bi-star-fill star"> {{rate}}/5</i>
                   </li>
                 {% endif %}
                 <br>
@@ -133,9 +133,9 @@
               <li>Passager</li>
             {% endif %}
               
-              {% if app.user.rateUser > 0 %}
+              {% if app.user and rate > 0 %}
               <li>
-              <i class="bi bi-star-fill star"> {{app.user.rateUser}}/5</i>
+              <i class="bi bi-star-fill star"> {{rate}}/5</i>
               </li>
               {% endif %}
               </ul>
@@ -317,13 +317,13 @@
                         <i class="check bi bi-check-lg fs-1"></i>
                   {% endif %}
                 {% endif %}
-                <div>
+                {# <div>
                   <p>covoiturage.id : {{ covoiturage.id }}</p>
                   <p>covoiturage.conducteur.id : {{ covoiturage.conducteur.id }}</p>
                   <p>app.user.id : {{ app.user.id }}</p>
                   <p>dateFuture : {{ covoiturage.dateFuture }}</p>
                   <p>covoiturage.isArrived : {{ covoiturage.isArrived ? 'true' : 'false' }}</p>
-                </div>
+                </div> #}
                 {# Covoiturage futur sur profil connecté 
                 !!!ajouter dateFuture #}
                 {% if covoiturage.conducteur is not null 

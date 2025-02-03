@@ -49,9 +49,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $credits = 0;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $rate_user = null;
-
     #[ORM\Column(length: 255,nullable: true)]
     private ?string $photo_path = null;
 
@@ -219,18 +216,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCredits(?int $credits): static
     {
         $this->credits = $credits;
-
-        return $this;
-    }
-
-    public function getRateUser(): ?int
-    {
-        return $this->rate_user;
-    }
-
-    public function setRateUser(?int $rate_user): static
-    {
-        $this->rate_user = $rate_user;
 
         return $this;
     }
