@@ -279,7 +279,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->avis->contains($avis)) {
             $this->avis->add($avis);
-            $avis->setUtilisateur($this);
+            $avis->setConducteur($this);
         }
 
         return $this;
@@ -289,8 +289,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->avis->removeElement($avis)) {
             // set the owning side to null (unless already changed)
-            if ($avis->getUtilisateur() === $this) {
-                $avis->setUtilisateur(null);
+            if ($avis->setConducteur() === $this) {
+                $avis->setConducteur(null);
             }
         }
 
@@ -402,6 +402,5 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 
 }

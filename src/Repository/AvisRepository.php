@@ -20,22 +20,33 @@ class AvisRepository extends ServiceEntityRepository
     public function findCommentairesByUserOrdered(Utilisateur $user)
 {
     return $this->createQueryBuilder('c')
-        ->andWhere('c.utilisateur = :user')
+        ->andWhere('c.conducteur = :user')
         ->setParameter('user', $user)
         ->orderBy('c.createdAt', 'DESC') // 🔹 Trie par date décroissante (plus récent en premier)
         ->getQuery()
         ->getResult();
 }
-
-public function rateUser(Utilisateur $utilisateur): ?float
+//Récuperer note conducteur et faire la moyenne
+public function rateUser(Utilisateur $conducteur): ?float
 {
     return $this->createQueryBuilder('a')
     ->select('AVG(a.rateComments) as avgRate') // Moyenne arrondie à 1 décimale
-    ->where('a.utilisateur = :utilisateur')
+    ->where('a.conducteur = :conducteur')
     ->andWhere('a.isValid = true') // Ne prend que les avis valides
-    ->setParameter('utilisateur', $utilisateur)
+    ->setParameter('conducteur', $conducteur)
     ->getQuery()
     ->getSingleScalarResult();
+}
+//Afficher les commentaire non validés
+public function invalidComments(): array
+{
+    return $this->createQueryBuilder('a')
+        ->where('a.isValid = :valid')
+        ->setParameter('valid', false)
+        ->orderBy('a.id', 'ASC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
 }
 //    /**
 //     * @return Avis[] Returns an array of Avis objects

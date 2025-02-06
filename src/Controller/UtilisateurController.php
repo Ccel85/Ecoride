@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Avis;
 use App\Entity\Voiture;
-use App\Entity\Covoiturage;
 use App\Entity\Utilisateur;
 use App\Form\ProfilFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,23 +20,23 @@ class UtilisateurController extends AbstractController
     #[Route('/utilisateur', name: 'app_utilisateur')]
     public function indexUtilisateur(UtilisateurRepository $utilisateurRepository): Response
     {
-        $filterUsers = $utilisateurRepository->findByRole('ROLE_USER');
+        $utilisateur = $utilisateurRepository->findByRole('ROLE_USER');
         return $this->render('utilisateur/index.html.twig', [
-            'utilisateurs' => $filterUsers,
+            'utilisateurs' => $utilisateur,
         ]);
     }
-
+    //liste employe
     #[Route('/employe', name: 'app_employe')]
-    public function indexEmploye(UtilisateurRepository $utilisateurRepository): Response
+    public function indexEmploye(UtilisateurRepository $utilisateurRepository,EntityManager $em): Response
     {
-        $filterUsers = $utilisateurRepository->findByRole('ROLE_EMPLOYE');
+        $employes = $utilisateurRepository->findByRole('ROLE_EMPLOYE');
 
         return $this->render('utilisateur/index.html.twig', [
-            'utilisateurs' => $filterUsers,
+            'employes' => $employes,
         ]);
     }
 
-    #[Route('/utilisateur/{id}/archive', name: 'app_utilisateur_archive')]
+    #[Route('/utilisateur/{id}/archive', name: 'app_utilisateur_archive', requirements: ['id' => '\d+'])]
     public function archiveUtilisateur(int $id,EntityManagerInterface $em): Response
     {
         
@@ -57,7 +57,7 @@ class UtilisateurController extends AbstractController
     }
 
     //Rendre utilisateur actif
-    #[Route('/utilisateur/{id}/active', name: 'app_utilisateur_active')]
+    #[Route('/utilisateur/{id}/active', name: 'app_utilisateur_active', requirements: ['id' => '\d+'])]
     
     public function activeUtilisateur(int $id,EntityManagerInterface $em): Response
     {
@@ -91,7 +91,6 @@ class UtilisateurController extends AbstractController
 
         // Récuperation des données:
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($utilisateur);
-     /*    $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]); */
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $covoiturages = $utilisateur->getCovoiturage();
         $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
@@ -111,12 +110,11 @@ class UtilisateurController extends AbstractController
                 $now = new \DateTime();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
-                dump($dateFuture);
+                
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
                 if ($dateAujourdhui){
                     $dateAujourdhui = $covoiturage->setDateAujourdhui();
                 }
-                dump($dateAujourdhui);
                 /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
                 // Affiche tous les covoiturages validés par l'utilisateur
                  // Vérifie si le covoiturage en question est validé
@@ -129,7 +127,7 @@ class UtilisateurController extends AbstractController
                 die(); */
             }
             
-    }
+        }
 
         return $this->render('utilisateur/profil.html.twig', [
             'utilisateur' => $utilisateur,
@@ -141,11 +139,11 @@ class UtilisateurController extends AbstractController
             'isValidate'=>$isValidate,
             'rate'=>$rateUser,
         ]);
+        }
     }
-}
 
     //affichage profil selon Id
-    #[Route('/profil/{id}', name: 'app_profil_id')]
+    #[Route('/profil/{id}', name: 'app_profil_id' ,requirements: ['id' => '\d+'])]
     public function profil(int $id,EntityManagerInterface $em): Response
     {
         $utilisateur = $em->getRepository(Utilisateur::class)->find($id);
@@ -157,13 +155,11 @@ class UtilisateurController extends AbstractController
         // Récuperation des données:
         $covoiturages = $utilisateur->getCovoiturage();
         $observations = $utilisateur->getObservation();
-        /* $avisValide = $em->getRepository(Avis::class)->findBy(['isValid'=>1]); */
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($utilisateur);
         $rateUser =round($em->getRepository(Avis::class)->rateUser($utilisateur),1);
-        /* $isValidRate = $em->getRepository(Avis::class)->getIsValid(); */
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
         $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
-        /* $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $utilisateur]); */
+        
         
         /*  if (!$voitureUser && $utilisateur->isConducteur(true)){
             // Rediriger a la création de vehicule
@@ -231,7 +227,7 @@ class UtilisateurController extends AbstractController
         // Récuperation des données:
         $observations = $utilisateur->getObservation();
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $utilisateur]);
-        /* $rateUser = $em->getRepository(Avis::class)->rateUser(['utilisateur'=>$utilisateur]); */
+        
         //création form
         $form = $this->createForm(ProfilFormType::class,$utilisateur);
     
@@ -270,7 +266,6 @@ class UtilisateurController extends AbstractController
             'utilisateurs' => $utilisateur,
             'voitureUser'=> $voitureUser,
             'observations'=>$observations,
-            /* 'rateUser'=>$rateUser, */
         ]);
     }
     

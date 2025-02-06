@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Covoiturage en détail{% endblock %}
+
+{% block body %}
+  <div class="container">
+    <div>
+      <a class="btn btn-success mx-4" href= "#" >Retour</a>
+      <p class="text-center fw-bold">Voyage effectué le <span>{{ covoiturage.dateDepart|date('d-m-Y') }}</span> à <span> {{ covoiturage.heureDepart|date('H:i') }}</span>
+      au départ de <span> {{ covoiturage.lieuDepart }}</span> .</p>
+    </div>
+    <div class="card container m-4 ">
+      <div class="text-secondary ">
+        <p>Le {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
+        <p>Réf: 00{{ covoiturage.id }}</p>
+      </div>
+      <div class="voyage container">
+        <div class="row itineraire">
+          <div class="itineraire d-flex justify-content-evenly align-items-center">
+            <div class="depart d-flex flex-column text-center">
+              <div class="fs-3 fw-bold">
+                {{ covoiturage.heureDepart|date('H:i') }}
+              </div>
+              <div class="fs-3 fw-bold">
+                {{ covoiturage.lieuDepart }}
+              </div>
+            </div>
+            <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
+              <!-- Premier cercle -->
+              <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+              <!-- Ligne -->
+              <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
+              <!-- Deuxième cercle -->
+              <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+            </svg>
+            <div class="arrivée d-flex flex-column text-center">
+                <div class="fs-3 fw-bold">
+                {{ covoiturage.heureArrivee|date('H:i') }}
+                </div>
+                <div class="fs-3 fw-bold">
+                {{ covoiturage.lieuArrivee }}
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profil passager row card container m-4 " >
+      <div class="card-header row justify-content-evenly align-items-center">
+        <img src="{{ asset('download/'~ passager.photoPath) }}" class=" col-1 avatar rounded-circle" alt="...">
+        <div class="col-6 text-center">
+          <h3 class="card-text text-center">Passager: {{passager.pseudo|capitalize}}</h3>
+          <p class="card-text text-center">Email : {{passager.email}}</p>
+        </div>
+        <div class="infoUser col-3" >
+            <ul>
+              <li>Membre depuis {{ passager.createdAt | date ('Y')}} </li>
+              <li>
+                <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
+              </li>
+            </ul>
+          </div>
+      </div>
+    </div>
+    <div class="profil row conducteur card container m-4 " >
+      <div class="card-header row justify-content-evenly align-items-center">
+        <img src="{{ asset('download/'~ conducteur.photoPath) }}" class=" col-1 avatar rounded-circle" alt="...">
+        <div class="col-6 text-center">
+          <h3 class="card-text text-center">Conducteur : {{conducteur.pseudo|capitalize}}</h3>
+          <p class="card-text text-center">Email : {{conducteur.email}}</p>
+        </div>
+        <div class="infoUser col-3" >
+            <ul>
+              <li>Membre depuis {{ conducteur.createdAt | date ('Y')}} </li>
+              <li>
+                <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
+              </li>
+            </ul>
+        </div>
+      </div>
+      <!-- body -->
+      <div class="card-body">
+        <div class="row justify-content-around ">
+          <div class="commentaires col-10">
+            {% if commentaires is empty %}
+              <p>Il n'y a pas d'avis.</p>
+              {% else %}
+              <h4 class="text-decoration-underline text-center"> Avis passagers:</h4>
+              {% for commentaire in commentaires %}
+              <div class="card commentaire mb-3 p-3">
+                <div class="rate">
+                  <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
+                </div>
+                <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
+                </div>
+                <div>
+                  <p>{{ commentaire.comments }}</p>
+                </div>
+              </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

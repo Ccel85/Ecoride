@@ -26,11 +26,17 @@ class Avis
     
     #[ORM\ManyToOne(inversedBy: 'avis')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $utilisateur = null;// Celui qui reçoit l'avis (le conducteur)
+    private ?Utilisateur $conducteur = null;// Celui qui reçoit l'avis (le conducteur)
 
     
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]// Celui qui créé l'avis (le passager)
+    private ?utilisateur $passager = null;
+
+    #[ORM\ManyToOne(inversedBy: 'avis')]
+    private ?covoiturage $covoiturage = null;
 
     public function getId(): ?int
     {
@@ -73,14 +79,14 @@ class Avis
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getConducteur(): ?Utilisateur
     {
-        return $this->utilisateur;
+        return $this->conducteur;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): static
+    public function setConducteur(?Utilisateur $conducteur): static
     {
-        $this->utilisateur = $utilisateur;
+        $this->conducteur = $conducteur;
 
         return $this;
     }
@@ -96,6 +102,30 @@ class Avis
         if ($this->createdAt === null) {
             $this->createdAt = new \DateTimeImmutable();
         }
+    }
+
+    public function getPassager(): ?Utilisateur
+    {
+        return $this->passager;
+    }
+
+    public function setPassager(?Utilisateur $passager): static
+    {
+        $this->passager = $passager;
+
+        return $this;
+    }
+
+    public function getCovoiturage(): ?covoiturage
+    {
+        return $this->covoiturage;
+    }
+
+    public function setCovoiturage(?covoiturage $covoiturage): static
+    {
+        $this->covoiturage = $covoiturage;
+
+        return $this;
     }
 
 }

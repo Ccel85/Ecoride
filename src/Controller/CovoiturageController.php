@@ -6,6 +6,7 @@ use App\Entity\Avis;
 use App\Entity\Voiture;
 use App\Entity\Covoiturage;
 use App\Form\CovoiturageFormType;
+use App\Repository\AvisRepository;
 use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\CovoiturageRepository;
@@ -48,10 +49,10 @@ class CovoiturageController extends AbstractController
         }
         // Récupération des informations liées
         $conducteur = $covoiturage->getConducteur();//conducteur lié au covoiturage;
-        $commentsUser = $em->getRepository(Avis::class)->findBy(['utilisateur' => $conducteur]);
+        $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
         $voitures = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $conducteur]);
         $observations = $conducteur->getObservation();
-
+        $rateUser =round($em->getRepository(Avis::class)->rateUser($conducteur),1);
          // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
 
@@ -61,6 +62,7 @@ class CovoiturageController extends AbstractController
             'commentaires'=>$commentsUser,
             'voitures'=>$voitures,
             'observations'=>$observationExplode,
+            'rateUser'=>$rateUser,
 
         ]);
     }
@@ -215,8 +217,8 @@ class CovoiturageController extends AbstractController
             return $this->redirectToRoute('app_profil'); // Redirection après succès
         }
             return $this->render('covoiturage/new.html.twig', [
-                'covoiturage' => $covoiturage,
                 'form' => $form->createView(),
+                'covoiturage' => $covoiturage,
                 'voitures' => $voitures
             ]);
     }
@@ -224,7 +226,7 @@ class CovoiturageController extends AbstractController
     //Recherche covoiturage
     #[Route('/covoiturageRecherche', name: 'app_covoiturage_recherche', methods: ['GET'])]
 
-    public function covoiturageRecherche(CovoiturageRepository $repository, Request $request,UserInterface $utilisateur): Response
+    public function covoiturageRecherche(AvisRepository $avisRepository,CovoiturageRepository $repository, Request $request,UserInterface $utilisateur): Response
     
     {
         $dateFuture = false; // Valeur par défaut
@@ -276,7 +278,7 @@ class CovoiturageController extends AbstractController
 
             //rechercher la note utilisateur
             $conducteur = $covoiturage->getConducteur(); // Récupérer l'unique conducteur
-            $rateUser = $conducteur->getRateUser(); // Appeler la méthode sur l'objet conducteur
+            $rateUser = $avisRepository->rateUser($conducteur); // Appeler la méthode sur l'objet conducteur
 
             if (isset($intervalMax) && ($dureeVoyage->h > $intervalMax->h)) {
                 unset($covoiturages [$key]); // Supprimer ce covoiturage

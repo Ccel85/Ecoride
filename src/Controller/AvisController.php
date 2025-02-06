@@ -25,6 +25,7 @@ final class AvisController extends AbstractController{
         ]);
     }
 
+    //Créer un avis
     #[Route('/avis/new/{id}', name: 'app_avis_new', requirements: ['id' => '\d+'])]
 
     public function avisNew(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
@@ -67,7 +68,93 @@ final class AvisController extends AbstractController{
             return $this->render('avis/new.html.twig', [
                 'form' => $form->createView(),
                 'conducteur'=> $conducteur,
-               /*  'rate'=>$rateComments, */
             ]);
     }
+
+    //Valider un avis
+    #[Route('/avis/update', name: 'app_avis_update' )]
+    public function avisUpdate(
+    AvisRepository $avisRepository,Request $request,EntityManagerInterface $em,Security $security): Response 
+    {
+        $utilisateur = $security->getUser();
+
+        // Vérifier si l'utilisateur est connecté
+        if (!$utilisateur) {
+            $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        // Récupérer tous les avis invalides
+        $selectedIds = $request->request->all('isValid', []);
+
+        if (!empty($selectedIds)) {
+            $invalidAvis = $avisRepository->findBy(['id' => $selectedIds]);
+        //si le bouton archive est selectionner:
+            if ($request->request->has('isValid')) {
+                foreach ($invalidAvis as $avis) {
+                    $avis->setValid(true);
+                    $em->persist($avis);
+                }
+                $em->flush();
+                $this->addFlash('success', 'Commentaire archivé avec succès !');
+            } else {
+                $this->addFlash('warning', 'Aucun avis sélectionné.');
+            }
+            return $this->redirectToRoute('app_employe_dashboard');
+            }
+    }
+
+    //Supprimer un avis
+    #[Route('/avis/{id}/remove', name: 'app_avis_remove', requirements: ['id' => '\d+'] )]
+    public function avisRemove(int $id,EntityManagerInterface $em,Security $security): Response 
+    {
+
+        $utilisateur = $security->getUser();
+        $deleteAvis = $em->getRepository(Avis::class)->find($id);
+
+        // Vérifier si l'utilisateur est connecté
+        if (!$utilisateur) {
+            $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+
+            } else {
+
+            $em->remove($deleteAvis);
+            $em->flush();
+
+            $this->addFlash('success', 'L\'avis a été supprimé.');
+            return $this->redirectToRoute('app_employe_dashboard');
+
+        }
+    }
+
+    //Avis details
+    #[Route('/avis/{id}/detail', name: 'app_avis_detail', requirements: ['id' => '\d+'] )]
+
+    public function détailAvis(EntityManagerInterface $em,int $id): Response
+    
+    {
+        $avis = $em->getRepository(Avis::class)->find($id);
+
+        $covoiturage = $avis->getCovoiturage();
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException("Le covoiturage n'existe pas.");
+        }
+        // Récupération des informations liées
+        $conducteur = $avis->getConducteur();//conducteur lié au covoiturage;
+        $passager = $avis->getPassager();//passager lié au covoiturage;
+        $rateUser =round($em->getRepository(Avis::class)->rateUser($conducteur),1);
+        $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
+
+        return $this->render('avis/detail.html.twig', [
+            'covoiturage'=>$covoiturage,
+            'conducteur'=>$conducteur,
+            'commentaires'=>$commentsUser,
+            'passager'=>$passager,
+            'rateUser'=>$rateUser,
+
+        ]);
 }
+}
+

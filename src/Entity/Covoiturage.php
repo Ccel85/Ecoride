@@ -41,12 +41,6 @@ class Covoiturage
     #[ORM\Column(nullable: true)]
     private ?int $placeDispo = null;
 
-    /**
-     * @var Collection<int, Utilisateur>
-     */
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'covoiturage')]
-    private Collection $utilisateurs;
-
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     #[ORM\JoinColumn(nullable: false)]
     private ?voiture $voiture = null;
@@ -54,15 +48,25 @@ class Covoiturage
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "conducteur_id", referencedColumnName: "id")]
-    private ?Utilisateur $conducteur = null;
-
     #[ORM\Column]
     private ?bool $isGo = false;
 
     #[ORM\Column]
     private ?bool $isArrived = false;
+    
+    private ?bool $dateFuture = null;
+    private ?bool $dateAujourdhui = null;
+
+    /**
+     * @var Collection<int, Utilisateur>
+     */
+    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'covoiturage')]
+    private Collection $utilisateurs;
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(name: "conducteur_id", referencedColumnName: "id")]
+    private ?Utilisateur $conducteur = null;
+
 
     /**
      * @var Collection<int, utilisateur>
@@ -70,13 +74,18 @@ class Covoiturage
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'validateCovoiturages')]
     private Collection $validateUsers;
 
-    private ?bool $dateFuture = null;
-    private ?bool $dateAujourdhui = null;
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'covoiturage')]
+    private Collection $avis;
+
 
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
         $this->validateUsers = new ArrayCollection();
+        $this->avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -318,6 +327,36 @@ class Covoiturage
     public function setDateAujourdhui(?bool $dateAujourdhui): self
     {
         $this->dateAujourdhui = $dateAujourdhui;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvis(): Collection
+    {
+        return $this->avis;
+    }
+
+    public function addAvi(Avis $avi): static
+    {
+        if (!$this->avis->contains($avi)) {
+            $this->avis->add($avi);
+            $avi->setCovoiturage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvis(Avis $avi): static
+    {
+        if ($this->avis->removeElement($avi)) {
+            // set the owning side to null (unless already changed)
+            if ($avi->getCovoiturage() === $this) {
+                $avi->setCovoiturage(null);
+            }
+        }
 
         return $this;
     }

@@ -63,9 +63,9 @@
           <div class="infoUser col-6" >
             <ul>
               <li>Membre depuis {{ conducteur.createdAt | date ('Y')}} </li>
-              <li>
+              {# <li>
                 <i class="bi bi-star-fill star"> {{conducteur.rateUser}}/5</i>
-              </li>
+              </li> #}
               <br>
               {% if voitures is empty %}
                 <li>Pas de véhicule enregistré.</li>

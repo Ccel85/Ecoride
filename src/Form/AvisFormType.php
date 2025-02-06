@@ -18,9 +18,7 @@ class AvisFormType extends AbstractType
     {
         $builder
             ->add('comments',TextType::class)
-            ->add('rateComments',IntegerType::class,[
-                
-            ]);
+            ->add('rateComments',IntegerType::class);
             
     }
 

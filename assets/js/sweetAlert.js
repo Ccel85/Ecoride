@@ -125,3 +125,64 @@ document.addEventListener('DOMContentLoaded', () => {
           })
         }
       });
+
+      //valider Avis
+      document.addEventListener('DOMContentLoaded', () => {
+        const validateAvisButton = document.getElementById('avisValidate');
+        const avisForm = document.getElementById('avisForm');
+    
+        if (validateAvisButton && avisForm) {
+            validateAvisButton.addEventListener('click', (event) => {
+                event.preventDefault(); // Empêche la soumission immédiate du formulaire
+    
+                // Vérifie si au moins une case est cochée
+                const checkboxes = avisForm.querySelectorAll('input[name="isValid[]"]:checked');
+                if (checkboxes.length === 0) {
+                    Swal.fire({
+                        text: 'Veuillez sélectionner au moins un avis à valider.',
+                        icon: 'warning',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+    
+                // Affichage de l'alerte SweetAlert pour confirmer
+                Swal.fire({
+                    text: 'Voulez-vous valider les avis sélectionnés ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        avisForm.submit(); // Soumet le formulaire en POST
+                    }
+                });
+            });
+        }
+    });
+    
+    //Supprimer Avis
+    document.addEventListener('DOMContentLoaded', () => {
+      const removeAvisButton = document.getElementById('removeAvis');
+  
+      if (removeAvisButton ) {
+        removeAvisButton.addEventListener('click', (event) => {
+              event.preventDefault(); // Empêche la soumission immédiate du formulaire
+  
+              // Affichage de l'alerte SweetAlert pour confirmer
+              Swal.fire({
+                  text: 'Voulez-vous supprimer l\'avis ?',
+                  icon: 'question',
+                  showCancelButton: true,
+                  confirmButtonText: 'Oui',
+                  cancelButtonText: 'Non',
+              }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = removeAvisButton.getAttribute('data-url'); 
+                  }
+              });
+          });
+      }
+  });
+  

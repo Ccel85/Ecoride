@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard Employe{% endblock %}
+
+{% block body %}
+<div>
+{% if app.user %}
+    <p class="text-center"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
+    <br>
+{% endif %}
+<div class="dashboard d-flex flex-grow-1 position relative mb-4">
+    <!--SideBar-->
+    <div class="d-flex flex-column flex-shrink-0 p-3 sidebar" style="width: 300px;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+            <span class="fs-4">Dashboard</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#" class="nav-link " aria-current="page">
+                    <svg class="bi pe-none me-2" width="16" height="16">
+                    <use xlink:href="#home"></use></svg>
+                    Home
+                </a>
+            </li>
+            <li>
+                <a href="{{ path('app_employe') }}" class="nav-link text-white">
+                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                  Gestion des avis
+                <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
+                </a>
+                
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                  Gestion des covoiturages
+                <span class="badge rounded-pill bg-danger ">4</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <!--avis-->
+    <div class="avis mx-4">
+      {% if invalidComments is empty %}
+        <p>Il n'y a pas encore d'avis.</p>
+        {% else %}
+        <h6 class="text-decoration-underline text-center"> Derniers avis clients:</h6>
+      <form method="post"  id="avisForm" action="{{ path('app_avis_update') }}">
+        {% for commentaire in invalidComments %}
+        <div class="card mb-3 p-3">
+          <div class="rate d-flex align-items-center justify-content-between">
+            <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
+            <div class="d-flex flex-column align-items-center ">
+              <div class="form-check form-switch m-2  ">
+                <input class="form-check-input" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
+                <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
+              </div> 
+              <a class="btn btn-danger" name="removeAvis" id="removeAvis" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}">
+                <i class="bi bi-trash3"></i>
+              </a>
+            </div>
+          </div>
+          <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
+          </div>
+          <div>
+            <p>{{ commentaire.comments }}</p>
+          </div>
+          <a class="btn btn-primary" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
+        </div>
+        {% endfor %}
+        <button type="submit" id="avisValidate" class="btn btn-success">Valider les modifications</button>
+      </form>
+      <a href="#">Voir tout</a>
+      {% endif %}
+    </div>
+</div>
+<br>
+{% endblock %}
