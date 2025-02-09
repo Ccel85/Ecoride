@@ -5,27 +5,27 @@
 {% block body %}
 <div>
 {% if app.user %}
-    <p class="text-center"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
+    <p class="text-start fs-4 p-2"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
     <br>
 {% endif %}
 <div class="dashboard d-flex flex-grow-1 position relative mb-4">
     <!--SideBar-->
-    <div class="d-flex flex-column flex-shrink-0 p-3 sidebar" style="width: 300px;">
+    <div class="d-flex flex-column flex-shrink-0  sidebar" style="width: 300px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-            <span class="fs-4">Dashboard</span>
+            <span class="fs-4">Tableau de bord</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="#" class="nav-link " aria-current="page">
+                <a href="{{ path('app_home') }}" class="nav-link text-white fs-5" aria-current="page">
                     <svg class="bi pe-none me-2" width="16" height="16">
-                    <use xlink:href="#home"></use></svg>
-                    Home
+                    </svg>
+                    Accueil
                 </a>
             </li>
             <li>
-                <a href="{{ path('app_employe') }}" class="nav-link text-white">
+                <a href="{{ path('app_employe') }}" class="nav-link text-white fs-5 text-start">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                   Gestion des avis
                 <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
@@ -33,7 +33,7 @@
                 
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="#" class="nav-link text-white fs-5 text-start">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                   Gestion des covoiturages
                 <span class="badge rounded-pill bg-danger ">4</span>
@@ -46,7 +46,8 @@
       {% if invalidComments is empty %}
         <p>Il n'y a pas encore d'avis.</p>
         {% else %}
-        <h6 class="text-decoration-underline text-center"> Derniers avis clients:</h6>
+      <h5 class="text-decoration-underline text-center"> Gestion des avis clients:</h5>
+      <a href="#">Voir tout</a>
       <form method="post"  id="avisForm" action="{{ path('app_avis_update') }}">
         {% for commentaire in invalidComments %}
         <div class="card mb-3 p-3">
@@ -67,12 +68,16 @@
           <div>
             <p>{{ commentaire.comments }}</p>
           </div>
-          <a class="btn btn-primary" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
+          <div>
+            <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
+          </div>
         </div>
         {% endfor %}
-        <button type="submit" id="avisValidate" class="btn btn-success">Valider les modifications</button>
+        <div class="position-relative">
+          <button type="submit" id="avisValidate" class="btn btn-success position-absolute top-0 end-0">Valider les modifications</button>
+        </div >
       </form>
-      <a href="#">Voir tout</a>
+      
       {% endif %}
     </div>
 </div>

@@ -79,10 +79,15 @@
     color: #39B54E;
 }
 
-.btn {
+.btn-page {
     color: #FFFFFF !important;
 }
-
+.btn-success {
+    background-color:#324D4D !important;
+}
+.btn-success:hover {
+    background-color:#39B54E !important;
+}
 /* fiche profil */
 .avatar, i.avatar{
     width: 100px;
@@ -111,3 +116,5 @@ div.cards{
 .check{
     color:#39B54E;
 }
+
+

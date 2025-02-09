@@ -267,11 +267,18 @@
                   and isValidate %}                    
                   <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Laisser un avis</p>
-                    <a  id='checkAvis' 
-                    class="btn btn-success m-2" 
+                    <a  id='checkAvis' class="btn btn-success m-2" 
                     {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
                     data-url ="{{ path('app_avis_new',{ 'id': covoiturage.id }) }}">
                       <i class="bi bi-check-lg"></i>
+                    </a>
+                  </div>
+                  <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
+                    <p class="m-0">Signaler un covoiturage</p>
+                    <a  id='signaler' class="btn btn-danger m-2" 
+                    {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
+                    {# data-url ="{{ path('#',{ 'id': covoiturage.id }) }}" #}>
+                      <i class="bi bi-exclamation-triangle-fill"></i>
                     </a>
                   </div>
                 {% endif %}
