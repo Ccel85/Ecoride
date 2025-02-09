@@ -55,7 +55,7 @@ final class AvisController extends AbstractController{
         
             if ($form->isSubmitted() && $form->isValid()) {
             
-                $avis->setUtilisateur($conducteur);
+                $avis->setConducteur($conducteur);
                 
                /*  $avis->addAvis($utilisateur); */
                 

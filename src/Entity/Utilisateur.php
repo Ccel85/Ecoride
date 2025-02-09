@@ -61,11 +61,17 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'utilisateurs')]
     private Collection $covoiturage;
 
-    /**
+    /*
      * @var Collection<int, Avis>
      */
-    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'utilisateur')]
-    private Collection $avis;
+    /* #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'utilisateur')]
+    private Collection $avis; */
+
+    #[ORM\OneToMany(mappedBy: 'passager', targetEntity: Avis::class)]
+    private Collection $avisPassager; // Avis donnés en tant que passager
+
+    #[ORM\OneToMany(mappedBy: 'conducteur', targetEntity: Avis::class)]
+    private Collection $avisConducteur; // Avis reçus en tant que conducteur
 
     /**
      * @var Collection<int, Voiture>
@@ -94,9 +100,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->covoiturage = new ArrayCollection();
-        $this->avis = new ArrayCollection();
+        /* $this->avis = new ArrayCollection(); */
         $this->voiture = new ArrayCollection();
         $this->validateCovoiturages = new ArrayCollection();
+        $this->avisPassager = new ArrayCollection();
+        $this->avisConducteur = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -267,10 +275,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
+    public function getAvisPassager(): Collection
+{
+    return $this->avisPassager;
+}
+
+public function getAvisConducteur(): Collection
+{
+    return $this->avisConducteur;
+}
+
+    /*
      * @return Collection<int, Avis>
      */
-    public function getAvis(): Collection
+    /* public function getAvis(): Collection
     {
         return $this->avis;
     }
@@ -295,7 +313,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
-    }
+    } */
 
     /**
      * @return Collection<int, Voiture>

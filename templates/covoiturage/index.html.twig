@@ -62,7 +62,7 @@
                 <div class="card-body">
                         <p>Membre depuis <strong>{{ covoiturage.conducteur.createdAt | date ('Y')}}</strong> </p>
                         <p>
-                        <i class="bi bi-star-fill star"> {{covoiturage.conducteur.rateUser}}/5</i>
+                        <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
                         </p>
                         <div class="">
                             <p>Départ le : {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
