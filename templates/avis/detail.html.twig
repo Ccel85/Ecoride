@@ -5,7 +5,7 @@
 {% block body %}
   <div class="container">
     <div>
-      <a class="btn btn-success mx-4" href= "#" >Retour</a>
+      <a class="btn btn-success mx-4" href= "{{ path('app_employe_dashboard') }}" >Retour</a>
       <p class="text-center fw-bold">Voyage effectué le <span>{{ covoiturage.dateDepart|date('d-m-Y') }}</span> à <span> {{ covoiturage.heureDepart|date('H:i') }}</span>
       au départ de <span> {{ covoiturage.lieuDepart }}</span> .</p>
     </div>
@@ -53,12 +53,8 @@
           <p class="card-text text-center">Email : {{passager.email}}</p>
         </div>
         <div class="infoUser col-3" >
-            <ul>
-              <li>Membre depuis {{ passager.createdAt | date ('Y')}} </li>
-              <li>
-                <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
-              </li>
-            </ul>
+              <p>Membre depuis {{ passager.createdAt | date ('Y')}} </p>
+              <p><i class="bi bi-star-fill star"> {{ rateUser }}/5</i></p>
           </div>
       </div>
     </div>
@@ -70,12 +66,10 @@
           <p class="card-text text-center">Email : {{conducteur.email}}</p>
         </div>
         <div class="infoUser col-3" >
-            <ul>
-              <li>Membre depuis {{ conducteur.createdAt | date ('Y')}} </li>
-              <li>
+              <p>Membre depuis {{ conducteur.createdAt | date ('Y')}} </p>
+              <p>
                 <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
-              </li>
-            </ul>
+              </p>
         </div>
       </div>
       <!-- body -->

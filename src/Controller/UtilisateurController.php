@@ -111,9 +111,9 @@ class UtilisateurController extends AbstractController
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
                 
-                $dateAujourdhui = $covoiturage->getDateDepart()->format('Y-m-d') === $now->format('Y-m-d');
+                $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
-                    $dateAujourdhui = $covoiturage->setDateAujourdhui();
+                    $dateAujourdhui = $covoiturage->setDateAujourdhui($dateAujourdhui);
                 }
                 /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
                 // Affiche tous les covoiturages validés par l'utilisateur
