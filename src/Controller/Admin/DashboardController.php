@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Avis;
+use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,15 +21,14 @@ class DashboardController extends AbstractController
     #[Route('/admin/dashboard/employe', name: 'app_employe_dashboard')]
     public function employe(EntityManagerInterface $em): Response
     {
-        /* $comments = $em->getRepository(Avis::class)->getComments(); */
-        
         $invalidComments = $em->getRepository(Avis::class)->invalidComments();
         $countInvalidComments = count($invalidComments);
+        $signalComments = $em->getRepository(Avis::class)->signalComments();
         
         return $this->render('admin/dashboard/employe.html.twig',[
             'invalidComments'=>$invalidComments,
             'countInvalidComments'=>$countInvalidComments,
+            'signalComments'=> $signalComments,
         ]);
-
     }
 }

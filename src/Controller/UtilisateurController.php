@@ -6,9 +6,10 @@ use App\Entity\Avis;
 use App\Entity\Voiture;
 use App\Entity\Utilisateur;
 use App\Form\ProfilFormType;
+use Doctrine\ORM\EntityManager;
+use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,7 +82,7 @@ class UtilisateurController extends AbstractController
     //Affichage profil connecté
     #[Route('/profil', name: 'app_profil')]
     
-    public function profilUtilisateur(Security $security,EntityManagerInterface $em): Response
+    public function profilUtilisateur(Security $security,EntityManagerInterface $em,AvisRepository $avisRepository): Response
     {
         $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
 
@@ -96,6 +97,7 @@ class UtilisateurController extends AbstractController
         $validatedCovoiturages = $utilisateur->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
         $observations = $utilisateur->getObservation();
         $rateUser =round($em->getRepository(Avis::class)->rateUser($utilisateur),1);
+
         // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
         
@@ -104,6 +106,13 @@ class UtilisateurController extends AbstractController
             $this->addFlash('warning', 'Vous êtes un conducteur, vous devez ajouter un véhicule !');
             return $this->redirectToRoute('app_voiture_new');
         }
+
+        $dateAujourdhui = false;
+        $isValidateUser = false;
+        $signalComment = null;
+        $avisUserExiste = false;
+        $avisUser = null;
+
         //selectionner les dates futures à la date du jour
         if ($covoiturages !== null) {
             foreach ($covoiturages as $covoiturage) {
@@ -118,29 +127,48 @@ class UtilisateurController extends AbstractController
                 /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
                 // Affiche tous les covoiturages validés par l'utilisateur
                  // Vérifie si le covoiturage en question est validé
-                $isValidate= false;
-                if ($isValidate = $validatedCovoiturages->contains($covoiturage)){
-                $isValidate = true;
+                if ($isValidateUser = $validatedCovoiturages->contains($covoiturage)){
+                $isValidateUser = true;
                 break;
-                /*  dump($validatedCovoiturages);
-                dump($isValidate);
-                die(); */
+                }
+                
             }
-            
         }
 
-        return $this->render('utilisateur/profil.html.twig', [
-            'utilisateur' => $utilisateur,
-            'commentairesUSer'=> $commentairesUser,
-            'voitureUser'=> $voitureUser,
-            'covoiturages'=> $covoiturages,
-            'observations'=>$observationExplode,
-            'dateAujourdhui'=>$dateAujourdhui,
-            'isValidate'=>$isValidate,
-            'rate'=>$rateUser,
+        $avisUser = $avisRepository->findOneBy([
+            'passager' => $utilisateur,
+            'covoiturage' => $covoiturage
         ]);
+        
+        $avisUserExiste = $avisUser !== null;
+
+        $signalComment = $avisRepository->findOneBy([
+            'isSignal' => true,
+            'passager' => $utilisateur,
+            'covoiturage' => $covoiturage
+        ]);
+        /* dump($utilisateur); // Vérifie que l'utilisateur est bien récupéré
+        dump($covoiturage); // Vérifie que le covoiturage existe
+        dump($avisRepository->findBy(['passager' => $utilisateur])); // Vérifie s'il y a des avis pour cet utilisateur
+        dump($avisRepository->findBy(['covoiturage' => $covoiturage])); // Vérifie s'il y a des avis pour ce covoiturage
+        die(); */
+       /*  dump($avisUser, $avisUserExiste);
+die(); */ //  Arrête l'exécution pour voir le résultat
+
+            return $this->render('utilisateur/profil.html.twig', [
+                'utilisateur' => $utilisateur,
+                'commentairesUSer'=> $commentairesUser,
+                'voitureUser'=> $voitureUser,
+                'covoiturages'=> $covoiturages,
+                'observations'=>$observationExplode,
+                'dateAujourdhui'=>$dateAujourdhui,
+                'isValidateUser'=>$isValidateUser,
+                'rate'=>$rateUser,
+                'signalComment'=>$signalComment,
+                'avisUserExiste'=>$avisUserExiste,
+                ]);
         }
-    }
+    
 
     //affichage profil selon Id
     #[Route('/profil/{id}', name: 'app_profil_id' ,requirements: ['id' => '\d+'])]

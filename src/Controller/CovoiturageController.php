@@ -151,7 +151,7 @@ class CovoiturageController extends AbstractController
             $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer ce covoiturage.');
             return $this->redirectToRoute('app_profil');
         }
-        // 🔹 Récupérer les emails des utilisateurs participants
+        // Récupérer les emails des utilisateurs participants
         $emails = [];
         foreach ($covoiturage->getUtilisateurs() as $utilisateur) {
             if ($utilisateur->getEmail()) {
@@ -159,10 +159,10 @@ class CovoiturageController extends AbstractController
             }
         }
 
-        // 🔹 Stocker les emails en session
+        // Stocker les emails en session
         $session->set('emails_utilisateurs', $emails);
 
-        // 🔹 Stocker l'ID avant de supprimer l'entité
+        // Stocker l'ID avant de supprimer l'entité
         $covoiturageId = $covoiturage->getId();
 
         // Supprimez le covoiturage de l\'utilisateur et mise a jour du crédit

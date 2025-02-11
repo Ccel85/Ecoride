@@ -25,7 +25,7 @@ final class AvisController extends AbstractController{
         ]);
     }
 
-    //Créer un avis
+//Créer un avis
     #[Route('/avis/new/{id}', name: 'app_avis_new', requirements: ['id' => '\d+'])]
 
     public function avisNew(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
@@ -56,7 +56,7 @@ final class AvisController extends AbstractController{
             if ($form->isSubmitted() && $form->isValid()) {
             
                 $avis->setConducteur($conducteur);
-                
+            
                /*  $avis->addAvis($utilisateur); */
                 
                 $em->persist($avis);
@@ -71,10 +71,60 @@ final class AvisController extends AbstractController{
             ]);
     }
 
-    //Valider un avis
+    #[Route('/avis/signaler/{id}', name: 'app_avis_signaler', requirements: ['id' => '\d+'])]
+
+    public function avisSignaler(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
+    {
+        $utilisateur = $security->getUser();
+
+       /*  $rate = $request->query->get('rate'); */
+
+        if (!$utilisateur) {
+            $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $covoiturage = $em->getRepository(Covoiturage::class)->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Covoiturage non trouvé.');
+        }
+
+        $conducteur = $covoiturage->getConducteur();
+
+            $avis = new Avis();
+
+            $form = $this->createForm(AvisFormType::class, $avis,);
+        
+            $form->handleRequest($request);
+        
+            if ($form->isSubmitted() && $form->isValid()) {
+            
+                $avis->setConducteur($conducteur);
+
+                $avis->setIsSignal(true);
+
+                $avis->setPassager($utilisateur);
+
+                $avis->setCovoiturage($covoiturage);
+            
+                
+                $em->persist($avis);
+                $em->flush();
+            
+                $this->addFlash('success', 'Votre avis est enregistré.');
+                return $this->redirectToRoute('app_profil');
+            }
+            return $this->render('avis/signalement.html.twig', [
+                'form' => $form->createView(),
+                'conducteur'=> $conducteur,
+            ]);
+    }
+
+//Valider un avis
     #[Route('/avis/update', name: 'app_avis_update' )]
-    public function avisUpdate(
-    AvisRepository $avisRepository,Request $request,EntityManagerInterface $em,Security $security): Response 
+
+    public function avisUpdate(AvisRepository $avisRepository,Request $request,EntityManagerInterface $em,Security $security): Response 
     {
         $utilisateur = $security->getUser();
 
@@ -96,7 +146,7 @@ final class AvisController extends AbstractController{
                     $em->persist($avis);
                 }
                 $em->flush();
-                $this->addFlash('success', 'Commentaire archivé avec succès !');
+                $this->addFlash('success', 'Avis validé avec succès !');
             } else {
                 $this->addFlash('warning', 'Aucun avis sélectionné.');
             }
@@ -104,8 +154,9 @@ final class AvisController extends AbstractController{
             }
     }
 
-    //Supprimer un avis
+//Supprimer un avis
     #[Route('/avis/{id}/remove', name: 'app_avis_remove', requirements: ['id' => '\d+'] )]
+
     public function avisRemove(int $id,EntityManagerInterface $em,Security $security): Response 
     {
 
@@ -128,7 +179,7 @@ final class AvisController extends AbstractController{
         }
     }
 
-    //Avis details
+//Avis details
     #[Route('/avis/{id}/detail', name: 'app_avis_detail', requirements: ['id' => '\d+'] )]
 
     public function détailAvis(EntityManagerInterface $em,int $id): Response

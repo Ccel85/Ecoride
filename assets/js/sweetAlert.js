@@ -63,42 +63,42 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Validation passager Voyage terminé 
-document.addEventListener('DOMContentLoaded', () => {
-  const validateButton = document.getElementById('validate');
+  document.addEventListener('DOMContentLoaded', () => {
+    const validateButton = document.getElementById('validate');
 
-  if (validateButton) {
-    validateButton.addEventListener('click', (event) => {
+    if (validateButton) {
+      validateButton.addEventListener('click', (event) => {
 
-      event.preventDefault(); // Empêche la redirection immédiate
+        event.preventDefault(); // Empêche la redirection immédiate
 
-      Swal.fire({
-        title: 'Merci',
-        text: 'Souhaitez-vous valider votre voyage ?',
-        icon: 'question',
-        confirmButtonText: 'Oui',
-        showCancelButton: true,
-        cancelButtonText: 'Non',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          // Récupération de l'URL de validation (route Symfony)
-          const validationUrl = validateButton.getAttribute('data-url');
+        Swal.fire({
+          title: 'Merci',
+          text: 'Souhaitez-vous valider votre voyage ?',
+          icon: 'question',
+          confirmButtonText: 'Oui',
+          showCancelButton: true,
+          cancelButtonText: 'Non',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Récupération de l'URL de validation (route Symfony)
+            const validationUrl = validateButton.getAttribute('data-url');
 
-          // Redirection vers le contrôleur Symfony pour validation
-          window.location.href = validationUrl;
+            // Redirection vers le contrôleur Symfony pour validation
+            window.location.href = validationUrl;
 
-          // Affichage d'une alerte après redirection (optionnel, dépend de ton contrôleur)
-          setTimeout(() => {
-            Swal.fire({
-              title: 'Validation réussie !',
-              text: 'Votre voyage a bien été validé.',
-              icon: 'success'
+            // Affichage d'une alerte après redirection (optionnel, dépend de ton contrôleur)
+            setTimeout(() => {
+              Swal.fire({
+                title: 'Validation réussie !',
+                text: 'Votre voyage a bien été validé.',
+                icon: 'success'
+              })
             })
-          })
-        }
+          }
+        })
       })
-    })
-  }
-})
+    }
+  })
 
     //Ajouter avis
     document.addEventListener('DOMContentLoaded', () => {
@@ -126,13 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      //valider Avis
+    //Valider Avis
       document.addEventListener('DOMContentLoaded', () => {
-        const validateAvisButton = document.getElementById('avisValidate');
-        const avisForm = document.getElementById('avisForm');
-    
-        if (validateAvisButton && avisForm) {
-            validateAvisButton.addEventListener('click', (event) => {
+        //fonction validation
+        function setupValidation(buttonId, formId) {
+          const validateButton = document.getElementById(buttonId);
+          const avisForm = document.getElementById(formId);
+
+        if (validateButton && avisForm) {
+          validateButton.addEventListener('click', (event) => {
                 event.preventDefault(); // Empêche la soumission immédiate du formulaire
     
                 // Vérifie si au moins une case est cochée
@@ -145,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     return;
                 }
-    
                 // Affichage de l'alerte SweetAlert pour confirmer
                 Swal.fire({
                     text: 'Voulez-vous valider les avis sélectionnés ?',
@@ -160,6 +161,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             });
         }
+      }
+      // Applique le script aux deux formulaires
+      setupValidation('avisValidateAvis', 'avisFormAvis');
+      setupValidation('avisValidateSignalement', 'avisFormSignalement');
     });
     
     //Supprimer Avis

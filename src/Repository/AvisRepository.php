@@ -37,11 +37,27 @@ public function rateUser(Utilisateur $conducteur): ?float
     ->getQuery()
     ->getSingleScalarResult();
 }
-//Afficher les commentaire non validés
+//Afficher les commentaires non validés
 public function invalidComments(): array
 {
     return $this->createQueryBuilder('a')
         ->where('a.isValid = :valid')
+        ->andwhere('a.isSignal = :signal')
+        ->setParameter('valid', false)
+        ->setParameter('signal', false)
+        ->orderBy('a.id', 'ASC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
+}
+
+//Afficher les commentaires signalés
+public function signalComments(): array
+{
+    return $this->createQueryBuilder('a')
+        ->where('a.isSignal = :signal')
+        ->andwhere('a.isValid = :valid')
+        ->setParameter('signal', true)
         ->setParameter('valid', false)
         ->orderBy('a.id', 'ASC')
         ->setMaxResults(10)

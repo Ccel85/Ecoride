@@ -43,7 +43,11 @@ class Avis
     private ?Utilisateur $passager = null; // Celui qui donne l'avis
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?covoiturage $covoiturage = null;
+
+    #[ORM\Column(nullable: false)]
+    private ?bool $isSignal = false;
 
     public function getId(): ?int
     {
@@ -131,6 +135,18 @@ class Avis
     public function setCovoiturage(?covoiturage $covoiturage): static
     {
         $this->covoiturage = $covoiturage;
+
+        return $this;
+    }
+
+    public function isSignal(): ?bool
+    {
+        return $this->isSignal;
+    }
+
+    public function setIsSignal(?bool $isSignal): static
+    {
+        $this->isSignal = $isSignal;
 
         return $this;
     }

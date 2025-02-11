@@ -248,8 +248,8 @@
                 {% if  covoiturage.id is not null 
                   and covoiturage.conducteur.id != app.user.id   
                   and utilisateur.id == app.user.id  
-                  and covoiturage.isArrived 
-                  and not isValidate %}
+                  and covoiturage.isArrived
+                  and not isValidateUser %}
                   <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Valider votre voyage:</p>
                     <a  id='validate' 
@@ -260,11 +260,23 @@
                     </a>
                   </div>
                 {% endif %}
+                  {# <div>
+                  <p>covoiturage.id : {{ covoiturage.id }}</p>
+                  <p>covoiturage.conducteur.id : {{ covoiturage.conducteur.id }}</p>
+                  <p>app.user.id : {{ app.user.id }}</p>
+                  <p>utilisateur.id : {{ utilisateur.id }}</p>
+                  <p>isArrived : {{ covoiturage.isArrived ? 'true' : 'false'  }}</p>
+                  <p>isValidateUser : {{ isValidateUser ? 'true' : 'false' }}</p>
+                  <p>avisUserExiste : {{ avisUserExiste ? 'true' : 'false' }}</p>
+                  <p>signalComment : {{ signalComment ? 'true' : 'false' }}</p>
+                </div> #}
                 {% if  covoiturage.id is not null 
                   and covoiturage.conducteur.id != app.user.id 
                   and utilisateur.id == app.user.id  
                   and covoiturage.isArrived 
-                  and isValidate %}                    
+                  and isValidateUser
+                  and not avisUserExiste
+                  %}                    
                   <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Laisser un avis</p>
                     <a  id='checkAvis' class="btn btn-success m-2" 
@@ -277,9 +289,21 @@
                     <p class="m-0">Signaler un covoiturage</p>
                     <a  id='signaler' class="btn btn-danger m-2" 
                     {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
-                    {# data-url ="{{ path('#',{ 'id': covoiturage.id }) }}" #}>
+                    data-url ="{{ path('app_avis_signaler',{ 'id': covoiturage.id }) }}" >
                       <i class="bi bi-exclamation-triangle-fill"></i>
                     </a>
+                  </div>
+                {% endif %}
+                {% if  covoiturage.id is not null 
+                  and covoiturage.conducteur.id != app.user.id 
+                  and utilisateur.id == app.user.id  
+                  and covoiturage.isArrived 
+                  and isValidateUser
+                  and  avisUserExiste 
+                  %}                    
+                  <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
+                    <p class="m-0">Avis déposé</p>
+                    <i class="check bi bi-check-lg fs-1"></i>
                   </div>
                 {% endif %}
                 </div>
