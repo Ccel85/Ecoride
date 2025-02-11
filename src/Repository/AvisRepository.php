@@ -51,6 +51,8 @@ public function invalidComments(): array
         ->getResult();
 }
 
+
+
 //Afficher les commentaires signalés
 public function signalComments(): array
 {

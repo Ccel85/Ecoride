@@ -60,7 +60,43 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
-});
+})
+  
+  //annuler Covoiturage  
+  document.addEventListener('DOMContentLoaded', () => {
+    // Sélectionne tous les boutons avec l'ID "trash"
+    const trashButtons = document.querySelectorAll('[id^="trash_"]');
+  
+    // Ajouter un écouteur d'événement sur chaque bouton
+    trashButtons.forEach((trashButton) => {
+      trashButton.addEventListener('click', (e) => {
+        e.preventDefault(); // Empêche l'action par défaut du bouton ou lien
+  
+        Swal.fire({
+          title: 'Confirmation !',
+          text: 'Confirmez-vous la suppression du covoiturage ?',
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Supprimer',
+          cancelButtonText: "Retour",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Afficher un message de succès avant la redirection
+            Swal.fire({
+              title: 'Succès',
+              text: 'Votre voyage a été annulé. Un message sera envoyé aux passagers.',
+              icon: 'success',
+              timer: 2500, // Durée de l'affichage
+              showConfirmButton: false, // Pas de bouton
+            }).then(() => {
+              // Redirection après le succès
+              window.location.href = trashButton.getAttribute('data-url');
+            });
+          }
+        });
+      });
+    });
+  });
 
 // Validation passager Voyage terminé 
   document.addEventListener('DOMContentLoaded', () => {

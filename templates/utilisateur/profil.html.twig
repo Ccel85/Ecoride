@@ -356,12 +356,12 @@
                   <p>covoiturage.isArrived : {{ covoiturage.isArrived ? 'true' : 'false' }}</p>
                 </div> #}
                 {# Covoiturage futur sur profil connecté 
-                !!!ajouter dateFuture #}
+                !!!ajouter dateFuture dans les conditions #}
                 {% if covoiturage.conducteur is not null 
                   and covoiturage.conducteur.id == app.user.id 
                   %}
                     <div class="boutons d-flex flex-column ">
-                      <a  id= 'trash' class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
+                      <a  id="trash_{{ covoiturage.id }}" class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
                         <i class="bi bi-trash3 "></i>
                       </a>
                       <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">

@@ -109,7 +109,7 @@ class UtilisateurController extends AbstractController
 
         $dateAujourdhui = false;
         $isValidateUser = false;
-        $signalComment = null;
+        /* $signalComment = null; */
         $avisUserExiste = false;
         $avisUser = null;
 
@@ -141,12 +141,12 @@ class UtilisateurController extends AbstractController
         ]);
         
         $avisUserExiste = $avisUser !== null;
-
+/* 
         $signalComment = $avisRepository->findOneBy([
             'isSignal' => true,
             'passager' => $utilisateur,
             'covoiturage' => $covoiturage
-        ]);
+        ]); */
         /* dump($utilisateur); // Vérifie que l'utilisateur est bien récupéré
         dump($covoiturage); // Vérifie que le covoiturage existe
         dump($avisRepository->findBy(['passager' => $utilisateur])); // Vérifie s'il y a des avis pour cet utilisateur
@@ -164,7 +164,7 @@ die(); */ //  Arrête l'exécution pour voir le résultat
                 'dateAujourdhui'=>$dateAujourdhui,
                 'isValidateUser'=>$isValidateUser,
                 'rate'=>$rateUser,
-                'signalComment'=>$signalComment,
+                /* 'signalComment'=>$signalComment, */
                 'avisUserExiste'=>$avisUserExiste,
                 ]);
         }

@@ -36,7 +36,7 @@
                 <a href="#" class="nav-link text-white fs-5 text-start">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                   Signalement à traiter
-                <span class="badge rounded-pill bg-danger ">4</span>
+                <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
                 </a>
             </li>
         </ul>
@@ -70,7 +70,7 @@
                     <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
                     <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
                   </div> 
-                  <a class="btn btn-danger" name="removeAvis" id="removeAvis" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
+                  <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
                     <i class="bi bi-trash3"></i>
                   </a>
                 </div>

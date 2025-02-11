@@ -24,11 +24,13 @@ class DashboardController extends AbstractController
         $invalidComments = $em->getRepository(Avis::class)->invalidComments();
         $countInvalidComments = count($invalidComments);
         $signalComments = $em->getRepository(Avis::class)->signalComments();
+        $countSignalComments = count($signalComments);
         
         return $this->render('admin/dashboard/employe.html.twig',[
             'invalidComments'=>$invalidComments,
             'countInvalidComments'=>$countInvalidComments,
             'signalComments'=> $signalComments,
+            'countSignalComments'=>$countSignalComments,
         ]);
     }
 }
