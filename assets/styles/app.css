@@ -85,6 +85,11 @@
 .btn-success {
     background-color:#324D4D !important;
 }
+
+.btn-info {
+    background-color:#39B54E !important;
+    color: #FFFFFF !important;
+}
 .btn-success:hover {
     background-color:#39B54E !important;
 }
@@ -111,6 +116,11 @@ div.cards{
 }
 .card-header{
     height: 8rem;
+}
+
+.header-list{
+
+    height: 4rem;
 }
 
 .check{

@@ -8,12 +8,11 @@
         <p>Il n'y a pas d'utilisateurs d'enregistré </p>
     </div>
 {% else %}
-    <div class="card mb-6 mb-xxl-0">
-        <div class="card-header">
+    <div class="card m-6 mb-xxl-0">
+        <div class="header-list card-header">
             <div class="row align-items-center">
                 <div class="d-flex justify-content-around">
-                    <h3 class="fs-10 mb-0">Liste utilisateurs</h3>
-                    <a class="btn btn-warning " href="{{path('app_register')}}">Ajouter</a>
+                    <h3 class="fs-10 mb-0">Liste des utilisateurs</h3>
                 </div>
             </div>
         </div>
@@ -21,6 +20,7 @@
             <table class="table table-flush align-middle mb-0">
                 <thead>
                     <tr>
+                    <th class="fs-sm">Id</th>
                     <th class="fs-sm"></th>
                     <th class="fs-sm">Nom</th>
                     <th class="fs-sm">Email</th>
@@ -30,41 +30,47 @@
                     <th class="fs-sm">Action</th>
                 </tr></thead>
                 <tbody>
-                {% for employe in employes %}
+                {% for utilisateur in utilisateurs %}
                     <tr>
                         <td>
-                            <div class="avatar">
-                                <img class="avatar-img" src="{{asset('logo' ~ employe.photopath)}}" alt=" Photo de {{ employe.nom }}">
+                            <div class="d-flex align-items-center text-nowrap">{{utilisateur.id}}
+                            </div>
+                        </td>
+                        <td>
+                            <div>
+                                <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
                             </div>
                         </td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="">
-                                    <div>{{employe.nom}}</div>
-                                    <div class="fs-sm text-body-secondary">{{employe.prenom}}</div>
+                                    <div>{{utilisateur.nom}}</div>
+                                    <div class="fs-sm text-body-secondary">{{utilisateur.prenom}}</div>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            <div class="d-flex align-items-center text-nowrap">
-                            {{employe.email}}
+                            <div class="d-flex align-items-center text-nowrap">{{utilisateur.email}}
                             </div>
                         </td>
-                        {# <td>
-                            <span class="badge bg-success-subtle text-success">{{employe.rate}}</span>
-                        </td> #}
                         <td>
-                            <span class="badge bg-success-subtle text-success">{{employe.credits}}</span>
+                            <span class="badge bg-success-subtle text-success">{{rates[utilisateur.id] ?? '/'}}</span>
                         </td>
                         <td>
-                            <span class="badge {{ employe.isactif ? 'bg-success' : 'bg-danger' }} ">{{employe.isactif ? 'Actif' : 'Inactif'}} </span>
+                            <span class="badge bg-success-subtle text-success">{{utilisateur.credits}}</span>
                         </td>
                         <td>
-                            <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': employe.id }) }}">
-                            <i class="bi bi-trash3"></i></a>
-                            <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': employe.id }) }}">
-                            <i class="bi bi-pencil-square"></i></a>
+                            <span class="badge {{ utilisateur.isactif ? 'bg-success' : 'bg-danger' }} ">{{utilisateur.isactif ? 'Actif' : 'Inactif'}} </span>
                         </td>
+                        <td>
+                            {% if utilisateur.isActif %}
+                            <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': utilisateur.id }) }}">Archiver
+                            <i class="bi bi-sign-stop"></i></a>
+                            {% else %}
+                            <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': utilisateur.id }) }}">Activer
+                            <i class="bi bi-check-lg"></i></a>
+                        </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>

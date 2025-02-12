@@ -3,8 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Avis;
-use App\Repository\AvisRepository;
+use App\Entity\Covoiturage;
 use Doctrine\ORM\EntityManager;
+use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -13,9 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class DashboardController extends AbstractController
 {
     #[Route('/admin/dashboard/admin', name: 'app_admin_dashboard')]
-    public function index(): Response
+    public function admin(EntityManagerinterface $em): Response
     {
-        return $this->render('admin/dashboard/admin.html.twig');
+        /* $covoiturages = $em->getRepository(Covoiturage::class)->findAll(); */
+        $countCovoiturages = $em->getRepository(Covoiturage::class)->nombreCovoiturages();
+        $creditscovoiturage = $countCovoiturages * 2;
+        return $this->render('admin/dashboard/admin.html.twig',[
+            'creditscovoiturage' => $creditscovoiturage,
+        ]);
     }
 
     #[Route('/admin/dashboard/employe', name: 'app_employe_dashboard')]

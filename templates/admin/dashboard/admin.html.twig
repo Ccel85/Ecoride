@@ -13,14 +13,14 @@
     <div class="d-flex flex-column flex-shrink-0 p-3 sidebar" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-            <span class="fs-4">Dashboard</span>
+            <span class="fs-4">Tableau de bord</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a href="#" class="nav-link active" aria-current="page">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-                    Home
+                    Accueil
                 </a>
             </li>
             <li>
@@ -30,9 +30,9 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                    Nombre de covoiturage (par jour)
+                <a href="{{ path('app_utilisateur') }}" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                    Gestion des comptes utilisateurs
                 </a>
             </li>
             <li>
@@ -56,7 +56,7 @@
                                     <h4 class="fs-sm fw-normal text-body-secondary mb-1">Nombre de Crédits</h4>
 
                                     <!-- Text -->
-                                    <div class="fs-4 fw-semibold">$1,250</div>
+                                    <div class="fs-4 fw-semibold text-center"> {{ creditscovoiturage }} </div>
                                 </div>
                                 <div class="col-auto">
                                     <!-- Avatar -->

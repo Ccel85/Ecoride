@@ -73,6 +73,14 @@ public function covoiturageDuree($covoiturage)
         ->getQuery()
         ->getResult();
     }
+
+    public function nombreCovoiturages()
+    {
+    return $this->createQueryBuilder('c')
+        ->select('COUNT(c.id)')
+        ->getQuery()
+        ->getSingleScalarResult();
+    }
 //    public function findOneBySomeField($value): ?Covoiturage
 //    {
 //        return $this->createQueryBuilder('c')
