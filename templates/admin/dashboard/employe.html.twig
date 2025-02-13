@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Dashboard Employe{% endblock %}
+{% block title %}Tableau de bord employé{% endblock %}
 
 {% block body %}
 <div>
@@ -25,7 +25,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ path('app_employe') }}" class="nav-link text-white fs-5 text-start">
+                <a href="{{ path('app_avis') }}" class="nav-link text-white fs-5 text-start">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                   Gestion des avis
                 <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
@@ -33,7 +33,7 @@
                 
             </li>
             <li>
-                <a href="#" class="nav-link text-white fs-5 text-start">
+                <a href="{{ path('app_signalement') }}" class="nav-link text-white fs-5 text-start">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
                   Signalement à traiter
                 <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
@@ -45,11 +45,11 @@
     <div class="avis row mx-4">
       <div class=" avis col-6" >
       {% if invalidComments is empty %}
-        <h5 class="text-decoration-underline text-center"> Gestion des avis clients:</h5>
+        <h5 class="text-decoration-underline text-center"> Derniers avis clients:</h5>
         <p class="text-center">Il n'y a pas d'avis.</p>
         {% else %}
-        <h5 class="text-decoration-underline text-center"> Gestion des avis clients:</h5>
-        <a href="#">Voir tout</a>
+        <h5 class="text-decoration-underline text-center"> Derniers avis clients:</h5>
+        <a href= "{{path('app_avis')}}">Voir tout</a>
         <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
           {% for commentaire in invalidComments %}
           <div class="card  mb-3 p-3">
@@ -66,6 +66,7 @@
                 <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
               </div>
               <div class="d-flex flex-column align-items-center ">
+                  <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
                   <div class="form-check form-switch m-2  ">
                     <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
                     <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
@@ -88,8 +89,8 @@
         <h5 class="text-decoration-underline text-center"> Gestion des signalements:</h5>
         <p class="text-center">Il n'y a pas de signalements.</p>
         {% else %}
-        <h5 class="text-decoration-underline text-center"> Gestion des signalements:</h5>
-        <a href="#">Voir tout</a>
+        <h5 class="text-decoration-underline text-center"> Derniers signalements:</h5>
+        <a href="{{path('app_signalement')}}">Voir tout</a>
         <form method="post"  id="avisFormSignalement" action="{{ path('app_avis_update') }}">
           {% for signalComment in signalComments %}
           <div class="card mb-3 p-3">
@@ -106,6 +107,7 @@
                 <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':signalComment.id }) }}"> Détails</a>
               </div>
               <div class=" btnCheckRemove d-flex flex-column align-items-center ">
+                <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider le signalement:</p>
                 <div class="form-check form-switch m-2  ">
                   <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ signalComment.id }}" id="isValid_{{ signalComment.id }}"  >
                   <label class="form-check-label" for="isValid_{{ signalComment.id }}"></label>

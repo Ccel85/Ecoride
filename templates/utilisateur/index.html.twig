@@ -54,7 +54,11 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-success-subtle text-success">{{rates[utilisateur.id] ?? '/'}}</span>
+                        {% if rates[utilisateur.id] < 4 %}
+                            <span class="badge bg-danger-subtle text-danger">{{rates[utilisateur.id] ?? '/'}}</span>
+                        {% else %}
+                        <span class="badge bg-success-subtle text-success">{{rates[utilisateur.id] ?? '/'}}</span>
+                        {% endif %}
                         </td>
                         <td>
                             <span class="badge bg-success-subtle text-success">{{utilisateur.credits}}</span>

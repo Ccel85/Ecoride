@@ -19,9 +19,24 @@ final class AvisController extends AbstractController{
     public function index(AvisRepository $avisRepositpory): Response
     {
         $avis = $avisRepositpory->findall();
+        $invalidComments = $avisRepositpory->invalidComments();
 
-        return $this->render('avis/index.html.twig', [
+        return $this->render('avis/listeAvis.html.twig', [
             'avis'=>$avis,
+            'invalidComments'=>$invalidComments,
+        ]);
+    }
+
+    #[Route('/signalement', name: 'app_signalement')]
+
+    public function signalement(AvisRepository $avisRepositpory): Response
+    {
+        $avis = $avisRepositpory->findall();
+        $signalComments = $avisRepositpory->signalComments();
+
+        return $this->render('avis/listeSignalement.html.twig', [
+            'avis'=>$avis,
+            'signalComments'=>$signalComments,
         ]);
     }
 

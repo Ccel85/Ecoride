@@ -140,7 +140,8 @@ class CovoiturageController extends AbstractController
     {
 
         $user = $security->getUser();
-        $credits = $user->getCredits();
+        $creditUser = $user->getCredits();
+        
 
         if (!$user) {
             $this->addFlash('error', 'Utilisateur non connecté.');
@@ -157,6 +158,10 @@ class CovoiturageController extends AbstractController
             if ($utilisateur->getEmail()) {
                 $emails[] = $utilisateur->getEmail();
             }
+            $prix = $covoiturage->getPrix();
+            $credit = $utilisateur->getCredits();
+            $majCreditUtilisateur = $prix + $credit;
+            $utilisateur ->setCredits($majCreditUtilisateur);
         }
 
         // Stocker les emails en session
@@ -165,8 +170,8 @@ class CovoiturageController extends AbstractController
         // Stocker l'ID avant de supprimer l'entité
         $covoiturageId = $covoiturage->getId();
 
-        // Supprimez le covoiturage de l\'utilisateur et mise a jour du crédit
-        $majCredits =$credits + 2;
+        // Supprimez le covoiturage de l\'utilisateur et mise à jour du crédit
+        $majCredits =$creditUser + 2;
         $user->setCredits($majCredits);
         $user->removeCovoiturage($covoiturage);
 
