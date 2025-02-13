@@ -5,40 +5,32 @@
 {% block body %}
 <div>
 {% if app.user %}
-    <p class="text-center"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
+    <h3 class="text-center"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </h3>
     <br>
 {% endif %}
 <div class="dashboard d-flex flex-grow-1 ">
     <!--SideBar-->
-    <div class="d-flex flex-column flex-shrink-0 p-3 sidebar" style="width: 280px;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+    <div class="sidebar d-flex flex-column flex-shrink-0" style="width: 300px;">
+        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
             <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
             <span class="fs-4">Tableau de bord</span>
-        </a>
+        </div>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="#" class="nav-link active" aria-current="page">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                <a href="{{ path('app_home') }}" class="nav-link text-white fs-5" aria-current="page">
                     Accueil
                 </a>
             </li>
             <li>
-                <a href="{{ path('app_employe') }}" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                <a href="{{ path('app_employe') }}" class="nav-link text-white fs-5 text-start">
                     Gestion des comptes employés
                 </a>
+                
             </li>
             <li>
-                <a href="{{ path('app_utilisateur') }}" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                <a href="{{ path('app_utilisateur') }}" class="nav-link text-white fs-5 text-start">
                     Gestion des comptes utilisateurs
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-                    Evolution des crédits
                 </a>
             </li>
         </ul>
