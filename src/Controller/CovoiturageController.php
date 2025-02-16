@@ -135,7 +135,7 @@ class CovoiturageController extends AbstractController
     #[Route('/covoiturage/{id}/remove', name: 'app_covoiturage_remove' , requirements: ['id' => '\d+']) ]
 
     public function RemoveCovoiturage( Security $security,Request $request,EntityManagerInterface $entityManager,
-        SessionInterface $session, // 🔹 Injecter la session
+        SessionInterface $session, // Injecter la session
         Covoiturage $covoiturage): Response
     {
 

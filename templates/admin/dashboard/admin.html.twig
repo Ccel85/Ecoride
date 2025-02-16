@@ -8,82 +8,100 @@
     <h3 class="text-center"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </h3>
     <br>
 {% endif %}
-<div class="dashboard d-flex flex-grow-1 ">
-    <!--SideBar-->
-    <div class="sidebar d-flex flex-column flex-shrink-0" style="width: 300px;">
-        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-            <span class="fs-4">Tableau de bord</span>
+    <div class="dashboard d-flex flex-grow-1 ">
+        <!--SideBar-->
+        <div class="sidebar d-flex flex-column flex-shrink-0" style="width: 300px;">
+            <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+                <span class="fs-4">Tableau de bord</span>
+            </div>
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="{{ path('app_home') }}" class="nav-link text-white fs-5" aria-current="page">
+                        Accueil
+                    </a>
+                </li>
+                <li>
+                    <a  href="{{ path('app_employe') }}" class="nav-link text-white fs-5 text-start">
+                        Gestion des comptes employés
+                    </a>
+                    
+                </li>
+                <li>
+                    <a href="{{ path('app_utilisateur') }}" class="nav-link text-white fs-5 text-start">
+                        Gestion des comptes utilisateurs
+                    </a>
+                </li>
+                <li>
+                    <a id="chartButton"  class="nav-link text-white fs-5 text-start">
+                        Nombre de covoiturage 
+                    </a>
+                    
+                </li>
+                <li>
+                    <a id="chartCreditButton"  class="nav-link text-white fs-5 text-start">
+                        Nombre de crédits 
+                    </a>
+                    
+                </li>
+            </ul>
         </div>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="{{ path('app_home') }}" class="nav-link text-white fs-5" aria-current="page">
-                    Accueil
-                </a>
-            </li>
-            <li>
-                <a href="{{ path('app_employe') }}" class="nav-link text-white fs-5 text-start">
-                    Gestion des comptes employés
-                </a>
-                
-            </li>
-            <li>
-                <a href="{{ path('app_utilisateur') }}" class="nav-link text-white fs-5 text-start">
-                    Gestion des comptes utilisateurs
-                </a>
-            </li>
-        </ul>
-    </div>
-    <!-- Graph-->
-    <div class="container  ms-auto">
-        <div class="dashboard-content">
-            <div class="row mb-8 ">
-                <div class="col-12 col-md-6 mb-4 mb-xxl-0">
-                    <div class="card bg-body-tertiary border-transparent">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <!-- Heading -->
-                                    <h4 class="fs-sm fw-normal text-body-secondary mb-1">Nombre de Crédits</h4>
-
-                                    <!-- Text -->
-                                    <div class="fs-4 fw-semibold text-center"> {{ creditscovoiturage }} </div>
+        <!-- Graph-->
+        <div class="container  ms-auto">
+            <div class="dashboard-content">
+                <div class="row mb-8 ">
+                    <div class="col-12 col-md-6 mb-4 mb-xxl-0">
+                        <div class="card bg-body-tertiary border-transparent">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <!-- Heading -->
+                                        <h4 class="fs-sm fw-normal text-body-secondary mb-1">Nombre de Crédits</h4>
+                                        <!-- Text -->
+                                        <div class="fs-4 fw-semibold text-center"> {{ creditscovoiturage }} </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <!-- Avatar -->
+                                        <div class="avatar avatar-lg bg-body text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fs-4 duo-icon duo-icon-credit-card" data-duoicon="credit-card"><path fill="currentColor" d="M22 10v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-7h20Z" class="duoicon-secondary-layer" opacity=".3"></path><path fill="currentColor" d="M19 4a3 3 0 0 1 3 3v1H2V7a3 3 0 0 1 3-3h14Zm-1 10h-3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2Z" class="duoicon-primary-layer"></path></svg>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-auto">
-                                    <!-- Avatar -->
-                                    <div class="avatar avatar-lg bg-body text-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fs-4 duo-icon duo-icon-credit-card" data-duoicon="credit-card"><path fill="currentColor" d="M22 10v7a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3v-7h20Z" class="duoicon-secondary-layer" opacity=".3"></path><path fill="currentColor" d="M19 4a3 3 0 0 1 3 3v1H2V7a3 3 0 0 1 3-3h14Zm-1 10h-3a1 1 0 1 0 0 2h3a1 1 0 1 0 0-2Z" class="duoicon-primary-layer"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-4 mb-xxl-0">
+                        <div class="card bg-body-tertiary border-transparent">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <!-- Heading -->
+                                        <h4 class="fs-sm fw-normal text-body-secondary mb-1">Nbre de covoiturage /jour</h4>
+
+                                        <!-- Text -->
+                                        <div class="fs-4 fw-semibold">35.5 hrs</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <!-- Avatar -->
+                                        <div class="avatar avatar-lg bg-body text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fs-4 duo-icon duo-icon-clock" data-duoicon="clock"><path fill="currentColor" d="M12 4c6.928 0 11.258 7.5 7.794 13.5A8.998 8.998 0 0 1 12 22C5.072 22 .742 14.5 4.206 8.5A8.998 8.998 0 0 1 12 4Z" class="duoicon-secondary-layer" opacity=".3"></path><path fill="currentColor" d="M7.366 2.971A1 1 0 0 1 7 4.337a10.063 10.063 0 0 0-2.729 2.316 1 1 0 1 1-1.544-1.27 12.046 12.046 0 0 1 3.271-2.777 1 1 0 0 1 1.367.365h.001ZM18 2.606a12.044 12.044 0 0 1 3.272 2.776 1 1 0 0 1-1.544 1.27 10.042 10.042 0 0 0-2.729-2.315 1 1 0 0 1 1.002-1.731H18ZM12 8a1 1 0 0 0-.993.883L11 9v3.986c-.003.222.068.44.202.617l.09.104 2.106 2.105a1 1 0 0 0 1.498-1.32l-.084-.094L13 12.586V9a1 1 0 0 0-1-1Z" class="duoicon-primary-layer"></path></svg>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-md-6 mb-4 mb-xxl-0">
-                    <div class="card bg-body-tertiary border-transparent">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col">
-                                    <!-- Heading -->
-                                    <h4 class="fs-sm fw-normal text-body-secondary mb-1">Nbre de covoiturage /jour</h4>
-
-                                    <!-- Text -->
-                                    <div class="fs-4 fw-semibold">35.5 hrs</div>
-                                </div>
-                                <div class="col-auto">
-                                    <!-- Avatar -->
-                                    <div class="avatar avatar-lg bg-body text-primary">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="fs-4 duo-icon duo-icon-clock" data-duoicon="clock"><path fill="currentColor" d="M12 4c6.928 0 11.258 7.5 7.794 13.5A8.998 8.998 0 0 1 12 22C5.072 22 .742 14.5 4.206 8.5A8.998 8.998 0 0 1 12 4Z" class="duoicon-secondary-layer" opacity=".3"></path><path fill="currentColor" d="M7.366 2.971A1 1 0 0 1 7 4.337a10.063 10.063 0 0 0-2.729 2.316 1 1 0 1 1-1.544-1.27 12.046 12.046 0 0 1 3.271-2.777 1 1 0 0 1 1.367.365h.001ZM18 2.606a12.044 12.044 0 0 1 3.272 2.776 1 1 0 0 1-1.544 1.27 10.042 10.042 0 0 0-2.729-2.315 1 1 0 0 1 1.002-1.731H18ZM12 8a1 1 0 0 0-.993.883L11 9v3.986c-.003.222.068.44.202.617l.09.104 2.106 2.105a1 1 0 0 0 1.498-1.32l-.084-.094L13 12.586V9a1 1 0 0 0-1-1Z" class="duoicon-primary-layer"></path></svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="chart" class="chart d-none"style="height: 500px;">
+                    {{ render_chart(chart) }}
+                </div>
+                <div id="chartCredit" class="chart d-none" style="height: 500px;">
+                    {{ render_chart(chartCredit) }}
                 </div>
             </div>
         </div>
     </div>
 </div>
-<br>
+
 {% endblock %}

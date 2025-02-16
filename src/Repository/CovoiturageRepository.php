@@ -81,6 +81,26 @@ public function covoiturageDuree($covoiturage)
         ->getQuery()
         ->getSingleScalarResult();
     }
+
+    public function nombreCovoituragesParJour()
+{
+    return $this->createQueryBuilder('c')
+    ->select("COUNT(c.id) as total, c.dateDepart as jour") // Utilise la colonne directement sans fonction
+    ->groupBy('jour')
+    ->orderBy('jour', 'ASC')
+    ->getQuery()
+    ->getArrayResult(); // Retourne directement un tableau associatif
+}
+
+    public function creditParJour()
+    {
+        return $this->createQueryBuilder('c')
+        ->select("COUNT(c.id) as total , c.dateDepart as jour")
+        ->groupBy('jour')
+        ->orderBy('jour', 'ASC')
+        ->getQuery()
+        ->getArrayResult();
+    }
 //    public function findOneBySomeField($value): ?Covoiturage
 //    {
 //        return $this->createQueryBuilder('c')
