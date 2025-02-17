@@ -3,12 +3,11 @@
 namespace App\Controller\Admin;
 
 use DateTime;
-use DatePeriod;
-use DateInterval;
 use App\Entity\Avis;
 use App\Entity\Covoiturage;
 use Symfony\UX\Chartjs\Model\Chart;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
@@ -17,11 +16,27 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class DashboardController extends AbstractController
 {
     #[Route('/admin/dashboard/admin', name: 'app_admin_dashboard')]
-    public function admin(EntityManagerinterface $em,ChartBuilderInterface $chartBuilder): Response
+    public function admin(EntityManagerinterface $em,ChartBuilderInterface $chartBuilder,Request $request): Response
     {
         $countCovoiturages = $em->getRepository(Covoiturage::class)->nombreCovoiturages();
         $creditscovoiturage = $countCovoiturages * 2;
+        $month = $request->query->get('month');
         
+        if($month){
+            
+            try{
+                $year=2025;
+                $totalMois = $em->getRepository(Covoiturage::class)->nombreCovoituragesDuMois($year,$month);
+        
+            } catch (\Exception $e) {
+                    $this->addFlash('error', 'Date invalide.');
+                    
+                }
+            } else {
+
+                $totalMois = 0;
+            }
+
         $covoiturages = $em->getRepository(Covoiturage::class);
         $result = $covoiturages->nombreCovoituragesParJour();
         $credits = $covoiturages->creditParJour();
@@ -38,13 +53,13 @@ class DashboardController extends AbstractController
             $data['credits'][]=$row['total'] * 2;
         }
         //création du graphique
-        $chart = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $chart->setData([
             'labels' =>$data['labels'],
             'datasets' => [
                 [
                     'label' => 'Nombre de covoiturage par jour',
-                    'backgroundColor' => ' #39B54E',
+                    'backgroundColor' => ' #89DF98',
                     'borderColor' =>' #39B54E',
                     'data' =>$data['values'],
                 ],
@@ -58,6 +73,15 @@ class DashboardController extends AbstractController
                     'suggestedMax' =>'total',
                 ],
             ],
+            'plugins' => [
+                'legend' => [
+                    'labels' => [
+                        'font' => [
+                            'size' => 20
+                        ]
+                    ]
+                ]
+            ],
         ]);
 
         //création du graphique
@@ -67,7 +91,7 @@ class DashboardController extends AbstractController
             'datasets' => [
                 [
                     'label' => 'Nombre de crédit par jour',
-                    'backgroundColor' => ' #39B54E',
+                    'backgroundColor' => ' #89DF98',
                     'borderColor' =>' #39B54E',
                     'data' =>$data['credits'],
                 ],
@@ -81,13 +105,26 @@ class DashboardController extends AbstractController
                     'suggestedMax' =>'total',
                 ],
             ],
-        ]); 
+            'plugins' => [
+                'legend' => [
+                    'labels' => [
+                        'font' => [
+                            'size' => 20
+                        ]
+                    ]
+                ]
+            ],
+        ]);
 
 
         return $this->render('admin/dashboard/admin.html.twig',[
             'creditscovoiturage' => $creditscovoiturage,
             'chart'=>$chart,
             'chartCredit'=>$chartCredit,
+            'credit'=>$credits,
+            'totalMois'=>$totalMois,
+            'month'=>$month,
+            
         ]);
     }
 

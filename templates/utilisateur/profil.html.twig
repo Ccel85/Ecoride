@@ -4,6 +4,14 @@
 {% block title %}Profil utilisateur{% endblock %}
 
 {% block body %}
+<div class="container">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
+        <li class="breadcrumb-item "><a href= "{{ path('app_covoiturage') }}">Liste des covoiturages</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Profil {{utilisateur.pseudo }}</li>
+    </ol>
+  </nav>
   {# Page profil #}
   <div class="page-profil d-flex flex-column align-items-center justify-content-center g-2 p-4">
     {% if id is defined and id > 0 %}
@@ -398,5 +406,5 @@
     {% endif %}
     </div>
   </div>
-    
+</div>
   {% endblock %}

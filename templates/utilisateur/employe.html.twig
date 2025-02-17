@@ -3,11 +3,19 @@
 {% block title %}Liste des employés {% endblock %}
 
 {% block body %}
+<div class="container">
 {% if employes is empty %}
     <div>
         <p>Il n'y a pas d'utilisateurs d'enregistré </p>
     </div>
 {% else %}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href= "{{ path('app_admin_dashboard') }}">Tableau de bord </a></li>
+        <li class="breadcrumb-item active" aria-current="page">Liste des employés </li>
+      </ol>
+    </nav>
     <div class="card m-8 mb-xxl-0">
         <div class=" header-list card-header">
             <div class="row align-items-center">
@@ -60,5 +68,6 @@
             </table>
         </div>
     </div>
+  </div>
 {% endif %}
 {% endblock %}

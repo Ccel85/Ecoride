@@ -65,7 +65,7 @@
     .sidebar {
         background-color: #324D4D;
 
-        width: 280px;
+        width: 250px;
         
     }
     /*.dashboard-content {
@@ -123,8 +123,10 @@ div.cards{
     height: 4rem;
 }
 
-.check{
+.check , .cardText{
     color:#39B54E;
 }
-
+.admin-card{
+    height: 240px !important;
+}
 

@@ -3,6 +3,13 @@
 {% block title %}Les covoiturages{% endblock %}
 
 {% block body %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Liste des covoiturages</li>
+        </ol>
+    </nav>
 <!--Barre de recherche -->
     <h4 class="text-center">Rechercher un voyage</h4>
     <form method="get" action="{{ path('app_covoiturage_recherche') }}" class="d-flex bg-body-tertiary justify-content-evenly align-items-center flex-wrap mb-4">
@@ -118,5 +125,6 @@
             {% endif %}
         {% endfor %}
     </div>
+</div>
 {% endif %}
 {% endblock %}

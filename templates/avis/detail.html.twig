@@ -4,6 +4,13 @@
 
 {% block body %}
   <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href= "{{ path('app_employe_dashboard') }}">Tableau de bord</a></li>
+        <li class="breadcrumb-item"><a href= "{{ path('app_avis') }}">Liste des avis</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Avis</li>
+      </ol>
+    </nav>
     <div>
       <a class="btn btn-success mx-4" href= "{{ path('app_employe_dashboard') }}" >Retour</a>
       <p class="text-center fw-bold">Voyage effectué le <span>{{ covoiturage.dateDepart|date('d-m-Y') }}</span> à <span> {{ covoiturage.heureDepart|date('H:i') }}</span>

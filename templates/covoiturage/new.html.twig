@@ -4,6 +4,12 @@
 
 {% block body %}
 <div class="container p-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Création d'un voyage </li>
+        </ol>
+        </nav>
     <h1 class="text-center p-4">Création de covoiturage</h1>
     <div class="form-group w-50 m-auto">
 
