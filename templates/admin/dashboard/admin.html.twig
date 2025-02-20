@@ -91,11 +91,18 @@
                         </div>
                     </div>
                 </div>
-                <div id="chart" class="chart d-none"style="height: 500px;">
-                    {{ render_chart(chart) }}
-                </div>
-                <div id="chartCredit" class="chart d-none" style="height: 500px;">
-                    {{ render_chart(chartCredit) }}
+                <div class="chart">
+                  {#   {% for year in yearPeriod %}
+                    <select>
+                        <option>{{year}}</option>
+                    </select>
+                    {% endfor %} #}
+                    <div id="chart" class="chart d-none"style="height: 500px;">
+                        {{ render_chart(chart) }}
+                    </div>
+                    <div id="chartCredit" class="chart d-none" style="height: 500px;">
+                        {{ render_chart(chartCredit) }}
+                    </div>
                 </div>
             </div>
         </div>

@@ -82,15 +82,22 @@ public function covoiturageDuree($covoiturage)
         ->getSingleScalarResult();
     }
 
-    public function nombreCovoituragesParJour()
-{
-    return $this->createQueryBuilder('c')
-    ->select("COUNT(c.id) as total, c.dateDepart as jour") 
-    ->groupBy('jour')
-    ->orderBy('jour', 'ASC')
-    ->getQuery()
-    ->getArrayResult(); // Retourne un tableau associatif
-}
+    public function nombreCovoituragesParJour($year, $month)
+    {
+        $start = new \DateTime("first day of $year-$month");
+        $end = new \DateTime("last day of $year-$month");
+
+        return $this->createQueryBuilder('c')
+            ->select('c.dateDepart AS jour, COUNT(c.id) AS total')
+            ->where('c.dateDepart BETWEEN :start AND :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->groupBy('jour')
+            ->orderBy('jour', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+
+    }
 
 public function nombreCovoituragesDuMois($year,$month)
 {
