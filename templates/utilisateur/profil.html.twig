@@ -13,7 +13,7 @@
     </ol>
   </nav>
   {# Page profil #}
-  <div class="page-profil d-flex flex-column align-items-center justify-content-center g-2 p-4">
+  <div class="page-profil d-flex flex-column align-items-center justify-content-center w-100 ">
     {% if id is defined and id > 0 %}
       <div class="card container m-4 profil" >
         <div class="card-header row justify-content-evenly align-items-center">
@@ -36,7 +36,7 @@
         <!-- body -->
         <div class="card-body p-0">
           <div class="row justify-content-around ">
-            <div class="infoUser col-6" >
+            <div class="infoUser col-md-6 col-12" >
               <ul>
                 <li>Membre depuis {{ utilisateur.createdAt | date ('Y')}} </li>
               {% if utilisateur.isConducteur == 1 and utilisateur.isPassager == 0 %}
@@ -325,14 +325,16 @@
                     {{ covoiturage.lieuDepart }}
                     </div>
                   </div>
-                  <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Premier cercle -->
-                    <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
-                    <!-- Ligne -->
-                    <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
-                    <!-- Deuxième cercle -->
-                    <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
-                  </svg>
+                  <div class="w-50">
+                    <svg  viewBox="0 0 400 100" class="w-100 h-auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Premier cercle -->
+                        <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+                        <!-- Ligne -->
+                        <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
+                        <!-- Deuxième cercle -->
+                        <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+                    </svg>
+                  </div>
                   <div class="arrivée d-flex flex-column text-center">
                     <div class="fs-3 fw-bold">
                     {{ covoiturage.heureArrivee|date('H:i') }}

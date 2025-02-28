@@ -5,27 +5,28 @@
 {% block body %}
 <div class="container p-4">
     <h1 class="text-center p-4">Ajout d'avis</h1>
-    <div class="form-group w-50 m-auto">
+    <div class="row">
+        <div class="form-group col-12 col-md-6 m-auto">
 
-        {{ form_errors(form) }}
-        
-        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            
+            {{ form_start(form) }}
 
-        {{ form_row(form.comments, {
-            'label': 'votre commentaire',
-            'attr': {'class': 'form-control','rows': '4'}
-        }) }}
+            {{ form_row(form.comments, {
+                'label': 'votre commentaire',
+                'attr': {'class': 'form-control','rows': '4'}
+            }) }}
 
-        {{ form_row(form.rateComments, {
-            'label': 'Votre note',
-            'attr': {'class': 'form-control'}
-        }) }}
-        <div class="d-flex justify-content-evenly">
-            <button type="submit" class="btn btn-success ">Enregistrer</button>
-        {{ form_end(form) }}
+            {{ form_row(form.rateComments, {
+                'label': 'Votre note',
+                'attr': {'class': 'form-control'}
+            }) }}
+            <div class="d-flex justify-content-evenly">
+                <button type="submit" class="btn btn-success ">Enregistrer</button>
+            {{ form_end(form) }}
 
-        <button class="btn btn-success" href="{{ path('app_profil') }}" >
-        Retour</button>
+            <button class="btn btn-success" href="{{ path('app_profil') }}" >
+            Retour</button>
         </div>
     </div>
 </div>

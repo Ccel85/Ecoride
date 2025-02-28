@@ -55,10 +55,10 @@
                         </td>
                         <td>
                           {% if employe.isActif %}
-                          <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': employe.id }) }}">Archiver
+                          <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': employe.id }) }}"><p class="d-none d-lg-inline text-white m-1">Archiver</p>
                           <i class="bi bi-sign-stop"></i></a>
                           {% else %}
-                          <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': employe.id }) }}">Activer
+                          <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': employe.id }) }}"><p class="d-none d-lg-inline text-white m-1">Activer</p>
                           <i class="bi bi-check-lg"></i></a>
                         </td>
                         {% endif %}

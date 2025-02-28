@@ -3,95 +3,45 @@
 {% block title %}Avis à traiter{% endblock %}
 
 {% block body %}
-<div class="container mb-4">
+<div class="container-fluid mb-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href= "{{ path('app_employe_dashboard') }}">Tableau de bord</a></li>
             <li class="breadcrumb-item active" aria-current="page"> Liste des avis</li>
         </ol>
     </nav>
-    <div class="avis row mx-4">
-        <div class=" avis " >
-            <a class="btn btn-success mx-4" href= "{{path('app_employe_dashboard')}}" >Retour</a>
+    <div class="row mx-4">
+        <div class="avis">
+            <a class="btn btn-success mb-3" href= "{{path('app_employe_dashboard')}}" >Retour</a>
             {% if invalidComments is empty %}
             <h5 class="text-decoration-underline text-center"> Gestion des avis:</h5>
             <p class="text-center">Il n'y a pas de nouveaux avis.</p>
             {% else %}
-            <h4 class="text-decoration-underline text-center"> Gestion des avis clients:</h4>
-            <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
-            {% for commentaire in invalidComments %}
-            <div class="card  mb-3 p-3">
-                <div class="rate d-flex align-items-center justify-content-between">
-                <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
-                </div>
-                <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
-                </div>
-                <div>
-                <p class="text-truncate">{{ commentaire.comments }}</p>
-                </div>
-                <div class="d-flex justify-content-between align-items-end">
-                <div>
-                    <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
-                </div>
-                <div class="d-flex flex-column align-items-center ">
-                    <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
-                    <div class="form-check form-switch m-2  ">
-                        <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
-                        <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
-                    </div> 
-                    <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
-                        <i class="bi bi-trash3"></i>
-                    </a>
+            <h4 class="text-decoration-underline text-center mb-4"> Gestion des avis clients:</h4>
+                <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
+                    {% for commentaire in invalidComments %}
+                    <div class="card d-flex align-items-center justify-content-md-evenly flex-md-row mb-3 p-3">
+                        <div class="rate">
+                            <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
+                            <p class="text-secondary fs-7 mb-2">Le {{ commentaire.createdAt|date('d-m-Y') }}</p>
+                            <p class="text-truncate text-wrap">{{ commentaire.comments }}</p>
+                            <a class="btn btn-success " href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
+                        </div>
+                        <div class="d-flex flex-column ">
+                            <p class='text-decoration-underline mb-1 fs-7'>Valider l'avis:</p>
+                            <div class="form-check form-switch m-2  ">
+                                <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
+                                <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
+                            </div> 
+                            <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
+                            <i class="bi bi-trash3"></i></a>
+                        </div>
                     </div>
-                </div>
-            </div>
-            {% endfor %}
+                    {% endfor %}
+                </form>
             {% endif %}
-            <div>
-                <button type="submit" id="avisValidateAvis" class="btn btn-success">Valider les avis</button>
-            </div >
-            </form>
-        </div>
-        {# {% endif %} #}
-       {#  <div class=" signalement col-6">
-        {% if signalComments is empty %}
-            <h5 class="text-decoration-underline text-center"> Gestion des signalements:</h5>
-            <p class="text-center">Il n'y a pas de signalements.</p>
-            {% else %}
-            <h5 class="text-decoration-underline text-center"> Gestion des signalements:</h5>
-            <a href="#">Voir tout</a>
-            <form method="post"  id="avisFormSignalement" action="{{ path('app_avis_update') }}">
-            {% for signalComment in signalComments %}
-            <div class="card mb-3 p-3">
-                <div class="rate d-flex align-items-center justify-content-between">
-                <i class="bi bi-star-fill star"> {{ signalComment.rateComments }}/5</i>
-                </div>
-                <div class="text-secondary fs-7">Le {{ signalComment.createdAt|date('d-m-Y') }}
-                </div>
-                <div>
-                <p>{{ signalComment.comments }}</p>
-                </div>
-                <div class=" btnsignal d-flex justify-content-between align-items-end">
-                <div class="btnDetails">
-                    <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':signalComment.id }) }}"> Détails</a>
-                </div>
-                <div class=" btnCheckRemove d-flex flex-column align-items-center ">
-                    <div class="form-check form-switch m-2  ">
-                    <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ signalComment.id }}" id="isValid_{{ signalComment.id }}"  >
-                    <label class="form-check-label" for="isValid_{{ signalComment.id }}"></label>
-                    </div> 
-                    <a class="btn btn-danger" name="removeAvis" id="removeAvis" data-url="{{ path('app_avis_remove', {'id': signalComment.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
-                        <i class="bi bi-trash3"></i>
-                    </a>
-                </div>
-                </div>
-            </div>
-            <div>
-                <button type="submit" id="avisValidateSignalement" class="btn btn-success">Valider les signalements</button>
-            </div > #}
-            {#  {% endfor %} #}
-            </form>
-        </div>
-    </div>
+        <div>
+        <button type="submit" id="avisValidateAvis" class="btn btn-success m-2">Valider les avis</button>
+    </div >
 </div>
 {% endblock %}

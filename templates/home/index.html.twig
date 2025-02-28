@@ -3,13 +3,14 @@
 {% block title %}Ecoride-Accueil{% endblock %}
 
 {% block body %}
-{% if app.user %}
-<h3 class="ps-5 ">Bonjour <span>{{app.user.prenom}}</span>, commencez votre voyage ici!</h3>
-{% endif %}
-<hr>
+<div>
+    {% if app.user %}
+        <h3 class="ps-5 text-center text-md-start ">Bonjour <span>{{app.user.prenom}}</span>, commencez votre voyage ici!</h3>
+    {% endif %}
+        <hr>
     <!--Barre de recherche -->
     <h4 class="text-center">Rechercher un voyage</h4>
-    <form method="get" action="{{ path('app_covoiturage_recherche') }}" class="d-flex bg-body-tertiary justify-content-around align-items-center flex-wrap">
+    <form method="get" action="{{ path('app_covoiturage_recherche') }}" class="d-flex bg-body-tertiary justify-content-around align-items-center flex-column flex-lg-row">
         <div class="d-flex align-items-center p-2 mb-2 "role="search" aria-label="date">
             <i class="bi bi-calendar-event icon-hover px-2"></i>
             <input name="date" type="date" class="form-control" placeholder="Date" aria-label="date">
@@ -29,16 +30,21 @@
         <button type="submit" class="btn p-0 mx-3">
             <i class="bi bi-search icon-hover "></i></button>
     </form>
-<hr>
+    <hr>
     <!-- Hero -->
-    <div class="px-4 py-5 text-center d-flex align-items-center">
-        <img class="d-block mx-auto mb-4" src="{{ asset('logo/covoiturage.png') }}" alt="" width="580" height="400">
-        <div class="col-lg-6 mx-auto align-items-center">
-            <p class="lead mb-4">Concevez et personnalisez rapidement des sites mobiles réactifs avec Bootstrap, la boîte à outils open source front-end la plus populaire au monde, comprenant des variables et des mixins Sass, un système de grille réactif, de nombreux composants prédéfinis et de puissants plugins JavaScript.</font></font></p>
-            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-                <a type="button" href="{{path('app_covoiturage_recherche')}}" class="btn btn-outline-secondary btn-lg px-4">Rechercher un voyage</a>
-                <a type="button" href="{{path('app_covoiturage_new')}}" class="btn btn-outline-secondary btn-lg px-4"> Créer un voyage</a>
+    <div class="container py-4">
+        <div class="row align-items-center text-center text-lg-start">
+            <div class="col-12 col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
+                <img class="img-fluid" src="{{ asset('logo/covoiturage.png') }}" alt="ecoRide" width-max="580" height="auto">
+            </div>
+            <div class="col-12 col-lg-6">
+                <p class="lead mb-4">Concevez et personnalisez rapidement des sites mobiles réactifs avec Bootstrap, la boîte à outils open source front-end la plus populaire au monde, comprenant des variables et des mixins Sass, un système de grille réactif, de nombreux composants prédéfinis et de puissants plugins JavaScript.</font></font></p>
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center justify-content-lg-start">
+                    <a href="{{path('app_covoiturage_recherche')}}" class="btn btn-outline-secondary btn-lg">Rechercher un voyage</a>
+                    <a href="{{path('app_covoiturage_new')}}" class="btn btn-outline-secondary btn-lg"> Créer un voyage</a>
+                </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

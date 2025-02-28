@@ -8,12 +8,42 @@
     <p class="text-center fs-4 p-2"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
     <br>
   {% endif %}
-  <div class="dashboard d-flex flex-grow-1 position relative mb-4">
+  <div class="dashboard d-md-flex d-flex-column flex-grow-1 position relative mb-4">
+  {# Dropdown #}
+    <div class="dropdown text-down position-relative d-lg-none">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+        <svg class="bi pe-none me-2" width="40" height="32"></svg>
+        <span class="fs-6">Tableau de bord</span>
+      </a>
+      <ul class="dropdown-menu text-small">
+        {# <ul class="nav nav-pills flex-column mb-auto"> #}
+        <li><a href="{{ path('app_home') }}" class="dropdown-item text-white fs-5" aria-current="page">
+        {# <svg class="bi pe-none me-2" width="16" height="16">
+        </svg> #}
+        Accueil
+        </a></li>
+          {# <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li> #}
+        <li><a href="{{ path('app_avis') }}" class="dropdown-item text-white fs-5" aria-current="page">
+          Gestion des avis
+          <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
+          </a>
+        </li>
+        <li><a href="{{ path('app_signalement') }}" class="dropdown-item text-white fs-5 text-start">
+                  Signalement à traiter
+                <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
+                </a>
+            </li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+      </ul>
+    </div>
+{#  Fin du dropdown #}
     <!--SideBar-->
-    <div class="sidebar d-flex flex-column flex-shrink-0" style="width: 300px;">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-            <span class="fs-4">Tableau de bord</span>
+    <div class="sidebar d-none d-md-flex flex-column flex-shrink-0" style="width: 300px;">
+        <a href="{{ path('app_home') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <svg class="bi pe-none me-2" width="16" height="16">
+                    </svg>
+            <span class="fs-4 text-center">Tableau de bord</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">

@@ -3,7 +3,7 @@
 {% block title %}Création de voyage{% endblock %}
 
 {% block body %}
-<div class="container p-4">
+<div class="container-fluid p-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
@@ -11,7 +11,7 @@
         </ol>
         </nav>
     <h1 class="text-center p-4">Création de covoiturage</h1>
-    <div class="form-group w-50 m-auto">
+    <div class="form-group w-75 w-md-50 m-auto">
 
         {{ form_errors(form) }}
         
@@ -58,8 +58,7 @@
         <div class="d-flex justify-content-evenly">
             <button type="submit" class="btn btn-success ">Enregistrer</button>
         {{ form_end(form) }}
-            <button class="btn btn-success" href="{{ path('app_profil') }}" >
-            Retour</button>
+            <a href="{{ path('app_profil') }}" class="btn btn-success">Retour</a>
         </div>
     </div>
     

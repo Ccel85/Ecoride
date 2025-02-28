@@ -1,16 +1,29 @@
-    html , body {
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+        
+    body {
         background-color: #FFFFFF;
         height: 100%; /* Permet d'occuper toute la hauteur de la page */
         margin: 0;
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        min-height: 100vh;
+        grid-template-rows: auto 1fr auto;
     }
 
-    .containerHtml {
-        flex: 1 !important;/* Permet au contenu de s'étendre pour pousser le footer en bas */
+   /*  .containerHtml {
+        flex: 1 !important;/* Permet au contenu de s'étendre pour pousser le footer en bas 
         display: flex;
         flex-direction: column;
-    } 
+    }  */
+
+    header{
+        position:relative;
+        padding-bottom:10px;
+        width: 100%;
+    }
 
     span {
     color :#39B54E;
@@ -29,13 +42,13 @@
     }
     
     .logo img {
-        width:200px;
-        height: 125px;
+        width:300px;
+        height: 200px;
     }
     .navbarHeader{
         font-size: 24px;
     }
-    .navbarHeader, footer{
+    .navbarHeader, footer ,.navBar{
         background-color: #324D4D;
         font-style:normal;
         font-family: "agbalumo", "arial", sans-serif;
@@ -43,28 +56,22 @@
         max-width: 100% !important;
     }
     
-    .navBar{
-        justify-content:space-between;
-        
-    }
-    
     .logoFooter img{
         width:3rem;
         
     }
-    .icon-hover:hover, a:hover,.lien:hover, button i:hover, font:hover {
-        color: #FFDD00; /* Change la couleur en rouge */
+    .icon-hover:hover, a:hover,.lien:hover, button i:hover, font:hover , .dropdown-item:hover {
+        color: #FFDD00 !important; /* Change la couleur en rouge */
         cursor: pointer; /* Change le curseur pour indiquer une interaction */
     }
     .custom-links {
-        color: #FFFFFF; /* Blanc */
+        color: #FFFFFF; 
         text-decoration: none; /* Supprime le soulignement */
     }
 
     /* dashboard */
     .sidebar {
         background-color: #324D4D;
-
         width: 250px;
         
     }
@@ -95,8 +102,8 @@
 }
 /* fiche profil */
 .avatar, i.avatar{
-    width: 100px;
-    height: 100px;
+    width: 70px;
+    height: 70px;
 }
 
 .page-profil{
@@ -110,16 +117,15 @@
     background-color: #39B54E !important; 
     color:#FFFFFF ;
 }
-div.cards{
+/* div.cards{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-}
+} */
 .card-header{
     height: 8rem;
 }
 
 .header-list{
-
     height: 4rem;
 }
 
@@ -128,5 +134,50 @@ div.cards{
 }
 .admin-card{
     height: 240px !important;
+}
+
+/* Ajouter une media query pour les écrans moyen */
+/* @media (max-width: 576px) {
+.logoFooter{
+justify-content: center !important;
+
+}
+} */
+
+/*Ajouter une media query les écrans plus petits */
+@media (max-width: 576px) {
+
+.row img {
+
+width: 70px;
+height: 70px;
+
+}
+.infoUser{
+    font-size: 0.8rem !important;
+    }
+.conducteurInfo,.passagerInfo{
+font-size: 1rem !important;
+}
+
+.email{
+    font-size: 0.8rem !important;
+    }
+.lead{
+font-size:1rem;
+
+}
+table{
+    font-size:0.8rem;
+}
+.avis{
+    width: auto !important;
+}
+
+/* div.cards{
+
+    display:grid;
+    grid-template-columns: auto;
+} */
 }
 

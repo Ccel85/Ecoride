@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use DateTime;
 use DatePeriod;
 use DateInterval;
+use DateTimeZone;
 use App\Entity\Avis;
 use App\Entity\Covoiturage;
 use Symfony\UX\Chartjs\Model\Chart;
@@ -20,28 +21,24 @@ class DashboardController extends AbstractController
     #[Route('/admin/dashboard/admin', name: 'app_admin_dashboard')]
     public function admin(EntityManagerinterface $em,ChartBuilderInterface $chartBuilder,Request $request): Response
     {
-        //test
+    
     $covoiturages = $em->getRepository(Covoiturage::class);
+    $month = $request->query->get('month', (new \DateTime())->format('m'));
+    $year = 2025;
+    
     $countCovoiturages = $covoiturages->nombreCovoiturages();
     $creditscovoiturage = $countCovoiturages * 2;
-    $month = $request->query->get('month');
-    $year = 2025;
-   /*  $yearEnd = new \Datetime('Y');
-    $yearStart = $yearEnd->modify('-2 year') ;
-    $interval = new \DateInterval('P1Y');
-    $yearPeriod = new \DatePeriod($yearStart,$interval,$yearEnd->modify('+1 year')); */
-    
-        // nombre de covoiturage par mois
-        $totalMois = $month ? $em->getRepository(Covoiturage::class)->nombreCovoituragesDuMois($year, $month) : 0;
-        // nombre de covoiturage par jour
-        $resultData = $covoiturages->nombreCovoituragesParJour($year, $month) ?: [];
-
+    // nombre de covoiturage par mois
+    $totalMois = $month ? $covoiturages->nombreCovoituragesDuMois($year, $month) : 0;
+    // nombre de covoiturage par jour
+    $resultData =  $covoiturages->nombreCovoituragesParJour($year, $month) ?: [];
 
     $result = [];
     foreach ($resultData as $row) {
         $dateKey = $row['jour']->format('d-m-Y');
         $result[$dateKey] = $row;
     }
+
 
     // date
     $start = new \DateTime("first day of $year-$month");
@@ -59,7 +56,7 @@ class DashboardController extends AbstractController
         $data['values'][] = isset($result[$formattedDate]) ? $result[$formattedDate]['total'] : 0;
         $data['credits'][] = isset($result[$formattedDate]) ? $result[$formattedDate]['total'] * 2 : 0;
     }
-        //création du graphique
+        //création du graphique COVOITURAGE / jour
         $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $chart->setData([
             'labels' =>$data['labels'],
@@ -97,7 +94,7 @@ class DashboardController extends AbstractController
             ],
         ]);
 
-        //création du graphique
+        //création du graphique CREDITS
         $chartCredit = $chartBuilder->createChart(Chart::TYPE_LINE);
         $chartCredit->setData([
             'labels' =>$data['labels'],
