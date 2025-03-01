@@ -14,7 +14,7 @@
     <div>
       <a class="btn btn-success mx-4" href= "{{path('app_covoiturage')}}" >Retour</a>
       <p class="text-center">Voyage prévu le <span>{{ covoiturage.dateDepart|date('d-m-Y') }}</span> à <span> {{ covoiturage.heureDepart|date('H:i') }}</span>
-      au départ de <span> {{ covoiturage.lieuDepart }}</span> .</p>
+      au départ de <span> {{ covoiturage.lieuDepart|capitalize }}</span> .</p>
     </div>
     <div class="card container m-4 ">
       <div class="text-decoration-underline text-secondary ">
@@ -28,7 +28,7 @@
                 {{ covoiturage.heureDepart|date('H:i') }}
               </div>
               <div class="fs-3 fw-bold">
-                {{ covoiturage.lieuDepart }}
+                {{ covoiturage.lieuDepart|capitalize }}
               </div>
             </div>
             <svg width="400" height="100" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +44,7 @@
                 {{ covoiturage.heureArrivee|date('H:i') }}
                 </div>
                 <div class="fs-3 fw-bold">
-                {{ covoiturage.lieuArrivee }}
+                {{ covoiturage.lieuArrivee|capitalize }}
                 </div>
             </div>
             <div id="app" data-user="{{ app.user ? '1' : '0' }}"></div>
@@ -61,7 +61,7 @@
         <img src="{{ asset('download/'~ conducteur.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
         <div class="col-6 text-center">
           <h3 class="card-title text-center">Conducteur:</h3>
-          <h3 class="card-text text-center">{{conducteur.prenom}}</h3>
+          <h3 class="card-text text-center">{{conducteur.prenom|capitalize}}</h3>
         </div>
       </div>
       <!-- body -->
@@ -78,10 +78,10 @@
                 <li>Pas de véhicule enregistré.</li>
                 {% else %}
                     <p class="text-decoration-underline">Voiture utilisée:</p>
-                    <li>{{ covoiturage.voiture.constructeur }} {{ covoiturage.voiture.modele }}</li>
+                    <li>{{ covoiturage.voiture.constructeur|capitalize }} {{ covoiturage.voiture.modele|capitalize }}</li>
                     <li>Immatriculé: {{covoiturage.voiture.immat }} </li>
                     <li>Date de 1ère mise en circulation: {{covoiturage.voiture.firstImmat|date('d-m-Y') }} </li>
-                    <li>Energie: {{ covoiturage.voiture.energie }} </li>
+                    <li>Energie: {{ covoiturage.voiture.energie|capitalize }} </li>
                     <div  class="d-flex align-items-center">
                       <li class="m-0">Trajet écologique:</li>
                       {% if covoiturage.voiture.energie == 'Electrique' %}

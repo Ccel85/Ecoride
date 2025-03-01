@@ -3,6 +3,7 @@
 {% block title %}Avis à traiter{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_EMPLOYE')%}
 <div class="container mb-4">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
@@ -53,4 +54,9 @@
         </div>
     </div>
 </div>
+{% else %}
+    <div class="alert  alert-danger" role="alert">
+    Vous n'avez pas accès à cette page.
+    </div>
+{% endif %}
 {% endblock %}

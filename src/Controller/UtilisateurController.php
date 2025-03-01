@@ -144,7 +144,6 @@ class UtilisateurController extends AbstractController
 
         $dateAujourdhui = false;
         $isValidateUser = false;
-        /* $signalComment = null; */
         $avisUserExiste = false;
         $avisUser = null;
 
@@ -159,10 +158,10 @@ class UtilisateurController extends AbstractController
                 if ($dateAujourdhui){
                     $dateAujourdhui = $covoiturage->setDateAujourdhui($dateAujourdhui);
                 }
-                /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
+
                 // Affiche tous les covoiturages validés par l'utilisateur
-                 // Vérifie si le covoiturage en question est validé
                 if ($isValidateUser = $validatedCovoiturages->contains($covoiturage)){
+                    // Vérifie si le covoiturage en question est validé
                 $isValidateUser = true;
                 break;
                 }
@@ -172,23 +171,9 @@ class UtilisateurController extends AbstractController
 
         $avisUser = $avisRepository->findOneBy([
             'passager' => $user,
-            'covoiturage' => $covoiturage
         ]);
         
         $avisUserExiste = $avisUser !== null;
-/* 
-        $signalComment = $avisRepository->findOneBy([
-            'isSignal' => true,
-            'passager' => $utilisateur,
-            'covoiturage' => $covoiturage
-        ]); */
-        /* dump($utilisateur); // Vérifie que l'utilisateur est bien récupéré
-        dump($covoiturage); // Vérifie que le covoiturage existe
-        dump($avisRepository->findBy(['passager' => $utilisateur])); // Vérifie s'il y a des avis pour cet utilisateur
-        dump($avisRepository->findBy(['covoiturage' => $covoiturage])); // Vérifie s'il y a des avis pour ce covoiturage
-        die(); */
-       /*  dump($avisUser, $avisUserExiste);
-die(); */ //  Arrête l'exécution pour voir le résultat
 
             return $this->render('utilisateur/profil.html.twig', [
                 'utilisateur' => $user,
@@ -216,6 +201,8 @@ die(); */ //  Arrête l'exécution pour voir le résultat
         
         // Récuperation des données:
         $covoiturages = $user->getCovoiturage();
+        
+
         $observations = $user->getObservation();
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $rateUser =round($em->getRepository(Avis::class)->rateUser($user),1);

@@ -60,7 +60,7 @@
         width:3rem;
         
     }
-    .icon-hover:hover, a:hover,.lien:hover, button i:hover, font:hover , .dropdown-item:hover {
+    .icon-hover:hover,header a:hover,.lien:hover, button i:hover, font:hover , .dropdown-item:hover {
         color: #FFDD00 !important; /* Change la couleur en rouge */
         cursor: pointer; /* Change le curseur pour indiquer une interaction */
     }

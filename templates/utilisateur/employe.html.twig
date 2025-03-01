@@ -3,71 +3,77 @@
 {% block title %}Liste des employés {% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN')%}
 <div class="container">
-{% if employes is empty %}
-    <div>
-        <p>Il n'y a pas d'utilisateurs d'enregistré </p>
-    </div>
-{% else %}
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
-        <li class="breadcrumb-item"><a href= "{{ path('app_admin_dashboard') }}">Tableau de bord </a></li>
-        <li class="breadcrumb-item active" aria-current="page">Liste des employés </li>
-      </ol>
-    </nav>
-    <div class="card m-8 mb-xxl-0">
-        <div class=" header-list card-header">
-            <div class="row align-items-center">
-                <div class="d-flex justify-content-around">
-                    <h3 class="fs-10 mb-0">Liste des employés</h3>
-                    <a class="btn btn-info " href="{{path('app_admin_register')}}">Ajouter
-                    <i class="bi bi-plus"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-flush align-middle mb-0">
-                <thead>
-                    <tr>
-                    <th class="fs-sm">Nom</th>
-                    <th class="fs-sm">Email</th>
-                    <th class="fs-sm">Status</th>
-                    <th class="fs-sm">Action</th>
-                </tr></thead>
-                <tbody>
-                {% for employe in employes %}
-                    <tr>
-                        <td>
-                          <div class="d-flex align-items-center">
-                            <div class="">
-                              <div>{{employe.nom}}</div>
-                              <div class="fs-sm text-body-secondary">{{employe.prenom}}</div>
+  {% if employes is empty %}
+      <div>
+          <p>Il n'y a pas d'utilisateurs d'enregistré </p>
+      </div>
+  {% else %}
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href= "{{ path('app_admin_dashboard') }}">Tableau de bord </a></li>
+          <li class="breadcrumb-item active" aria-current="page">Liste des employés </li>
+        </ol>
+      </nav>
+      <div class="card m-8 mb-xxl-0">
+          <div class=" header-list card-header">
+              <div class="row align-items-center">
+                  <div class="d-flex justify-content-around">
+                      <h3 class="fs-10 mb-0">Liste des employés</h3>
+                      <a class="btn btn-info " href="{{path('app_admin_register')}}">Ajouter
+                      <i class="bi bi-plus"></i></a>
+                  </div>
+              </div>
+          </div>
+          <div class="table-responsive">
+              <table class="table table-flush align-middle mb-0">
+                  <thead>
+                      <tr>
+                      <th class="fs-sm">Nom</th>
+                      <th class="fs-sm">Email</th>
+                      <th class="fs-sm">Status</th>
+                      <th class="fs-sm">Action</th>
+                  </tr></thead>
+                  <tbody>
+                  {% for employe in employes %}
+                      <tr>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <div class="">
+                                <div>{{employe.nom|capitalize}}</div>
+                                <div class="fs-sm text-body-secondary">{{employe.prenom|capitalize}}</div>
+                              </div>
                             </div>
-                          </div>
-                        </td>
-                        <td>
-                          <div class="d-flex align-items-center text-nowrap">{{employe.email}}
-                          </div>
-                        </td>
-                        <td>
-                          <span class="badge {{ employe.isactif ? 'bg-success' : 'bg-danger' }} ">{{employe.isactif ? 'Actif' : 'Inactif'}} </span>
-                        </td>
-                        <td>
-                          {% if employe.isActif %}
-                          <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': employe.id }) }}"><p class="d-none d-lg-inline text-white m-1">Archiver</p>
-                          <i class="bi bi-sign-stop"></i></a>
-                          {% else %}
-                          <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': employe.id }) }}"><p class="d-none d-lg-inline text-white m-1">Activer</p>
-                          <i class="bi bi-check-lg"></i></a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                          </td>
+                          <td>
+                            <div class="d-flex align-items-center text-nowrap">{{employe.email}}
+                            </div>
+                          </td>
+                          <td>
+                            <span class="badge {{ employe.isactif ? 'bg-success' : 'bg-danger' }} ">{{employe.isactif ? 'Actif' : 'Inactif'}} </span>
+                          </td>
+                          <td>
+                            {% if employe.isActif %}
+                            <a class="btn btn-danger" href="{{ path('app_utilisateur_archive', { 'id': employe.id }) }}"><p class="d-none d-lg-inline text-white m-1">Archiver</p>
+                            <i class="bi bi-sign-stop"></i></a>
+                            {% else %}
+                            <a class="btn btn-success" href="{{ path('app_utilisateur_active', { 'id': employe.id }) }}"><p class="d-none d-lg-inline text-white m-1">Activer</p>
+                            <i class="bi bi-check-lg"></i></a>
+                          </td>
+                          {% endif %}
+                      </tr>
+                      {% endfor %}
+                  </tbody>
+              </table>
+          </div>
+      </div>
     </div>
-  </div>
-{% endif %}
+  {% endif %}
+{% else %}
+    <div class="alert  alert-danger" role="alert">
+    Vous n'avez pas accès à cette page.
+    </div>
+  {% endif %}
 {% endblock %}

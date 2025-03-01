@@ -2,13 +2,13 @@
 <html>
 <head>
         <meta charset="UTF-8">
-        <title>{% block title %}ECORIDE-Accueil{% endblock %}</title>
+        <title>{% block title %}ECORIDE{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <links rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         <!-- Integration de la police Agbalumo -->
-        <links rel="preconnect" href="https://fonts.googleapis.com">
-        <links rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <links href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Agbalumo&display=swap" rel="stylesheet">
     
         {% block stylesheets %}
         {% endblock %}
@@ -20,12 +20,6 @@
 <body>
     <header>
         {# Logo #}
-        {# <div class="header mb-3 border-bottom">
-            <div class="logo d-flex justify-content-center">
-                <a href="{{ path('app_home') }}">
-                <img src="{{ asset('logo/Logo.png') }}" alt="logo">
-                </a>
-            </div> #}
             <div class="header pb-3 border-bottom">
                 <div class="container">
                     <div class="row justify-content-center">
@@ -39,59 +33,83 @@
             </div>
             {# Navbar  #}
             <div class="navbarHeader d-flex justify-content-between align-items-center position-absolute w-100">
-               {#  <div class="navBar d-flex justify-content-between align-items-center position-absolute w-100"> #}
                 {# Dropdown #}
                     <div class="dropdown text-down position-relative d-lg-none">
-                        {% if app.user %}
-                            {% if app.user.photoPath is not empty %}
-                            <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{{asset('download/' ~ app.user.photoPath) }}" alt="mdo" width="32" height="32" class=" icon-hover rounded-circle">
-                            </a>
-                            <ul class="dropdown-menu text-small">
-                                <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_recherche') }}">Rechercher un voyage</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_new') }}">Publier un voyage</a></li>
-                            {#  <li><a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a></li> #}
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <button class="d-block btn link-body-emphasis dropdown-toggle text-success "  data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-list text-white"></i>      
+                            </button>
+                            <ul class="dropdown-menu text-small ">
+                                <li><a class="dropdown-item fs-5" href="{{ path('app_admin_dashboard') }}">Dashboard</a></li>
+                                <li><a  class="dropdown-item fs-5" href="{{ path('app_employe') }}" >Gestion des comptes employés</a></li>
+                                <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                                <li><a class="dropdown-item fs-5" id="chartButton">
+                                    <i class="bi bi-bar-chart-line"></i> Nombre de covoiturage </a></li>
+                                <li><a class="dropdown-item fs-5" id="chartCreditButton" >
+                                    <i class="bi bi-graph-up"></i> Nombre de crédits </a></li>
                             </ul>
-                            {% else %}
+                        {% elseif is_granted("ROLE_EMPLOYE") %}
                             <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="{{ asset('logo/Logo.png') }}" alt="mdo" width="32" height="32" class=" icon-hover rounded-circle">
                             </a>
                             <ul class="dropdown-menu text-small">
                                 <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_recherche') }}">Rechercher un voyage</a></li>
-                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_new') }}">Publier un voyage</a></li>
-                            {#  <li><a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a></li> #}
+                                <li><a class="dropdown-item" href="{{ path('app_employe_dashboard') }}">Dashboard Employé</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_avis') }}">Gestion des avis</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                             </ul>
+                        {% elseif is_granted("ROLE_USER") %}
+                            {% if app.user.photoPath is not empty %}
+                                <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{asset('download/' ~ app.user.photoPath) }}" alt="mdo" width="32" height="32" class=" icon-hover rounded-circle">
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{ asset('logo/Logo.png') }}" alt="mdo" width="32" height="32" class=" icon-hover rounded-circle">
+                                </a>
                             {% endif %}
+                            <ul class="dropdown-menu text-small">
+                                <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_recherche') }}">Rechercher un voyage</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_new') }}">Publier un voyage</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                            </ul>                            
                         {% else %}
-                        <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32" ></i>
-                        <ul class="dropdown-menu text-small">
-                            <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_covoiturage_recherche') }}">Rechercher un voyage</a></li>
-                            <li><a class="dropdown-item" href="{{ path('app_covoiturage_new') }}">Publier un voyage</a></li>
-                        {#  <li><a class="dropdown-item" href="{{ path('app_login') }}">Se connecter</a></li> #}
-                            <li><hr class="dropdown-divider"></li>
-                                <a href="{{ path('app_login') }}" class="custom-links px-2 ">Se connecter</a>
-                        </ul>
+                            <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32" ></i>
+                            <ul class="dropdown-menu text-small">
+                                <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_recherche') }}">Rechercher un voyage</a></li>
+                                <li><a class="dropdown-item" href="{{ path('app_covoiturage_new') }}">Publier un voyage</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                    <a href="{{ path('app_login') }}" class="custom-links px-2 ">Se connecter</a>
+                            </ul>
                         {% endif %}
                     </div>
                 {#  Fin du dropdown #}
-                    <div class="search position-relative start-0 top-50  d-md-flex align-items-center justify-content-center mx-2">
+                    {% if is_granted("ROLE_ADMIN") %}
+                        <div  class="search position-relative start-0 top-50  d-md-flex align-items-center justify-content-center mx-2">
+                        <i class="bi bi-clipboard-data icon-hover " alt="board Icon" width="32" height="32"></i>
+                        <a href="{{ path('app_admin_dashboard') }}" class="custom-links px-2">Dashboard</a></div>
+                    {% endif %}
+                    {% if is_granted("ROLE_EMPLOYE") %}
+                        <div  class="search position-relative start-0 top-50  d-md-flex align-items-center justify-content-center mx-2">
+                        <i class="bi bi-clipboard-data icon-hover " alt="board Icon" width="32" height="32"></i>
+                        <a href="{{ path('app_employe_dashboard') }}" class="custom-links px-2">Dashboard</a></div>
+                    {% endif %}
+                        <div class="search position-relative top-50  d-md-flex align-items-center justify-content-center mx-2">
                             <i  class=" bi bi-search icon-hover" alt="Position Icon" width="32" height="32"></i>
                             <a href="{{ path('app_covoiturage_recherche') }}" class="custom-links px-2">Rechercher un voyage</a>
-                    </div>
+                        </div>
                     {# <div class=" position-absolute end-0 top-50 d-flex justify-content-end"> #}
                         <div class="position-relative end-0 top-50 d-flex justify-content-end">
-                            <div class="d-none d-lg-flex align-items-center p-2">
-                                <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="32" height="32" class="rounded-circle"></i> 
-                                <a href="{{ path('app_covoiturage_new') }}" class="custom-links px-2">Publier un voyage</a>
-                            </div>
                             {% if app.user %}
+                                <div class="d-none d-lg-flex align-items-center p-2">
+                                    <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="32" height="32" class="rounded-circle"></i> 
+                                    <a href="{{ path('app_covoiturage_new') }}" class="custom-links px-2">Publier un voyage</a>
+                                </div>
                                 {% if app.user.photoPath is not empty %}
                                 <div class="align-items-center p-2 d-none d-lg-flex">
                                     <a href="{{ path('app_profil') }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ app.user.photoPath) }}" alt="" width="32" height="32" ></a>

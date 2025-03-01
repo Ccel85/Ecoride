@@ -18,12 +18,19 @@ final class AvisController extends AbstractController{
 
     public function index(AvisRepository $avisRepositpory): Response
     {
-        $avis = $avisRepositpory->findall();
+        $avis = $avisRepositpory->findall();//collection d'avis
         $invalidComments = $avisRepositpory->invalidComments();
+        $passagers = [];
+
+        //on recupere chaque passager pour chaque avis
+        foreach ($avis as $a) {
+            $passagers[] = $a->getPassager();
+        }
 
         return $this->render('avis/listeAvis.html.twig', [
             'avis'=>$avis,
             'invalidComments'=>$invalidComments,
+            'passager'=>$passagers,
         ]);
     }
 
@@ -208,8 +215,8 @@ final class AvisController extends AbstractController{
             throw $this->createNotFoundException("Le covoiturage n'existe pas.");
         }
         // Récupération des informations liées
-        $conducteur = $avis->getConducteur();//conducteur lié au covoiturage;
-        $passager = $avis->getPassager();//passager lié au covoiturage;
+        $conducteur = $avis->getConducteur();//conducteur lié a l'avis;
+        $passager = $avis->getPassager();//passager lié a l'avis;
         $rateUser =round($em->getRepository(Avis::class)->rateUser($conducteur),1);
         $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
 

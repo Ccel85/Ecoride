@@ -3,92 +3,98 @@
 {% block title %}Liste des utilisateurs{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN')%}
 <div class="container-fluid">
-{% if utilisateurs is empty %}
-    <div>
-        <p>Il n'y a pas d'utilisateurs d'enregistré </p>
-    </div>
-{% else %}
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
-            <li class="breadcrumb-item"><a href= "{{ path('app_admin_dashboard') }}">Tableau de bord </a></li>
-            <li class="breadcrumb-item active" aria-current="page">Liste des utilisateurs </li>
-        </ol>
-    </nav>
-    <div class="card w-100 mb-xxl-0">
-        <div class="header-list card-header">
-            <div class="row align-items-center">
-                <div class="d-flex justify-content-around">
-                    <h3 class="fs-10 mb-0">Liste des utilisateurs</h3>
+    {% if utilisateurs is empty %}
+        <div>
+            <p>Il n'y a pas d'utilisateurs d'enregistré </p>
+        </div>
+    {% else %}
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
+                <li class="breadcrumb-item"><a href= "{{ path('app_admin_dashboard') }}">Tableau de bord </a></li>
+                <li class="breadcrumb-item active" aria-current="page">Liste des utilisateurs </li>
+            </ol>
+        </nav>
+        <div class="card w-100 mb-xxl-0">
+            <div class="header-list card-header">
+                <div class="row align-items-center">
+                    <div class="d-flex justify-content-around">
+                        <h3 class="fs-10 mb-0">Liste des utilisateurs</h3>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="table-responsive">
-            <table class="table table-flush mb-0">
-                <thead>
-                    <tr>
-                    <th class="fs-sm">Id</th>
-                    <th class="fs-sm d-none d-md-flex"></th>
-                    <th class="fs-sm">Nom</th>
-                    <th class="fs-sm d-none d-md-flex">Email</th>
-                    <th class="fs-sm">Note</th>
-                    <th class="fs-sm">Crédits</th>
-                    <th class="fs-sm">Status</th>
-                    <th class="fs-sm">Action</th>
-                </tr></thead>
-                <tbody>
-                {% for utilisateur in utilisateurs %}
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center text-nowrap">{{utilisateur.id}}
-                            </div>
-                        </td>
-                        <td class="d-none d-md-flex">
-                            <div>
-                                <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div class="">
-                                    <div>{{utilisateur.nom}}</div>
-                                    <div class="fs-sm text-body-secondary">{{utilisateur.prenom}}</div>
+            <div class="table-responsive">
+                <table class="table table-flush mb-0">
+                    <thead>
+                        <tr>
+                        <th class="fs-sm">Id</th>
+                        <th class="fs-sm d-none d-md-flex"></th>
+                        <th class="fs-sm">Nom</th>
+                        <th class="fs-sm d-none d-md-flex">Email</th>
+                        <th class="fs-sm">Note</th>
+                        <th class="fs-sm">Crédits</th>
+                        <th class="fs-sm">Status</th>
+                        <th class="fs-sm">Action</th>
+                    </tr></thead>
+                    <tbody>
+                    {% for utilisateur in utilisateurs %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center text-nowrap">{{utilisateur.id}}
                                 </div>
-                            </div>
-                        </td>
-                        <td class="d-none d-md-flex">
-                            <div class="d-flex align-items-center text-nowrap">{{utilisateur.email}}
-                            </div>
-                        </td>
-                        <td>
-                        {% if rates[utilisateur.id] < 4 %}
-                            <span class="badge bg-danger-subtle text-danger">{{rates[utilisateur.id] ?? '/'}}</span>
-                        {% else %}
-                        <span class="badge bg-success-subtle text-success">{{rates[utilisateur.id] ?? '/'}}</span>
-                        {% endif %}
-                        </td>
-                        <td>
-                            <span class="badge bg-success-subtle text-success">{{utilisateur.credits}}</span>
-                        </td>
-                        <td>
-                            <span class="badge {{ utilisateur.isactif ? 'bg-success' : 'bg-danger' }} ">{{utilisateur.isactif ? 'Actif' : 'Inactif'}} </span>
-                        </td>
-                        <td>
-                            {% if utilisateur.isActif %}
-                            <a class="btn btn-danger w-50 w-md-auto d-flex justify-content-center align-items-center" href="{{ path('app_utilisateur_archive', { 'id': utilisateur.id }) }}"><p class="d-none d-lg-inline text-white m-1">Archiver</p>
-                            <i class="bi bi-sign-stop text-center"></i></a>
+                            </td>
+                            <td class="d-none d-md-flex">
+                                <div>
+                                    <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="">
+                                        <div>{{utilisateur.nom|capitalize}}</div>
+                                        <div class="fs-sm text-body-secondary">{{utilisateur.prenom|capitalize}}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="d-none d-md-flex">
+                                <div class="d-flex align-items-center text-nowrap">{{utilisateur.email}}
+                                </div>
+                            </td>
+                            <td>
+                            {% if rates[utilisateur.id] < 4 %}
+                                <span class="badge bg-danger-subtle text-danger">{{rates[utilisateur.id] ?? '/'}}</span>
                             {% else %}
-                            <a class="btn btn-success w-50 w-md-auto d-flex justify-content-center align-items-center" href="{{ path('app_utilisateur_active', { 'id': utilisateur.id }) }}"><p class="d-none d-lg-inline text-white m-1">Activer</p>
-                            <i class="bi bi-check-lg"></i></a>
-                        </td>
-                        {% endif %}
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            <span class="badge bg-success-subtle text-success">{{rates[utilisateur.id] ?? '/'}}</span>
+                            {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success">{{utilisateur.credits}}</span>
+                            </td>
+                            <td>
+                                <span class="badge {{ utilisateur.isactif ? 'bg-success' : 'bg-danger' }} ">{{utilisateur.isactif ? 'Actif' : 'Inactif'}} </span>
+                            </td>
+                            <td>
+                                {% if utilisateur.isActif %}
+                                <a class="btn btn-danger w-50 w-md-auto d-flex justify-content-center align-items-center" href="{{ path('app_utilisateur_archive', { 'id': utilisateur.id }) }}"><p class="d-none d-lg-inline text-white m-1">Archiver</p>
+                                <i class="bi bi-sign-stop text-center"></i></a>
+                                {% else %}
+                                <a class="btn btn-success w-50 w-md-auto d-flex justify-content-center align-items-center" href="{{ path('app_utilisateur_active', { 'id': utilisateur.id }) }}"><p class="d-none d-lg-inline text-white m-1">Activer</p>
+                                <i class="bi bi-check-lg"></i></a>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+    {% endif %}
+{% else %}
+    <div class="alert  alert-danger" role="alert">
+    Vous n'avez pas accès à cette page.
+    </div>
 {% endif %}
 {% endblock %}

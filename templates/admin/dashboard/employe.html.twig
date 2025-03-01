@@ -3,159 +3,165 @@
 {% block title %}Tableau de bord employé{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_EMPLOYE')%}
 <div>
-  {% if app.user %}
-    <p class="text-center fs-4 p-2"> Bonjour {{ app.user.prenom }} {{ app.user.nom }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
-    <br>
-  {% endif %}
-  <div class="dashboard d-md-flex d-flex-column flex-grow-1 position relative mb-4">
-  {# Dropdown #}
-    <div class="dropdown text-down position-relative d-lg-none">
-      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-        <svg class="bi pe-none me-2" width="40" height="32"></svg>
-        <span class="fs-6">Tableau de bord</span>
-      </a>
-      <ul class="dropdown-menu text-small">
-        {# <ul class="nav nav-pills flex-column mb-auto"> #}
-        <li><a href="{{ path('app_home') }}" class="dropdown-item text-white fs-5" aria-current="page">
-        {# <svg class="bi pe-none me-2" width="16" height="16">
-        </svg> #}
-        Accueil
-        </a></li>
-          {# <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li> #}
-        <li><a href="{{ path('app_avis') }}" class="dropdown-item text-white fs-5" aria-current="page">
-          Gestion des avis
-          <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
-          </a>
-        </li>
-        <li><a href="{{ path('app_signalement') }}" class="dropdown-item text-white fs-5 text-start">
-                  Signalement à traiter
-                <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
-                </a>
-            </li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
-      </ul>
-    </div>
-{#  Fin du dropdown #}
-    <!--SideBar-->
-    <div class="sidebar d-none d-md-flex flex-column flex-shrink-0" style="width: 300px;">
-        <a href="{{ path('app_home') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-            <svg class="bi pe-none me-2" width="16" height="16">
-                    </svg>
-            <span class="fs-4 text-center">Tableau de bord</span>
+    {% if app.user %}
+      <p class="text-center fs-4 p-2"> Bonjour {{ app.user.prenom|capitalize }} {{ app.user.nom|capitalize }},<span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </p>
+      <br>
+    {% endif %}
+    <div class="dashboard d-md-flex d-flex-column flex-grow-1 position relative mb-4">
+    {# Dropdown #}
+      <div class="dropdown text-down position-relative d-lg-none">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <svg class="bi pe-none me-2" width="40" height="32"></svg>
+          <span class="fs-6 text-white">Tableau de bord</span>
         </a>
-        <hr>
-        <ul class="nav nav-pills flex-column mb-auto">
-            <li class="nav-item">
-                <a href="{{ path('app_home') }}" class="nav-link text-white fs-5" aria-current="page">
-                    <svg class="bi pe-none me-2" width="16" height="16">
-                    </svg>
-                    Accueil
-                </a>
-            </li>
-            <li>
-                <a href="{{ path('app_avis') }}" class="nav-link text-white fs-5 text-start">
-                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-                  Gestion des avis
-                <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
-                </a>
-                
-            </li>
-            <li>
-                <a href="{{ path('app_signalement') }}" class="nav-link text-white fs-5 text-start">
-                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                  Signalement à traiter
-                <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
-                </a>
-            </li>
+        <ul class="dropdown-menu text-small">
+          {# <ul class="nav nav-pills flex-column mb-auto"> #}
+          <li><a href="{{ path('app_home') }}" class="dropdown-item text-white fs-5" aria-current="page">
+          {# <svg class="bi pe-none me-2" width="16" height="16">
+          </svg> #}
+          Accueil
+          </a></li>
+            {# <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li> #}
+          <li><a href="{{ path('app_avis') }}" class="dropdown-item text-white fs-5" aria-current="page">
+            Gestion des avis
+            <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
+            </a>
+          </li>
+          <li><a href="{{ path('app_signalement') }}" class="dropdown-item text-white fs-5 text-start">
+                    Signalement à traiter
+                  <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
+                  </a>
+              </li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
         </ul>
-    </div>
-    <!--avis-->
-    <div class="avis row mx-4">
-      <div class=" avis col-6" >
-      {% if invalidComments is empty %}
-        <h5 class="text-decoration-underline text-center"> Derniers avis clients:</h5>
-        <p class="text-center">Il n'y a pas d'avis.</p>
-        {% else %}
-        <h5 class="text-decoration-underline text-center"> Derniers avis clients:</h5>
-        <a href= "{{path('app_avis')}}">Voir tout</a>
-        <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
-          {% for commentaire in invalidComments %}
-          <div class="card  mb-3 p-3">
-            <div class="rate d-flex align-items-center justify-content-between">
-              <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
-            </div>
-            <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
-            </div>
-            <div>
-              <p>{{ commentaire.comments }}</p>
-            </div>
-            <div class="d-flex justify-content-between align-items-end">
-              <div>
-                <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
+      </div>
+  {#  Fin du dropdown #}
+      <!--SideBar-->
+      <div class="sidebar d-none d-md-flex flex-column flex-shrink-0" style="width: 300px;">
+          <a href="{{ path('app_home') }}" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <svg class="bi pe-none me-2" width="16" height="16">
+                      </svg>
+              <span class="fs-4 text-center text-white">Tableau de bord</span>
+          </a>
+          <hr>
+          <ul class="nav nav-pills flex-column mb-auto">
+              <li class="nav-item">
+                  <a href="{{ path('app_home') }}" class="nav-link text-white fs-5" aria-current="page">
+                      <svg class="bi pe-none me-2" width="16" height="16">
+                      </svg>
+                      Accueil
+                  </a>
+              </li>
+              <li>
+                  <a href="{{ path('app_avis') }}" class="nav-link text-white fs-5 text-start">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                    Gestion des avis
+                  <span class="badge rounded-pill bg-danger ">{{ countInvalidComments}}</span>
+                  </a>
+                  
+              </li>
+              <li>
+                  <a href="{{ path('app_signalement') }}" class="nav-link text-white fs-5 text-start">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                    Signalement à traiter
+                  <span class="badge rounded-pill bg-danger ">{{ countSignalComments }}</span>
+                  </a>
+              </li>
+          </ul>
+      </div>
+      <!--avis-->
+      <div class="avis row mx-4">
+        <div class=" avis col-6" >
+        {% if invalidComments is empty %}
+          <h5 class="text-decoration-underline text-center"> Derniers avis clients:</h5>
+          <p class="text-center">Il n'y a pas d'avis.</p>
+          {% else %}
+          <h5 class="text-decoration-underline text-center"> Derniers avis clients:</h5>
+          <a href= "{{path('app_avis')}}">Voir tout</a>
+          <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
+            {% for commentaire in invalidComments %}
+            <div class="card  mb-3 p-3">
+              <div class="rate d-flex align-items-center justify-content-between">
+                <i class="bi bi-star-fill star"> {{ commentaire.rateComments }}/5</i>
               </div>
-              <div class="d-flex flex-column align-items-center ">
-                  <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
+              <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
+              </div>
+              <div>
+                <p>{{ commentaire.comments }}</p>
+              </div>
+              <div class="d-flex justify-content-between align-items-end">
+                <div>
+                  <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
+                </div>
+                <div class="d-flex flex-column align-items-center ">
+                    <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
+                    <div class="form-check form-switch m-2  ">
+                      <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
+                      <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
+                    </div> 
+                    <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
+                      <i class="bi bi-trash3"></i>
+                    </a>
+                  </div>
+              </div>
+            </div>
+            {% endfor %}
+            <div>
+              <button type="submit" id="avisValidateAvis" class="btn btn-success">Valider les avis</button>
+            </div >
+          </form>
+        </div>
+        {% endif %}
+        <div class=" signalement col-6">
+        {% if signalComments is empty %}
+          <h5 class="text-decoration-underline text-center"> Gestion des signalements:</h5>
+          <p class="text-center">Il n'y a pas de signalements.</p>
+          {% else %}
+          <h5 class="text-decoration-underline text-center"> Derniers signalements:</h5>
+          <a href="{{path('app_signalement')}}">Voir tout</a>
+          <form method="post"  id="avisFormSignalement" action="{{ path('app_avis_update') }}">
+            {% for signalComment in signalComments %}
+            <div class="card mb-3 p-3">
+              <div class="rate d-flex align-items-center justify-content-between">
+                <i class="bi bi-star-fill star"> {{ signalComment.rateComments }}/5</i>
+              </div>
+              <div class="text-secondary fs-7">Le {{ signalComment.createdAt|date('d-m-Y') }}
+              </div>
+              <div>
+                <p>{{ signalComment.comments }}</p>
+              </div>
+              <div class=" btnsignal d-flex justify-content-between align-items-end">
+                <div class="btnDetails">
+                  <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':signalComment.id }) }}"> Détails</a>
+                </div>
+                <div class=" btnCheckRemove d-flex flex-column align-items-center ">
+                  <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider le signalement:</p>
                   <div class="form-check form-switch m-2  ">
-                    <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
-                    <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
+                    <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ signalComment.id }}" id="isValid_{{ signalComment.id }}"  >
+                    <label class="form-check-label" for="isValid_{{ signalComment.id }}"></label>
                   </div> 
-                  <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
-                    <i class="bi bi-trash3"></i>
+                  <a class="btn btn-danger" name="removeAvis" id="removeAvis" data-url="{{ path('app_avis_remove', {'id': signalComment.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
+                      <i class="bi bi-trash3"></i>
                   </a>
                 </div>
-            </div>
-          </div>
-          {% endfor %}
-          <div>
-            <button type="submit" id="avisValidateAvis" class="btn btn-success">Valider les avis</button>
-          </div >
-        </form>
-      </div>
-      {% endif %}
-      <div class=" signalement col-6">
-      {% if signalComments is empty %}
-        <h5 class="text-decoration-underline text-center"> Gestion des signalements:</h5>
-        <p class="text-center">Il n'y a pas de signalements.</p>
-        {% else %}
-        <h5 class="text-decoration-underline text-center"> Derniers signalements:</h5>
-        <a href="{{path('app_signalement')}}">Voir tout</a>
-        <form method="post"  id="avisFormSignalement" action="{{ path('app_avis_update') }}">
-          {% for signalComment in signalComments %}
-          <div class="card mb-3 p-3">
-            <div class="rate d-flex align-items-center justify-content-between">
-              <i class="bi bi-star-fill star"> {{ signalComment.rateComments }}/5</i>
-            </div>
-            <div class="text-secondary fs-7">Le {{ signalComment.createdAt|date('d-m-Y') }}
+              </div>
             </div>
             <div>
-              <p>{{ signalComment.comments }}</p>
-            </div>
-            <div class=" btnsignal d-flex justify-content-between align-items-end">
-              <div class="btnDetails">
-                <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':signalComment.id }) }}"> Détails</a>
-              </div>
-              <div class=" btnCheckRemove d-flex flex-column align-items-center ">
-                <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider le signalement:</p>
-                <div class="form-check form-switch m-2  ">
-                  <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ signalComment.id }}" id="isValid_{{ signalComment.id }}"  >
-                  <label class="form-check-label" for="isValid_{{ signalComment.id }}"></label>
-                </div> 
-                <a class="btn btn-danger" name="removeAvis" id="removeAvis" data-url="{{ path('app_avis_remove', {'id': signalComment.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
-                    <i class="bi bi-trash3"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-          <div>
-            <button type="submit" id="avisValidateSignalement" class="btn btn-success">Valider les signalements</button>
-          </div >
-          {% endfor %}
-        </form>
+              <button type="submit" id="avisValidateSignalement" class="btn btn-success">Valider les signalements</button>
+            </div >
+            {% endfor %}
+          </form>
+        </div>
+        {% endif %}
       </div>
-      {% endif %}
     </div>
-  </div>
 </div>
+  {% else %}
+    <div class="alert  alert-danger" role="alert">
+    Vous n'avez pas accès à cette page.
+    </div>
+  {% endif %}
 {% endblock %}

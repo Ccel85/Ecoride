@@ -5,7 +5,7 @@
 {% block body %}
 <div>
     {% if app.user %}
-        <h3 class="ps-5 text-center text-md-start ">Bonjour <span>{{app.user.prenom}}</span>, commencez votre voyage ici!</h3>
+        <h3 class="ps-5 text-center text-md-start ">Bonjour <span>{{app.user.prenom|capitalize}}</span>, commencez votre voyage ici!</h3>
     {% endif %}
         <hr>
     <!--Barre de recherche -->

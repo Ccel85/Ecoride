@@ -1,8 +1,8 @@
 
 import './bootstrap.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
-import './js/sweetAlert.js';
 import './js/chart.js';
+import './js/sweetAlert.js';
 
 // Import Bootstrap
 import 'bootstrap';
