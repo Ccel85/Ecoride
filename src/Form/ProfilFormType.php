@@ -41,6 +41,9 @@ class ProfilFormType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
+            'csrf_protection'=> true,
+            'csrf_field_name'=>'_token',
+            'csrf_token_id'=>'Profil',
         ]);
     }
 }

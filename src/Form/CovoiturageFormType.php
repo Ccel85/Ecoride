@@ -53,6 +53,9 @@ class CovoiturageFormType extends AbstractType
             'data_class' => Covoiturage::class,
             'utilisateur' => null,
             'voitures' => [], // Ajoute une option personnalisée
+            'csrf_protection'=> true,
+            'csrf_field_name'=>'_token',
+            'csrf_token_id'=>'Covoiturage',
         ]);
     }
 }

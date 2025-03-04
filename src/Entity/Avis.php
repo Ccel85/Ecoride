@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\AvisRepository;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\AvisRepository;
 
 #[ORM\Entity(repositoryClass: AvisRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -18,6 +19,7 @@ class Avis
     #[ORM\Column]
     private ?bool $isValid = false;
     
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $comments = null;
     

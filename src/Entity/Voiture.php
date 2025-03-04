@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\VoitureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,27 +18,34 @@ class Voiture
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $immat = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $firstImmat = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $constructeur = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $modele = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $couleur = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $energie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $options = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?int $nbrePlace = null;
 

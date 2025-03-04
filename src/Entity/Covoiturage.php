@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
 use App\Repository\CovoiturageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -17,27 +18,34 @@ class Covoiturage
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column]
     private ?int $prix = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateDepart = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $lieuDepart = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $heureDepart = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(length: 255)]
     private ?string $lieuArrivee = null;
 
+    #[Assert\NotBlank]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $heureArrivee = null;
 
     #[ORM\Column()]
     private ?bool $status = true;
 
+    #[Assert\NotBlank]
     #[ORM\Column(nullable: true)]
     private ?int $placeDispo = null;
 
