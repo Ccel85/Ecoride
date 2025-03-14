@@ -89,7 +89,7 @@ public function sendEmailRemove(int $id,Security $security,MailerInterface $mail
         $this->addFlash('error', 'Échec de l\'envoi de l\'email : ' . $e->getMessage());
     }
 
-    return $this->redirectToRoute('app_home');
+    return $this->redirectToRoute('app_profil');
 }
 
     #[Route ('/email', name:'app_email')]

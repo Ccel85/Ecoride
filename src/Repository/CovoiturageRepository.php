@@ -24,19 +24,21 @@ class CovoiturageRepository extends ServiceEntityRepository
         ->getResult();
 }
 
-public function findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee)
-    {
-        return $this->createQueryBuilder('c')
+public function findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee)
+{
+    return $this->createQueryBuilder('c')
         ->andWhere('c.dateDepart > :dateDepart')
-        ->andWhere('c.lieuDepart = :lieuDepart')
-        ->andWhere('c.lieuArrivee = :lieuArrivee')
+        ->andWhere('c.lieuDepart LIKE :lieuDepart')
+        ->andWhere('c.lieuArrivee LIKE :lieuArrivee')
         ->setParameter('dateDepart', $dateDepart)
-        ->setParameter('lieuDepart', $lieuDepart)
-        ->setParameter('lieuArrivee', $lieuArrivee)
-        ->orderBy('c.dateDepart', 'ASC')  // 🔹 'ASC' pour ordre croissant, 'DESC' pour décroissant
+        ->setParameter('lieuDepart', '%' . $lieuDepart . '%')
+        ->setParameter('lieuArrivee', '%' . $lieuArrivee . '%')
+        ->orderBy('c.dateDepart', 'ASC')
+        ->setMaxResults(5) // Limite pour ne pas surcharger l'affichage
         ->getQuery()
         ->getResult();
 }
+
 
 public function covoiturageDuree($covoiturage)
     {
@@ -52,15 +54,15 @@ public function covoiturageDuree($covoiturage)
     {
     return $this->createQueryBuilder('c')
         ->andWhere('c.date = :date')
-        ->andWhere('c.depart = :depart')
-        ->andWhere('c.arrivee = :arrivee')
-        ->andWhere('c.placeDispo = :placeDispo')
+        ->andWhere('c.depart LIKE :depart')
+        ->andWhere('c.arrivee LIKE :arrivee')
+        ->andWhere('c.placeDispo > :placeDispo')
         ->setParameter('date', $date)
-        ->setParameter('depart', $depart)
-        ->setParameter('arrivee', $arrivee)
+        ->setParameter('depart','%' . $depart . '%')
+        ->setParameter('arrivee','%' . $arrivee . '%')
         ->setParameter('placeDispo', $placeDispo)
         ->orderBy('c.dateDepart', 'ASC')
-        ->setMaxResults(10)
+        /* ->setMaxResults(10) */
         ->getQuery()
         ->getResult()
     ;

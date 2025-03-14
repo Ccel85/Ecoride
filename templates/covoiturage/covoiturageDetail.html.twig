@@ -7,12 +7,13 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
-        <li class="breadcrumb-item"><a href= "{{ path('app_covoiturage') }}">Liste des covoiturages</a></li>
+        <li class="breadcrumb-item"><a href= "{{ path('app_covoiturage_recherche') }}">Recherche de covoiturages</a></li>
         <li class="breadcrumb-item active" aria-current="page">Covoiturage </li>
       </ol>
     </nav>
+    {# ITINERAIRE #}
     <div>
-      <a class="btn btn-success mx-4" href= "{{path('app_covoiturage')}}" >Retour</a>
+      <a class="btn btn-success mx-4" href= "{{path('app_covoiturage_recherche')}}" >Retour</a>
       <p class="text-center">Voyage prévu le <span>{{ covoiturage.dateDepart|date('d-m-Y') }}</span> à <span> {{ covoiturage.heureDepart|date('H:i') }}</span>
       au départ de <span> {{ covoiturage.lieuDepart|capitalize }}</span> .</p>
     </div>
@@ -47,18 +48,37 @@
                 {{ covoiturage.lieuArrivee|capitalize }}
                 </div>
             </div>
-            <div id="app" data-user="{{ app.user ? '1' : '0' }}"></div>
-            <div class="participer">
-                <a class="btn btn-success" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
-                Participer</a>
-            </div>
+            {# <div id="app" data-user="{{ app.user ? '1' : '0' }}">
+            </div> #}
+            {% if app.user  %}
+              {% if userCovoiturage is null and covoiturage.placeDispo >= 0 %}
+                <div class="participer">
+                    <a class="btn btn-success" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
+                    Participer</a>
+                </div>
+                {% elseif userCovoiturage %}
+                <div class="d-flex flex-column text-center ">
+                  <span class="wrap justify-content-end">Vous êtes déja enregistrer pour ce voyage .</span>
+                  <i class="check bi bi-check-lg fs-1"></i>
+                </div>
+                {% else %}
+                <div >
+                  <a class="btn btn-success" href="{{ path('app_login') }}" >
+                  Pour participer, <br>veuillez vous connecter</a>
+                </div>
+              {% endif %}
+            {% endif %}
           </div>
         </div>
       </div>
     </div>
+
+    {# Detail conducteur #}
     <div class="profil card container m-4 " >
       <div class="card-header row justify-content-evenly align-items-center">
-        <img src="{{ asset('download/'~ conducteur.photoPath) }}" class=" col-2 avatar rounded-circle" alt="...">
+        <div class="col-2">
+          <img src="{{ asset('download/'~ conducteur.photoPath) }}" class="avatar rounded-circle" alt="...">
+        </div>
         <div class="col-6 text-center">
           <h3 class="card-title text-center">Conducteur:</h3>
           <h3 class="card-text text-center">{{conducteur.prenom|capitalize}}</h3>
@@ -79,7 +99,7 @@
                 {% else %}
                     <p class="text-decoration-underline">Voiture utilisée:</p>
                     <li>{{ covoiturage.voiture.constructeur|capitalize }} {{ covoiturage.voiture.modele|capitalize }}</li>
-                    <li>Immatriculé: {{covoiturage.voiture.immat }} </li>
+                    <li>Immatriculée: {{covoiturage.voiture.immat }} </li>
                     <li>Date de 1ère mise en circulation: {{covoiturage.voiture.firstImmat|date('d-m-Y') }} </li>
                     <li>Energie: {{ covoiturage.voiture.energie|capitalize }} </li>
                     <div  class="d-flex align-items-center">
@@ -102,7 +122,7 @@
             {% if observations is not empty %}
               <p class="text-center text-decoration-underline">Autres commentaires :</p>
               {% for observation in observations %}
-                  <p class="text-start">{{ observation }}</p>
+                  <p class="text-start">{{ observation|capitalize }}</p>
               {% endfor %}
             {% else %}
                 <p>Aucune observation enregistrée pour ce conducteur.</p>
@@ -121,7 +141,7 @@
                 <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
                 </div>
                 <div>
-                  <p>{{ commentaire.comments }}</p>
+                  <p>{{ commentaire.comments|capitalize }}</p>
                 </div>
               </div>
               {% endfor %}

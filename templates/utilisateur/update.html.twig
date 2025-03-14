@@ -9,7 +9,8 @@
         <div class="form-group col-12 col-md-6 m-auto">
             {{ form_errors(form) }}
             
-            {{ form_start(form) }}
+            {{ form_start(form, {'method': 'POST'}) }}
+
 
             {{ form_row(form.nom, {
                 'label': 'Nom',
@@ -31,10 +32,10 @@
                 'attr': {'class': 'form-control'}
             }) }}
 
-            {{ form_row(form.isConducteur, {
+          {#   {{ form_row(form.isConducteur, {
                 'label': 'Type d\'utilisateur',
                 'attr': {'class': 'form-control'}
-            }) }}
+            }) }} #}
 
             {{ form_row(form.observation, {
                 'label': 'Observations',
@@ -52,7 +53,7 @@
             }) }} #}
 
             <div class="d-flex justify-content-evenly">
-                <button type="submit" class="btn btn-success ">Enregistrer</button>
+                <button type="submit" class="btn btn-success">Enregistrer</button>
             {{ form_end(form) }}
                 <button class="btn btn-success" href="{{ path('app_profil') }}" >
                 Retour</button>

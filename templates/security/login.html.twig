@@ -16,7 +16,7 @@
                         You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
                     </div>
                 {% endif %}
-                <h1 class="h3 mb-3 font-weight-normal text-center">Se connecter</h1>
+                <h1 class="h3 mb-3 font-weight-normal text-center">Veuillez vous connecter</h1>
                 <div class="form-floating">
                     <input type="email" class="form-control" value="{{ last_username }}"  name="_username" id="username"  id="floatingInput" autocomplete="email" required autofocus placeholder="nom@exemple.com">
                         <label for="floatingInput">
@@ -29,24 +29,6 @@
                     <input type="hidden" name="_csrf_token"
                     value="{{ csrf_token('authenticate') }}">
                 </div>
-                {#<div class="row justify-content-center">
-                    <div class="col-md-6 col-lg-5">
-                        <label for="username">Email</label>
-                        <input type="email" value="{{ last_username }}" name="_username" id="username" class="form-control m-2" autocomplete="email" required autofocus>
-                        <label for="password">Mot de passe</label>
-                        <input type="password" name="_password" id="password" class="form-control m-2" autocomplete="current-password" required>
-                        <input type="hidden" name="_csrf_token"
-                        value="{{ csrf_token('authenticate') }}">#}
-                    
-                {#
-                    Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-                    See https://symfony.com/doc/current/security/remember_me.html
-
-                    <div class="checkbox mb-3">
-                        <input type="checkbox" name="_remember_me" id="_remember_me">
-                        <label for="_remember_me">Remember me</label>
-                    </div>
-                #}
                 <div class="connect text-center">
                     <button class="btn btn-primary w-100 my-2" type="submit">Se connecter</button>
                     <a href="{{ path('app_register') }}"  class="btn btn-link px-2 mt-2">Créér un compte</a>

@@ -41,7 +41,7 @@ class SecurityController extends AbstractController
             } elseif (in_array("ROLE_EMPLOYE", $roles,true)) {
 
                 // Si l'utilisateur est un employé, redirigez vers la page employé
-                return $this->redirectToRoute('app_utilisateur');
+                return $this->redirectToRoute('app_employe_dashboard');
 
             } else {
 

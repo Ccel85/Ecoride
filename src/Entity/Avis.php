@@ -19,11 +19,13 @@ class Avis
     #[ORM\Column]
     private ?bool $isValid = false;
     
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez ajouter votre avis.")]
     #[ORM\Column(length: 255)]
     private ?string $comments = null;
     
     #[ORM\Column(nullable: true)]
+    #[Assert\Type(
+        type: 'integer')]
     private ?int $rateComments = null;
     
     /* #[ORM\ManyToOne(inversedBy: 'avis')]
@@ -46,7 +48,7 @@ class Avis
 
     #[ORM\ManyToOne(inversedBy: 'avis')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?covoiturage $covoiturage = null;
+    private ?Covoiturage $covoiturage = null;
 
     #[ORM\Column(nullable: false)]
     private ?bool $isSignal = false;

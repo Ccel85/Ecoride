@@ -3,9 +3,12 @@ import Swal from 'sweetalert2';
 //valider participation au covoiturage
 document.addEventListener('DOMContentLoaded', () => {
   const validButton = document.getElementById('participer');
-
   if (validButton) {
+
+    /* const token = localStorage.getItem('authToken'); */
+
     validButton.addEventListener('click', () => {
+      /* if (token) { */
         Swal.fire({
               title: 'Confirmation !',
               text: 'Confirmez vous la réservation de ce covoiturage ?',
@@ -14,19 +17,27 @@ document.addEventListener('DOMContentLoaded', () => {
               confirmButtonText: 'Réserver',
               cancelButtonText: "Annuler",
           }).then((result) => {
-            /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
               Swal.fire({ 
                 title:"Votre covoiturage est confirmé",
                 text:"", 
                 icon:"success",
                 timer: 1500, }); // Durée de l'affichage
-              window.location.href = validButton.getAttribute('data-url');
-            }
+
+                // Redirection vers l'URL
+                setTimeout(()=>
+                {window.location.href = validButton.getAttribute('data-url')
+                },1500);// Pour attendre que le message disparaisse
+              }
           })
+       /*  } else {
+          //redirection si pas connecté
+          window.location.href = 'http://127.0.0.1:8000/login';;
+        } */
       });
   }
 });
+
 //annuler réservation 
 document.addEventListener('DOMContentLoaded', () => {
   const trashButton = document.getElementById('trash');
@@ -227,13 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
   });
   
+  //démarrer un voyage
   document.addEventListener('DOMContentLoaded', () => {
     const goButton = document.getElementById('carGo');
   
     if (goButton) {
       goButton.addEventListener('click', () => {
           Swal.fire({
-                title: 'Souhaitez vous démarrer le voyage mainteant ?',
+                title: 'Souhaitez vous démarrer le voyage maintenant ?',
                 text: '',
                 icon: 'success',
                 showCancelButton: true,
@@ -255,6 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
                 });
   
+  //arreter un voyage
   document.addEventListener('DOMContentLoaded', () => {
     const stopButton = document.getElementById('carStop');
   

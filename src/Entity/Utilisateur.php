@@ -23,8 +23,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide.")]
+    #[Assert\Email(message: "L'email n'est pas valide.")]
     private ?string $email = null;
 
     /**
@@ -36,21 +37,24 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      */
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez saisir un mot de passe.")]
     #[ORM\Column]
     private ?string $password = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez saisir votre nom.")]
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez saisir votre prénom.")]
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[Assert\NotBlank (message:"Veuillez saisir un pseudo.")]
     #[ORM\Column(length: 255)]
     private ?string $pseudo = null;
 
+    #[Assert\Type(
+        type: 'integer')]
     #[ORM\Column(nullable: true)]
     private ?int $credits = 0;
 

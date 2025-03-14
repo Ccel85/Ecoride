@@ -20,7 +20,7 @@ class VoitureFormType extends AbstractType
         $builder
             ->add('immat',TextType::class,[
                 'required' => true,
-                'label' => 'Immat',
+                'label' => 'Immatriculation',
                 
             ])
             ->add('firstImmat',DateType::class, [

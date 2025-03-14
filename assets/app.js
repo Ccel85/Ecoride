@@ -4,6 +4,12 @@ import 'bootstrap/dist/js/bootstrap.min.js';
 import './js/chart.js';
 import './js/sweetAlert.js';
 
+console.log('JS chargé');
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM chargé');
+});
+
+
 // Import Bootstrap
 import 'bootstrap';
 

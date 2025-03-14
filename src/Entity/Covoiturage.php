@@ -18,27 +18,27 @@ class Covoiturage
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Le tarif est obligatoire.")]
     #[ORM\Column]
     private ?int $prix = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez renseigner la date de départ.")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateDepart = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez renseigner le lieu de départ.")]
     #[ORM\Column(length: 255)]
     private ?string $lieuDepart = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez renseigner l'heure de départ.")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $heureDepart = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez renseigner le lieu d'arrivée.")]
     #[ORM\Column(length: 255)]
     private ?string $lieuArrivee = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Veuillez renseigner l'heure d'arrivée.")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $heureArrivee = null;
 
@@ -46,12 +46,14 @@ class Covoiturage
     private ?bool $status = true;
 
     #[Assert\NotBlank]
+    #[Assert\Type(
+        type: 'integer')]
     #[ORM\Column(nullable: true)]
     private ?int $placeDispo = null;
 
     #[ORM\ManyToOne(inversedBy: 'covoiturages')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?voiture $voiture = null;
+    private ?Voiture $voiture = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -77,7 +79,7 @@ class Covoiturage
 
 
     /**
-     * @var Collection<int, utilisateur>
+     * @var Collection<int, Utilisateur>
      */
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'validateCovoiturages')]
     private Collection $validateUsers;

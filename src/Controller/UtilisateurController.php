@@ -25,7 +25,8 @@ class UtilisateurController extends AbstractController
 
         $rates = [];
         foreach ($utilisateurs as $utilisateur) {
-        $rates [$utilisateur->getId()] =round($em->getRepository(Avis::class)->rateUser($utilisateur),1);
+        $rating = $em->getRepository(Avis::class)->rateUser($utilisateur);
+        $rates [$utilisateur->getId()] =round($rating ?? 0,1);
         }
         if (!$utilisateurs){
             throw $this->createNotFoundException('Utilisateurs non trouvé.');
@@ -131,7 +132,8 @@ class UtilisateurController extends AbstractController
         $covoiturages = $user->getCovoiturage();
         $validatedCovoiturages = $user->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
         $observations = $user->getObservation();
-        $rateUser =round($em->getRepository(Avis::class)->rateUser($user),1);
+        $rating = $em->getRepository(Avis::class)->rateUser($user);
+        $rateUser =round($rating ?? 0,1);
 
         // Scinder le texte par les virgules
         $observationExplode = explode(',' ,$observations);
@@ -280,10 +282,10 @@ class UtilisateurController extends AbstractController
 
     #[Route('/profil/{id}/update', name: 'app_profil_update')]
     
-    public function profilUtilisateurUpdate(int $id,Security $security,EntityManagerInterface $em,Request $request): Response
+    public function profilUtilisateurUpdate(int $id,EntityManagerInterface $em,Request $request): Response
     {
         //$utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
-
+        
         $user = $em->getRepository(Utilisateur::class)->find($id);
 
         if (!$user) {
@@ -301,22 +303,19 @@ class UtilisateurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $isConducteur = $form->get('isConducteur')->getData();
+        
+        /*  $isConducteur = $form->get('isConducteur')->getData();
 
-            if ($isConducteur === 'Conducteur') {
-    
-                $user->setConducteur(true);
-                $user->setPassager(false);
-    
-            }elseif ($isConducteur === 'Passager') {
-                $user->setConducteur(false);
-                $user->setPassager(true);
-    
-            }elseif ($isConducteur === 'Conducteur et passager') {
-                $user->setConducteur(true);
-                $user->setPassager(true);
-            }
+            // Gérer les rôles "conducteur/passager"
+        $isConducteur = $form->get('isConducteur')->getData();
 
+        match ($isConducteur) {
+            'Conducteur' => [$user->setConducteur(true), $user->setPassager(false)],
+            'Passager' => [$user->setConducteur(false), $user->setPassager(true)],
+            'Conducteur et passager' => [$user->setConducteur(true), $user->setPassager(true)],
+            default => null,
+        };
+ */
             // Persister les modifications
             $em->flush();
 

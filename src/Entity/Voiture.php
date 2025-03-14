@@ -18,34 +18,35 @@ class Voiture
     #[ORM\Column]
     private ?int $id = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"L'\immatriculation est obligatoire.")]
+    #[Assert\Regex('/[a-zA-Z][a-zA-Z]-[0-9][0-9][0-9]-[a-zA-Z][a-zA-Z]/i')]
     #[ORM\Column(length: 255)]
     private ?string $immat = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"La date de première immatriculation est obligatoire.")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $firstImmat = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message:"Le constructeur est obligatoire.")]
     #[ORM\Column(length: 255)]
     private ?string $constructeur = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Le modèle est obligatoire.")]
     #[ORM\Column(length: 255)]
     private ?string $modele = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"La couleur est obligatoire.")]
     #[ORM\Column(length: 255)]
     private ?string $couleur = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"L'\énergie est obligatoire.")]
     #[ORM\Column(length: 255)]
     private ?string $energie = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $options = null;
 
-    #[Assert\NotBlank]
+    #[Assert\NotBlank (message:"Le nombre de place est obligatoire.")]
     #[ORM\Column]
     private ?int $nbrePlace = null;
 

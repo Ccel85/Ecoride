@@ -4,8 +4,6 @@ namespace App\Form;
 
 use App\Entity\Voiture;
 use App\Entity\Covoiturage;
-use App\Entity\Utilisateur;
-use App\Repository\VoitureRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;

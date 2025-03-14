@@ -3,7 +3,7 @@
 {% block title %}Les covoiturages{% endblock %}
 
 {% block body %}
-<div class="container">
+<div class="container-fluid">
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href= "{{ path('app_home') }}">Accueil</a></li>
@@ -47,16 +47,19 @@
             <i class="bi bi-search icon-hover "></i></button>
     </form>
 {% if submit %}
-    <p class="text-center fs-5 ms-4">Voici les résultats pour votre itinéraire de <span>{{ lieuDepart|capitalize }}</span> à<span> {{ lieuArrivee|capitalize }}</span> pour le <span>{{ dateDepart|date('d-m-Y') }}</span>  :</p>
-{# {% if covoiturages is empty %}
-    <p class="text-center fw-bold">Il n'y a pas de covoiturages avec ces criteres,veuillez modifier votre recherche .</p>
-    {% else %} #}
-    <dic class="container-fluid">
-        <div class="cards row gap-4 m-3">
+    <div>
+        {% if covoiturages is empty %}
+            <p class="text-center fs-5 ms-4"> Il n'y a pas de voyage pour cette date ,ci dessous les dates s'y approchant:<p>
+        {% else %}
+            <p class="text-center fs-5 ms-4">Voici les résultats pour votre itinéraire à compter du <span>{{ dateDepart|date('d-m-Y') }}</span>  :</p>
+        {% endif %}
+    </div>
+    <div class="container-fluid">
+        <div class="cards row  m-3 d-flex justify-content-evenly">
             {% for covoiturage in covoiturages %}
                 {% if covoiturage.dateFuture and covoiturage.placeDispo > 0
-                and covoiturage.conducteur.id != app.user.id  %}
-            <div class="col-12 col-md-6 col-lg-4">
+                and (app.user is null or covoiturage.conducteur.id != app.user.id)  %}
+            <div class="col-12 col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-header text-center">
                         <div class="conducteur d-flex flex-column align-items-center">
@@ -70,7 +73,7 @@
                     </div>
                     <div class="card-body">
                             <p>Membre depuis <strong>{{ covoiturage.conducteur.createdAt | date ('Y')}}</strong> </p>
-                            <p><i class="bi bi-star-fill star"> {{ rateUser }}/5</i></p>
+                            <p><i class="bi bi-star-fill star"> {{ covoiturage.rate }}/5</i></p>
                             <div>
                                 <p>Départ le : {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
                             </div>
