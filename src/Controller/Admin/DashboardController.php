@@ -7,7 +7,7 @@ use DatePeriod;
 use DateInterval;
 use DateTimeZone;
 use App\Entity\Avis;
-use App\Entity\Covoiturage;
+use App\Document\CovoiturageMongo;
 use Symfony\UX\Chartjs\Model\Chart;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +22,7 @@ class DashboardController extends AbstractController
     public function admin(EntityManagerinterface $em,ChartBuilderInterface $chartBuilder,Request $request): Response
     {
     
-    $covoiturages = $em->getRepository(Covoiturage::class);
+    $covoiturages = $em->getRepository(CovoiturageMongo::class);
     $month = $request->query->get('month', (new \DateTime())->format('m'));
     $year = 2025;
     

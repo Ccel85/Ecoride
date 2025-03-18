@@ -154,10 +154,10 @@
                 <hr>
                 <div class="d-flex justify-content-between align-items-center flex-wrap">
                 <ul>
-                <li>Mon véhicule: {{ voiture.constructeur|capitalize }} {{ voiture.modele|capitalize }}</li>
-                <li>Immatriculé: {{ voiture.immat }} </li>
-                <li>Date de 1ère mise en circulation: {{ voiture.firstImmat|date('d-m-Y') }} </li>
-                <li>Place disponible: {{ voiture.nbrePlace }} </li></ul>
+                  <li>Mon véhicule: {{ voiture.constructeur|capitalize }} {{ voiture.modele|capitalize }}</li>
+                  <li>Immatriculé: {{ voiture.immat }} </li>
+                  <li>Date de 1ère mise en circulation: {{ voiture.firstImmat|date('d-m-Y') }} </li>
+                </ul>
                 <a href="{{path('app_voiture_update',{id: voiture.id}) }}" class="btn btn-success">
                   <i class="bi bi-pencil-square"></i>
                 </a>
@@ -166,7 +166,9 @@
                 </a>
                 </div>
                 {% endfor %}
-                <a href="{{path('app_voiture_new')}}">Ajouter un véhicule</a>
+                <div class="text-center">
+                <a  href="{{path('app_voiture_new')}}">Ajouter un véhicule</a>
+                </div>
               {% else %}
               <hr>
               <p>Pas de véhicule enregistré.</p>

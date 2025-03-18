@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Avis;
-use App\Entity\Covoiturage;
 use App\Form\AvisFormType;
+use App\Document\CovoiturageMongo;
 use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -61,7 +61,7 @@ final class AvisController extends AbstractController{
             return $this->redirectToRoute('app_login');
         }
 
-        $covoiturage = $em->getRepository(Covoiturage::class)->find($id);
+        $covoiturage = $em->getRepository(CovoiturageMongo::class)->find($id);
 
         if (!$covoiturage) {
             throw $this->createNotFoundException('Covoiturage non trouvé.');
@@ -106,7 +106,7 @@ final class AvisController extends AbstractController{
             return $this->redirectToRoute('app_login');
         }
 
-        $covoiturage = $em->getRepository(Covoiturage::class)->find($id);
+        $covoiturage = $em->getRepository(CovoiturageMongo::class)->find($id);
 
         if (!$covoiturage) {
             throw $this->createNotFoundException('Covoiturage non trouvé.');
@@ -146,7 +146,7 @@ final class AvisController extends AbstractController{
 //Valider un avis
     #[Route('/avis/update', name: 'app_avis_update' )]
 
-    public function avisUpdate(AvisRepository $avisRepository,Request $request,EntityManagerInterface $em,Security $security): Response 
+    public function avisUpdate(AvisRepository $avisRepository,Request $request,EntityManagerInterface $em,Security $security): Response
     {
         $utilisateur = $security->getUser();
 
@@ -157,7 +157,7 @@ final class AvisController extends AbstractController{
         }
 
         // Récupérer tous les avis invalides
-        $selectedIds = $request->request->all('isValid', []);
+        $selectedIds = $request->request->get('isValid', []);
 
         if (!empty($selectedIds)) {
             $invalidAvis = $avisRepository->findBy(['id' => $selectedIds]);

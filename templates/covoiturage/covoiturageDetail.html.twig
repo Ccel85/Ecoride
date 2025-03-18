@@ -48,13 +48,11 @@
                 {{ covoiturage.lieuArrivee|capitalize }}
                 </div>
             </div>
-            {# <div id="app" data-user="{{ app.user ? '1' : '0' }}">
-            </div> #}
             {% if app.user  %}
               {% if userCovoiturage is null and covoiturage.placeDispo >= 0 %}
                 <div class="participer">
-                    <a class="btn btn-success" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
-                    Participer</a>
+                  <a class="btn btn-success" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
+                  Participer</a>
                 </div>
                 {% elseif userCovoiturage %}
                 <div class="d-flex flex-column text-center ">

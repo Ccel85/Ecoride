@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Voiture;
-use App\Entity\Covoiturage;
+use App\Document\CovoiturageMongo;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -48,7 +48,7 @@ class CovoiturageFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Covoiturage::class,
+            'data_class' => CovoiturageMongo::class,
             'utilisateur' => null,
             'voitures' => [], // Ajoute une option personnalisée
             'csrf_protection'=> true,

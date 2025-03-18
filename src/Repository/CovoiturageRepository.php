@@ -2,18 +2,18 @@
 
 namespace App\Repository;
 
-use App\Entity\Covoiturage;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use App\Document\CovoiturageMongo;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 
 /**
- * @extends ServiceEntityRepository<Covoiturage>
+ * @extends ServiceEntityRepository<CovoiturageMongo>
  */
 class CovoiturageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Covoiturage::class);
+        parent::__construct($registry, CovoiturageMongo::class);
     }
 
     public function findCovoiturageByDateOrdered()
@@ -48,7 +48,7 @@ public function covoiturageDuree($covoiturage)
 
 
    /**
-    * @return Covoiturage[] Returns an array of Covoiturage objects
+    * @return CovoiturageMongo[] Returns an array of Covoiturage objects
     */
     public function findBySearch($date,$depart,$arrivee,$placeDispo): array
     {
@@ -126,6 +126,7 @@ $end = new \DateTime("last day of $year-$month");
         ->getQuery()
         ->getArrayResult();
     }
+
 //    public function findOneBySomeField($value): ?Covoiturage
 //    {
 //        return $this->createQueryBuilder('c')

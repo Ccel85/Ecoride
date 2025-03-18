@@ -2,8 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Covoiturage;
 use Symfony\Component\Mime\Email;
+use App\Document\CovoiturageMongo;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -22,7 +22,7 @@ public function sendEmail(int $id,MailerInterface $mailer,EntityManagerInterface
 {
     try {
         
-        $covoiturage= $em->getRepository(Covoiturage::class)->find($id);
+        $covoiturage= $em->getRepository(CovoiturageMongo::class)->find($id);
 
         if (!$covoiturage) {
             throw $this->createNotFoundException('Covoiturage introuvable.');

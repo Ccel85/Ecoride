@@ -5,11 +5,9 @@ namespace App\Repository;
 use App\Entity\Utilisateur;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManager;
-use phpDocumentor\Reflection\Types\Integer;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
@@ -51,16 +49,14 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         ->getResult();
 }
 
-    public function majCredit (Security $security,EntityManager $entityManager): Int
+    public function majCredit (Security $security,Utilisateur $utilisateur,EntityManager $entityManager): Int
 {
     /* $utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
     
 
     if (!$utilisateur) {
         throw $this->createAccessDeniedException('L\'utilisateur n\'est pas connecté');
-    } */
-
-    
+    } */    
     $majCredit = $utilisateur->getCredits()- 2;
 
     // Mettre à jour l'entité Utilisateur
@@ -71,6 +67,8 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
 
     return $majCredit;
 }
+
+
 }
 //    public function findOneBySomeField($value): ?Utilisateur
 //    {

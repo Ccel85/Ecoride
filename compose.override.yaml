@@ -16,3 +16,9 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
+
+###> doctrine/mongodb-odm-bundle ###
+  mongodb:
+    ports:
+      - "27017"
+###< doctrine/mongodb-odm-bundle ###
