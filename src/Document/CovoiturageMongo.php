@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ODM\HasLifecycleCallbacks()]
 class CovoiturageMongo
 {
-    #[ODM\Id]
+    #[ODM\Id(strategy: "AUTO")]
     /* #[ODM\GeneratedValue]
     #[ODM\Column] */
     private ?string $id = null;
@@ -64,7 +64,7 @@ class CovoiturageMongo
 
     /* #[ODM\Column] */
     #[ODM\Field(type: "date")]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTime $createdAt = null;
 
    /*  #[ODM\Column] */
     #[ODM\Field(type: "bool")]
@@ -239,43 +239,47 @@ class CovoiturageMongo
     }
     
 
-    public function getVoiture(): ?string
+    public function getVoitureId(): ?string
     {
         return $this->voitureId;
     }
 
-    public function setVoiture(string $voitureId): static
+    public function setVoitureId(string $voitureId): static
     {
         $this->voitureId = $voitureId;
 
         return $this;
     }
+    public function __construct()
+    {
+        $this->createdAt = new \DateTime();
+    }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+   /*  public function setCreatedAt(\DateTime $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
-    }
+    } */
     #[ODM\PrePersist]
     public function setCreatedAtValue()
     {
         if ($this->createdAt === null) {
-            $this->createdAt = new \DateTimeImmutable();
+            $this->createdAt = new \DateTime();
         }
     }
 
-    public function getConducteur(): ?string
+    public function getConducteurId(): ?string
     {
         return $this->conducteurId;
     }
 
-    public function setConducteur(string $conducteurId): static
+    public function setConducteurId(string $conducteurId): static
     {
         $this->conducteurId = $conducteurId;
 

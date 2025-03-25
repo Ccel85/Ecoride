@@ -245,13 +245,13 @@
           <span>Prix: {{ covoiturage.prix }} € </span>
           <div class="voyage container">
               <div class="row">
-              {% if covoiturage.conducteur %}
+              {% if covoiturage.conducteurId %}
                 <div class="d-flex align-items-center justify-content-around  ">
                   <div class="conducteur d-flex justify-content-center flex-column align-items-center p-2">
-                    {% if covoiturage.conducteur == app.user %}
+                    {% if conducteurUser %}
                     <p class="text-decoration-underline m-0">Mon voyage : </p>
                     {% else %}
-                    <p class="text-decoration-underline m-0">Conducteur:</p> <span >{{ covoiturage.conducteur.pseudo| capitalize }}</span>
+                    <p class="text-decoration-underline m-0">Conducteur:</p> <span >{{ conducteur.pseudo| capitalize }}</span>
                       {% if covoiturage.conducteur.photoPath  is not empty %}
                         <a href="{{ path('app_profil_id', {'id': covoiturage.conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ covoiturage.conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
                         {% else %}
@@ -262,7 +262,7 @@
                     {# Bouton validation voyage #}
                 {% if app.user %}
                   {% if  covoiturage.id is not null 
-                    and covoiturage.conducteur.id != app.user.id   
+                    and covoiturage.conducteurId != app.user.id   
                     and utilisateur.id == app.user.id  
                     and covoiturage.isArrived
                     and not isValidateUser %}
@@ -289,7 +289,7 @@
                 </div> #}
                 {% if app.user %}
                   {% if  covoiturage.id is not null 
-                    and covoiturage.conducteur.id != app.user.id 
+                    and covoiturage.conducteurId != app.user.id 
                     and utilisateur.id == app.user.id  
                     and covoiturage.isArrived 
                     and isValidateUser
@@ -306,14 +306,13 @@
                     <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                       <p class="m-0">Signaler un covoiturage</p>
                       <a  id='signaler' class="btn btn-danger m-2" 
-                      {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
-                      data-url ="{{ path('app_avis_signaler',{ 'id': covoiturage.id }) }}" >
+                          data-url ="{{ path('app_avis_signaler',{ 'id': covoiturage.id }) }}" >
                         <i class="bi bi-exclamation-triangle-fill"></i>
                       </a>
                     </div>
                   {% endif %}
                   {% if  covoiturage.id is not null 
-                    and covoiturage.conducteur.id != app.user.id 
+                    and covoiturage.conducteurId != app.user.id 
                     and utilisateur.id == app.user.id  
                     and covoiturage.isArrived 
                     and isValidateUser
@@ -333,7 +332,7 @@
                     {{ covoiturage.heureDepart|date('H:i') }}
                     </div>
                     <div class="fs-3 fw-bold">
-                    {{ covoiturage.lieuDepart }}
+                    {{ covoiturage.lieuDepart|capitalize }}
                     </div>
                   </div>
                   <div class="w-50">
@@ -351,13 +350,13 @@
                     {{ covoiturage.heureArrivee|date('H:i') }}
                     </div>
                     <div class="fs-3 fw-bold">
-                    {{ covoiturage.lieuArrivee }}
+                    {{ covoiturage.lieuArrivee|capitalize }}
                     </div>
                   </div>
                   {# Covoiturage du jour sur profil connecté #}
                 {% if app.user %}
-                  {% if covoiturage.conducteur is not null 
-                    and covoiturage.conducteur.id == app.user.id 
+                  {% if covoiturage.conducteurId is not null 
+                    and covoiturage.conducteurId == app.user.id 
                     and covoiturage.dateAujourdhui %}
                     {# Affichage bouton stop #}
                     {% if covoiturage.isGo 
@@ -380,8 +379,8 @@
                   </div> #}
                   {# Covoiturage futur sur profil connecté 
                   !!!ajouter dateFuture dans les conditions #}
-                  {% if covoiturage.conducteur is not null 
-                    and covoiturage.conducteur.id == app.user.id 
+                  {% if covoiturage.conducteurId is not null 
+                    and covoiturage.conducteurId == app.user.id 
                     %}
                       <div class="boutons d-flex flex-column ">
                         <a  id="trash_{{ covoiturage.id }}" class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
@@ -393,8 +392,8 @@
                       </div>
                   {% endif %}
                   {#  Covoiturage prévu aujourd'hui #}
-                  {% if covoiturage.conducteur is not null 
-                    and covoiturage.conducteur.id == app.user.id 
+                  {% if covoiturage.conducteurId is not null 
+                    and covoiturage.conducteurId == app.user.id 
                     and covoiturage.dateAujourdhui 
                     and covoiturage.isGo == false %}
                     <a id='carGo' data-url="{{ path('app_covoiturage_go',{ 'id': covoiturage.id }) }}" class="btn custom-bg btn-success m-2">
@@ -403,7 +402,7 @@
                   {% endif %}
                     {# sinon bouton pour annuler la participation au covoiturage #}
                   {% if  covoiturage.id is not null 
-                    and covoiturage.conducteur.id != app.user.id 
+                    and covoiturage.conducteurId != app.user.id 
                     and covoiturage.dateFuture
                     and covoiturage.isGo == false  %}
                     <div class="boutons d-flex">

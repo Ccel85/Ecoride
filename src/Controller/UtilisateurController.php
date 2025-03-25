@@ -6,9 +6,11 @@ use App\Entity\Avis;
 use App\Entity\Voiture;
 use App\Entity\Utilisateur;
 use App\Form\ProfilFormType;
+use App\Document\CovoiturageMongo;
 use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\UtilisateurRepository;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -118,18 +120,41 @@ class UtilisateurController extends AbstractController
     //Affichage profil connecté
     #[Route('/profil', name: 'app_profil')]
     
-    public function profilUtilisateur(Security $security,EntityManagerInterface $em,AvisRepository $avisRepository): Response
+    public function profilUtilisateur(Security $security,
+    EntityManagerInterface $em,
+    DocumentManager $documentManager,
+    AvisRepository $avisRepository): Response
     {
         $user = $security->getUser(); // Récupérer l'utilisateur connecté
-
+        
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
 
+        $userId = (string) $user->getId(); // Convertit l'ID en string
+
+        //récupération des covoiturages de l'utilisateur connecté
+            //récupération quand conducteur (string):
+        $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
+                        ->findBy(['conducteurId' => $userId]);
+
+            //récupération quand passager (int):
+        $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
+                        ->findBy(['passagersIds' => $user->getId()]);
+
+        //association de tous les covoiturages:
+        $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
+
+        foreach ($covoiturages as $covoiturage){
+            $conducteurId = (int) $covoiturage->getConducteurId();
+            $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
+            
+        }
+        dump($conducteur);
         // Récuperation des données:
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
-        $covoiturages = $user->getCovoiturage();
+        /* $covoiturages = $user->getCovoiturage(); */
         $validatedCovoiturages = $user->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
         $observations = $user->getObservation();
         $rating = $em->getRepository(Avis::class)->rateUser($user);
@@ -150,11 +175,11 @@ class UtilisateurController extends AbstractController
         $avisUser = null;
 
         //selectionner les dates futures à la date du jour
-        if ($covoiturages !== null) {
+        if ($covoituragesConducteur !== null) {
             foreach ($covoiturages as $covoiturage) {
-                $now = new \DateTime();
+                $now = new \DateTimeImmutable();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
-                $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
+                $covoiturage->setDateFuture($dateFuture) ;
                 
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
@@ -170,11 +195,10 @@ class UtilisateurController extends AbstractController
                 
             }
         }
-
+        //AVIS LAISSE PAR L'UTILISATEUR
         $avisUser = $avisRepository->findOneBy([
             'passager' => $user,
         ]);
-        
         $avisUserExiste = $avisUser !== null;
 
             return $this->render('utilisateur/profil.html.twig', [
@@ -187,6 +211,8 @@ class UtilisateurController extends AbstractController
                 'isValidateUser'=>$isValidateUser,
                 'rate'=>$rateUser,
                 'avisUserExiste'=>$avisUserExiste,
+                'conducteur'=>$conducteur,
+                'conducteurUser'=>$covoituragesConducteur,
                 ]);
         }
     
@@ -304,18 +330,6 @@ class UtilisateurController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
         
-        /*  $isConducteur = $form->get('isConducteur')->getData();
-
-            // Gérer les rôles "conducteur/passager"
-        $isConducteur = $form->get('isConducteur')->getData();
-
-        match ($isConducteur) {
-            'Conducteur' => [$user->setConducteur(true), $user->setPassager(false)],
-            'Passager' => [$user->setConducteur(false), $user->setPassager(true)],
-            'Conducteur et passager' => [$user->setConducteur(true), $user->setPassager(true)],
-            default => null,
-        };
- */
             // Persister les modifications
             $em->flush();
 

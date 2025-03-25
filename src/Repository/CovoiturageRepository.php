@@ -39,6 +39,31 @@ public function findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee
         ->getResult();
 }
 
+public function findCovoiturage($dateDepart,$lieuDepart,$lieuArrivee,$prix)
+{
+    $qb = $this->createQueryBuilder('c');
+    // Construction la requête pour filtrer les covoiturages
+    
+    if ($dateDepart){
+        $qb->andWhere('c.dateDepart = :dateDepart')
+        ->setParameter('dateDepart', $dateDepart );
+    }
+    if ($lieuDepart){
+        $qb->andWhere('c.lieuDepart LIKE :lieuDepart')
+        ->setParameter('lieuDepart', '%' . $lieuDepart . '%');
+    }
+    if ($lieuArrivee){
+        $qb->andWhere('c.lieuArrivee LIKE :lieuArrivee')
+        ->setParameter('lieuArrivee', '%' . $lieuArrivee . '%');
+    }
+    if ($prix){
+        $qb->andWhere('c.prix <= :prix')
+        ->setParameter('prix',$prix);
+    }
+    return $qb->orderBy('c.dateDepart', 'ASC')
+    ->getQuery()
+    ->getResult();
+}
 
 public function covoiturageDuree($covoiturage)
     {

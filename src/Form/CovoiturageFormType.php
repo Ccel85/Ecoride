@@ -11,6 +11,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 
 class CovoiturageFormType extends AbstractType
@@ -18,6 +20,7 @@ class CovoiturageFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $utilisateur = $options['utilisateur']; // Récupérer l'utilisateur passé dans les options
+        $voitures = $options['voitures'];
 
         $builder
             ->add('prix', IntegerType::class)
@@ -35,13 +38,18 @@ class CovoiturageFormType extends AbstractType
             
             ->add('placeDispo',IntegerType::class)
             
-            ->add('voiture', EntityType::class, [
-                'class' => Voiture::class,
-                'choices' => $options['voitures'], // Passe bien les voitures récupérées dans le contrôleur
+            ->add('voitureId', ChoiceType::class, [
+                'label' => 'Sélectionnez votre véhicule',
+                'choices' => $voitures, // Liste des voitures du conducteur
                 'choice_label' => function (Voiture $voiture) {
-                    return $voiture->getConstructeur() . ' ' . $voiture->getModele();
+                    return $voiture->getConstructeur() . ' - ' . $voiture->getModele(); // Affichage
                 },
-                'placeholder' => 'Sélectionnez un véhicule',
+                'choice_value' => function (?Voiture $voiture) {
+                    return $voiture ? (string) $voiture->getId() : ''; // 🔥 Convertit l'ID en string
+                },
+                'placeholder' => 'Choisissez une voiture',
+                'required' => true,
+                'mapped' => false 
             ]);
     }
 
