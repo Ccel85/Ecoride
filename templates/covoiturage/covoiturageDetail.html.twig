@@ -49,23 +49,30 @@
                 </div>
             </div>
             {% if app.user  %}
-              {% if userCovoiturage is null and covoiturage.placeDispo >= 0 %}
+              {% set isPassager = false %}
+              {% for passager in userCovoiturage %}
+                {% if passager == app.user.id %}
+                  {% set isPassager = true %}
+                {% endif %}
+              {% endfor %}
+              {% if isPassager %}
+                <div class="d-flex flex-column text-center ">
+                  <span class="wrap justify-content-end">Vous êtes prévu pour ce voyage .</span>
+                  <i class="check bi bi-check-lg fs-1"></i>
+                </div>
+                {% elseif covoiturage.placeDispo >= 0 %}
                 <div class="participer">
                   <a class="btn btn-success" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
                   Participer</a>
                 </div>
-                {% elseif userCovoiturage %}
-                <div class="d-flex flex-column text-center ">
-                  <span class="wrap justify-content-end">Vous êtes déja enregistrer pour ce voyage .</span>
-                  <i class="check bi bi-check-lg fs-1"></i>
-                </div>
-                {% else %}
-                <div >
-                  <a class="btn btn-success" href="{{ path('app_login') }}" >
-                  Pour participer, <br>veuillez vous connecter</a>
-                </div>
               {% endif %}
+            {% else %}
+              <div >
+                <a class="btn btn-success" href="{{ path('app_login') }}" >
+                Pour participer, <br>veuillez vous connecter</a>
+              </div>
             {% endif %}
+            
           </div>
         </div>
       </div>
@@ -92,17 +99,17 @@
                 <i class="bi bi-star-fill star"> {{conducteur.rateUser}}/5</i>
               </li> #}
               <br>
-              {% if voitures is empty %}
+              {% if voiture is empty %}
                 <li>Pas de véhicule enregistré.</li>
                 {% else %}
                     <p class="text-decoration-underline">Voiture utilisée:</p>
-                    <li>{{ covoiturage.voiture.constructeur|capitalize }} {{ covoiturage.voiture.modele|capitalize }}</li>
-                    <li>Immatriculée: {{covoiturage.voiture.immat }} </li>
-                    <li>Date de 1ère mise en circulation: {{covoiturage.voiture.firstImmat|date('d-m-Y') }} </li>
-                    <li>Energie: {{ covoiturage.voiture.energie|capitalize }} </li>
+                    <li>{{ voiture.constructeur|capitalize }} {{ voiture.modele|capitalize }}</li>
+                    <li>Immatriculée: {{voiture.immat }} </li>
+                    <li>Date de 1ère mise en circulation: {{voiture.firstImmat|date('d-m-Y') }} </li>
+                    <li>Energie: {{ voiture.energie|capitalize }} </li>
                     <div  class="d-flex align-items-center">
                       <li class="m-0">Trajet écologique:</li>
-                      {% if covoiturage.voiture.energie == 'Electrique' %}
+                      {% if voiture.energie == 'Electrique' %}
                           <div class="form-check form-switch mx-4 ">
                               <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  checked disabled>
                               <label class="form-check-label" for="flexSwitchCheckDefault"></label>
@@ -113,7 +120,7 @@
                               <label class="form-check-label" for="flexSwitchCheckDefault"></label>
                           </div> 
                       {% endif %}</div>
-                    <li>Place disponible: {{ covoiturage.voiture.nbrePlace }} </li>
+                    {# <li>Place disponible: {{ voiture.nbrePlace }} </li> #}
                     <hr>
               {% endif %}
             </ul>

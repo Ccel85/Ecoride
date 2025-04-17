@@ -49,31 +49,34 @@
 {% if submit %}
     <div>
         {% if covoiturages is empty %}
-            <p class="text-center fs-5 ms-4"> Il n'y a pas de voyage pour cette date ,ci dessous les dates s'y approchant:<p>
+            <p class="text-center fs-5 ms-4">Il n'y a pas de covoiturage avec les critères saisies,<br>
+            voici les résultats pour votre itinéraire à compter du <span>{{ dateDepart|date('d-m-Y') }}</span>  :</p>
         {% else %}
             <p class="text-center fs-5 ms-4">Voici les résultats pour votre itinéraire à compter du <span>{{ dateDepart|date('d-m-Y') }}</span>  :</p>
         {% endif %}
     </div>
     <div class="container-fluid">
         <div class="cards row  m-3 d-flex justify-content-evenly">
-            {% for covoiturage in covoiturages %}
-                {% if covoiturage.dateFuture and covoiturage.placeDispo > 0
-                and (app.user is null or covoiturage.conducteur.id != app.user.id)  %}
+
+            {% for key, covoiturage in covoiturages %}
+                {% set conducteur = conducteurs[key] %}
+                {% if covoiturage.dateFuture and covoiturage.placeDispo > 0 
+                and (app.user is null or conducteur.id != app.user.id)  %} 
             <div class="col-12 col-md-4 mb-4">
                 <div class="card h-100">
                     <div class="card-header text-center">
                         <div class="conducteur d-flex flex-column align-items-center">
                             <p class="m-1">Conducteur:</p>
-                            {% if covoiturage.conducteur.photoPath is empty%}
-                            <a href="{{ path('app_profil_id', {'id': covoiturage.conducteur.id}) }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon"> </i></a>
+                            {% if conducteur.photoPath is empty%}
+                            <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon"> </i></a>
                             {% else %}
-                            <a href="{{ path('app_profil_id', {'id': covoiturage.conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ covoiturage.conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
+                            <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
                             {% endif %}
                         </div>
                     </div>
                     <div class="card-body">
-                            <p>Membre depuis <strong>{{ covoiturage.conducteur.createdAt | date ('Y')}}</strong> </p>
-                            <p><i class="bi bi-star-fill star"> {{ covoiturage.rate }}/5</i></p>
+                            <p>Membre depuis <strong>{{ conducteur.createdAt | date ('Y')}}</strong> </p>
+                            <p><i class="bi bi-star-fill star">  {{ covoiturage.rate }}/5</i></p>
                             <div>
                                 <p>Départ le : {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
                             </div>
@@ -108,8 +111,8 @@
                             <p>Place disponible:<strong> {{ covoiturage.placeDispo}}</strong> </p>
                             <p>Prix:<strong> {{ covoiturage.prix}} € </strong></p>
                             <div  class="d-flex align-items-center">
-                                <span>Trajet écologique: {{covoiturage.voiture.energie|capitalize}} </span>
-                                {% if covoiturage.voiture.energie == 'Electrique' %}
+                                <span>Trajet écologique: {{voiture.energie|capitalize}} </span>
+                                {% if voiture.energie == 'Electrique' %}
                                 <div class="form-check form-switch m-4 ">
                                     <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  checked disabled>
                                     <label class="form-check-label" for="flexSwitchCheckDefault"></label>

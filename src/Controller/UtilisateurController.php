@@ -20,7 +20,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class UtilisateurController extends AbstractController
 {
     #[Route('/utilisateur', name: 'app_utilisateur')]
-    public function indexUtilisateur(Security $security,UtilisateurRepository $utilisateurRepository,EntityManagerInterface $em): Response
+    public function indexUtilisateur(Security $security,
+    UtilisateurRepository $utilisateurRepository,
+    EntityManagerInterface $em): Response
     {
         $utilisateurs = $utilisateurRepository->findByRole("ROLE_USER");
         $user = $security->getUser();
@@ -57,29 +59,35 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/utilisateur/{id}/archive', name: 'app_utilisateur_archive', requirements: ['id' => '\d+'])]
-    public function archiveUtilisateur(int $id,EntityManagerInterface $em,Security $security): Response
+    public function archiveUtilisateur(int $id,
+    EntityManagerInterface $em,
+    Security $security): Response
     {
-        
+        //récuperation de l'utilisateur
         $repository = $em->getRepository(Utilisateur::class);
         $utilisateur = $repository->find($id);
-        $user = $security->getUser();
-        $roleUser = $user->getRoles();
-
+        
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
-
+        //archiver l'utilisateur
         $utilisateur->setActif(false);
         $em->flush();
 
+         // récuperation du role de l'utlisateur connecté
+        $user = $security->getUser();
+        $roleUser = $user->getRoles();
+
         $this->addFlash('success', 'L\'archivage a été effectué pour le profil concerné .');
 
+        //redirection en fonction du role
         if ($roleUser == ['ROLE_ADMIN']){
 
+            //retour sur la liste des employés
             return $this->redirectToRoute('app_employe');
 
         } else {
-
+            //retour sur liste utilisateurs
             return $this->redirectToRoute('app_utilisateur');
 
         }
@@ -88,32 +96,35 @@ class UtilisateurController extends AbstractController
     //Rendre utilisateur actif
     #[Route('/utilisateur/{id}/active', name: 'app_utilisateur_active', requirements: ['id' => '\d+'])]
     
-    public function activeUtilisateur(int $id,EntityManagerInterface $em,Security $security): Response
+    public function activeUtilisateur(int $id,
+    EntityManagerInterface $em,
+    Security $security): Response
     {
-        
+        //récuperation de l'utilisateur
         $repository = $em->getRepository(Utilisateur::class);
         $utilisateur = $repository->find($id);
-        $user = $security->getUser();
-        $roleUser = $user->getRoles();
-
 
         if (!$utilisateur) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
+        
+                $utilisateur->setActif(true);
+                $em->flush();
 
-        $utilisateur->setActif(true);
-        $em->flush();
+        // récuperation du role de l'utlisateur connecté
+        $user = $security->getUser();
+        $roleUser = $user->getRoles();
 
         $this->addFlash('success', 'L\'activation a été effectué pour le profil concerné.');
-
+        
+        //redirection en fonction du role
         if ($roleUser == ['ROLE_ADMIN']){
-
+        //retour sur la liste des employés  
             return $this->redirectToRoute('app_employe');
 
         } else {
-
+             //retour sur liste utilisateurs
             return $this->redirectToRoute('app_utilisateur');
-
         }
     }
 
@@ -137,25 +148,26 @@ class UtilisateurController extends AbstractController
             //récupération quand conducteur (string):
         $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
                         ->findBy(['conducteurId' => $userId]);
-
+        dump($covoituragesConducteur);
             //récupération quand passager (int):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
-                        ->findBy(['passagersIds' => $user->getId()]);
-
+                        ->findBy(['passagersIds' => $userId]);
+        dump($covoituragesPassager);
         //association de tous les covoiturages:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
 
-        foreach ($covoiturages as $covoiturage){
+       /*  foreach ($covoiturages as $covoiturage){
             $conducteurId = (int) $covoiturage->getConducteurId();
             $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
             
         }
-        dump($conducteur);
+        dump($conducteur); */
         // Récuperation des données:
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
         /* $covoiturages = $user->getCovoiturage(); */
-        $validatedCovoiturages = $user->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
+        $validatedCovoiturages = $documentManager->getRepository(CovoiturageMongo::class)
+        ->findBy(['validateUsers' => $user->getId()]);
         $observations = $user->getObservation();
         $rating = $em->getRepository(Avis::class)->rateUser($user);
         $rateUser =round($rating ?? 0,1);
@@ -174,9 +186,13 @@ class UtilisateurController extends AbstractController
         $avisUserExiste = false;
         $avisUser = null;
 
-        //selectionner les dates futures à la date du jour
         if ($covoituragesConducteur !== null) {
             foreach ($covoiturages as $covoiturage) {
+                
+                $conducteurId = (int) $covoiturage->getConducteurId();
+                $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
+                
+                //selectionner les dates futures à la date du jour
                 $now = new \DateTimeImmutable();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $covoiturage->setDateFuture($dateFuture) ;
@@ -186,12 +202,12 @@ class UtilisateurController extends AbstractController
                     $dateAujourdhui = $covoiturage->setDateAujourdhui($dateAujourdhui);
                 }
 
-                // Affiche tous les covoiturages validés par l'utilisateur
+                /* // Affiche tous les covoiturages validés par l'utilisateur
                 if ($isValidateUser = $validatedCovoiturages->contains($covoiturage)){
                     // Vérifie si le covoiturage en question est validé
                 $isValidateUser = true;
                 break;
-                }
+                } */
                 
             }
         }
@@ -212,84 +228,103 @@ class UtilisateurController extends AbstractController
                 'rate'=>$rateUser,
                 'avisUserExiste'=>$avisUserExiste,
                 'conducteur'=>$conducteur,
-                'conducteurUser'=>$covoituragesConducteur,
+                //'conducteur'=>$covoituragesConducteur,
                 ]);
         }
     
 
     //affichage profil selon Id
     #[Route('/profil/{id}', name: 'app_profil_id' ,requirements: ['id' => '\d+'])]
-    public function profil(int $id,EntityManagerInterface $em,AvisRepository $avisRepository): Response
-    {
+    public function profil(
+        int $id,
+        EntityManagerInterface $em,
+        DocumentManager $documentManager): Response
+        {
+        //recuperer l'utilisateur selon son ID (int)
         $user = $em->getRepository(Utilisateur::class)->find($id);
         
         if (!$user) {
             throw $this->createNotFoundException('Utilisateur non trouvé.');
         }
+
+        //mettre l'id user au format string
+        $userId =(string) $user->getId();
         
         // Récuperation des données:
-        $covoiturages = $user->getCovoiturage();
-        
 
+        //récupération des covoiturages de l'utilisateur connecté
+            //récupération quand conducteur (string):
+        $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
+            ->findBy(['conducteurId' => $userId]);
+            //dump($covoituragesConducteur);
+        //récupération quand passager (int):
+        $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
+            ->findBy(['passagersIds' => $user->getId()]);
+            //dump($covoituragesPassager);
+        //association de tous les covoiturages de l'utilisateur:
+        $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
+        //dump($covoiturages);
+
+        // Récupération des données utilisateur
         $observations = $user->getObservation();
+        // Scinder le texte par les virgules
+        $observationExplode = explode(',' ,$observations);
+
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $rateUser =round($em->getRepository(Avis::class)->rateUser($user),1);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
-        $validatedCovoiturages = $user->getValidateCovoiturages($covoiturages);// Affiche tous les covoiturages validés par l'utilisateur
         
-        
-        /*  if (!$voitureUser && $utilisateur->isConducteur(true)){
-            // Rediriger a la création de vehicule
-            $this->addFlash('danger', 'Veuillez ajouter un véhicule');
-            return $this->redirectToRoute('app_voiture_new');
-            } */
-        
-           // Scinder le texte par les virgules
-            $observationExplode = explode(',' ,$observations);
-            
+        //récuperer les covoiturages validé par l'utilisateur
+        $validatedCovoituragesIds =  $documentManager->getRepository(CovoiturageMongo::class)
+        ->findBy(['validateUsers' => $user->getId()]);
 
-            $dateAujourdhui = false;
-            $isValidateUser = false;
-            /* $signalComment = null; */
-            $avisUserExiste = false;
-            $avisUser = null;
+        /* // Récupérer les objets MongoDB correspondants
+        $validatedCovoiturages = [];
+        foreach ($validatedCovoituragesIds as $covoiturageId) {
+            $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find($covoiturageId);
+            if ($covoiturage) {
+                $validatedCovoiturages[] = $covoiturage;
+        } */
+        // initialisation des variables:
+        $dateAujourdhui = false;
+        $isValidateUser = false;
+        $avisUserExiste = false;
+        $avisUser = null;
+        /* $conducteurs = [];  */
 
-        //selectionner les dates futures à la date du jour
+        //selectionner les dates futures à la date du jour:
         if ($covoiturages !== null) {
-            //selectionner les dates futures à la date du jour
+            $now = new \DateTime();
             foreach ($covoiturages as $covoiturage) {
-                $now = new \DateTime();
+
+                $conducteurId = (int) $covoiturage->getConducteurId();
+                $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
+                
+                //verifier si le covoiturage est futur
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
-                /*  dump($dateFuture);
-                dump($now); 
-                die; */
+
+                //verifier si le covoiturage est d'aujourd'hui
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
-                /* dump($dateAujourdhui) ;
-                    die;*/
                 if ($dateAujourdhui){
                     $dateAujourdhui = $covoiturage->setDateAujourdhui();
                 }
-                
-            /*  $isValidate = $utilisateur->getValidateCovoiturages()->contains($covoiturage );*/
-                // Affiche tous les covoiturages validés par l'utilisateur
-                 // Vérifie si le covoiturage en question est validé
-                if ($isValidateUser = $validatedCovoiturages->contains($covoiturage)){
-                    $isValidateUser = true;
-                    break;
-                    }
-                /*  dump($validatedCovoiturages);
-                dump($isValidate);
-                die(); */
-            }
-        }
 
-                $avisUser = $avisRepository->findOneBy([
+                /* // Récupérer le conducteur pour chaque covoiturage
+        $conducteurId = $covoiturage->getConducteurId();
+        if (!is_int($conducteurId)) {
+            $conducteurId = (int) $conducteurId; // mettre en int si c'est pas le cas */ 
+
+                 //récuperer l'avis du covoiturage selon le passager
+                $avisUser = $em->getRepository(Avis::class)->findOneBy([
                     'passager' => $user,
                     'covoiturage' => $covoiturage
                 ]);
-    
+                // création donnée si il y a des avis:
                 $avisUserExiste = $avisUser !== null;
+
+                
+            }
 
         return $this->render('utilisateur/profil.html.twig', [
             'utilisateur' => $user,
@@ -303,16 +338,23 @@ class UtilisateurController extends AbstractController
             'avisUserExiste'=>$avisUserExiste,
             'rate'=>$rateUser,
             'isValidateUser'=>$isValidateUser,
-        ]);
+            'conducteur'=>$conducteur,
+            ]);
+        }
     }
 
-    #[Route('/profil/{id}/update', name: 'app_profil_update')]
+
+    #[Route('/profil/{id}/update', name: 'app_profil_update',requirements: ['id' => '\d+'])]
     
-    public function profilUtilisateurUpdate(int $id,EntityManagerInterface $em,Request $request): Response
+    public function profilUtilisateurUpdate(
+    int $id,
+    EntityManagerInterface $em,
+    Security $security,
+    Request $request): Response
     {
-        //$utilisateur = $security->getUser(); // Récupérer l'utilisateur connecté
+        $user = $security->getUser(); // Récupérer l'utilisateur connecté
         
-        $user = $em->getRepository(Utilisateur::class)->find($id);
+        /* $user = $em->getRepository(Utilisateur::class)->find($id); */
 
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');

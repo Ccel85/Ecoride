@@ -18,14 +18,6 @@ class ProfilFormType extends AbstractType
             ->add('nom',TextType::class)
             ->add('prenom',TextType::class)
             ->add('pseudo',TextType::class)
-            /* ->add('isConducteur',ChoiceType::class,[
-                'choices' => [
-                    'Conducteur' => 'Conducteur',
-                    'Passager' => 'Passager',
-                    'Conducteur et passager' => 'Conducteur et passager'],
-                'mapped' => false,
-                'required' => false,
-                    ]) */
             /* ->add('photo_path') */
             ->add('observation',TextType::class,[
                 'required' => false,

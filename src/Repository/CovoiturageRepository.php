@@ -2,67 +2,76 @@
 
 namespace App\Repository;
 
+use MongoDB\BSON\UTCDateTime;
+use MongoDB\BSON\Regex;
 use App\Document\CovoiturageMongo;
-use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ODM\MongoDB\DocumentManager;
 
-/**
- * @extends ServiceEntityRepository<CovoiturageMongo>
- */
-class CovoiturageRepository extends ServiceEntityRepository
+class CovoiturageRepository 
 {
-    public function __construct(ManagerRegistry $registry)
+    private DocumentManager $dm;
+
+    public function __construct(DocumentManager $dm)
     {
-        parent::__construct($registry, CovoiturageMongo::class);
+        $this->dm = $dm;
     }
-
-    public function findCovoiturageByDateOrdered()
-    {
-        return $this->createQueryBuilder('c')
-        ->orderBy('c.dateDepart', 'ASC')  // 🔹 'ASC' pour ordre croissant, 'DESC' pour décroissant
-        ->getQuery()
-        ->getResult();
-}
-
-public function findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee)
-{
-    return $this->createQueryBuilder('c')
-        ->andWhere('c.dateDepart > :dateDepart')
-        ->andWhere('c.lieuDepart LIKE :lieuDepart')
-        ->andWhere('c.lieuArrivee LIKE :lieuArrivee')
-        ->setParameter('dateDepart', $dateDepart)
-        ->setParameter('lieuDepart', '%' . $lieuDepart . '%')
-        ->setParameter('lieuArrivee', '%' . $lieuArrivee . '%')
-        ->orderBy('c.dateDepart', 'ASC')
-        ->setMaxResults(5) // Limite pour ne pas surcharger l'affichage
-        ->getQuery()
-        ->getResult();
-}
-
-public function findCovoiturage($dateDepart,$lieuDepart,$lieuArrivee,$prix)
-{
-    $qb = $this->createQueryBuilder('c');
-    // Construction la requête pour filtrer les covoiturages
     
-    if ($dateDepart){
-        $qb->andWhere('c.dateDepart = :dateDepart')
-        ->setParameter('dateDepart', $dateDepart );
+    /* public function findCovoiturageByDateOrdered()
+    {
+        $qb = $this->dm->createQueryBuilder(CovoiturageMongo::class);
+
+        $qb->field('dateDepart');
+        $qb->sort('dateDepart', 1);
+
+        return $qb->getQuery()->execute();
+} */
+
+public function findCovoiturageByDateNear(\DateTimeInterface $dateDepart,?string $lieuDepart,?string $lieuArrivee,?string $prix)
+{
+        $qb= $this->dm->createQueryBuilder(CovoiturageMongo::class);
+
+        $qb->field('dateDepart') ->gte($dateDepart);
+
+        if ($lieuDepart){
+            $qb->field('lieuDepart')->equals(new Regex($lieuDepart, 'i'));
+        }
+        if ($lieuArrivee) {
+            $qb->field('lieuArrivee')->equals(new Regex($lieuArrivee, 'i'));
+        }
+        if ($prix){
+            $qb->field('prix')->lte($prix);
+        }
+        $qb->sort('dateDepart', 1);
+        $qb->limit(10); // Limite pour ne pas surcharger l'affichage
+
+        return iterator_to_array($qb->getQuery()->execute(), false);
+}
+
+public function findCovoiturage(?\DateTimeInterface $dateDepart, ?string $lieuDepart, ?string $lieuArrivee, ?string $prix)
+{
+    $qb = $this->dm->createQueryBuilder(CovoiturageMongo::class);
+    // Construction la requête pour filtrer les covoiturages
+    if ($dateDepart) {
+        $startDate = $dateDepart;
+        $endDate = (clone $startDate)->modify('+1 day');
+    
+        $qb->field('dateDepart')->gte(new UTCDateTime($startDate))->lt(new UTCDateTime($endDate));
     }
     if ($lieuDepart){
-        $qb->andWhere('c.lieuDepart LIKE :lieuDepart')
-        ->setParameter('lieuDepart', '%' . $lieuDepart . '%');
+        $qb->field('lieuDepart')->equals(new Regex($lieuDepart, 'i'));
     }
-    if ($lieuArrivee){
-        $qb->andWhere('c.lieuArrivee LIKE :lieuArrivee')
-        ->setParameter('lieuArrivee', '%' . $lieuArrivee . '%');
+    if ($lieuArrivee) {
+        $qb->field('lieuArrivee')->equals(new Regex($lieuArrivee, 'i'));
     }
     if ($prix){
-        $qb->andWhere('c.prix <= :prix')
-        ->setParameter('prix',$prix);
+        $qb->field('prix')->lte((float)$prix);
     }
-    return $qb->orderBy('c.dateDepart', 'ASC')
-    ->getQuery()
-    ->getResult();
+
+    $qb->sort('dateDepart', 1);
+    //dd($qb->getQuery()->debug());
+
+    return iterator_to_array($qb->getQuery()->execute(), false);
+
 }
 
 public function covoiturageDuree($covoiturage)
@@ -71,8 +80,7 @@ public function covoiturageDuree($covoiturage)
 
 }
 
-
-   /**
+    /**
     * @return CovoiturageMongo[] Returns an array of Covoiturage objects
     */
     public function findBySearch($date,$depart,$arrivee,$placeDispo): array
@@ -87,11 +95,11 @@ public function covoiturageDuree($covoiturage)
         ->setParameter('arrivee','%' . $arrivee . '%')
         ->setParameter('placeDispo', $placeDispo)
         ->orderBy('c.dateDepart', 'ASC')
-        /* ->setMaxResults(10) */
         ->getQuery()
-        ->getResult()
-    ;
+        ->getResult();
         }
+
+        //RECHERCHER VEHICULE UTILISE LORS DU COVOITURAGE
     public function rechercheVoiture($utilisateur)
     {
         return $this->createQueryBuilder('v')
@@ -100,7 +108,7 @@ public function covoiturageDuree($covoiturage)
         ->getQuery()
         ->getResult();
     }
-
+    //CALCUL NOMBRE DE COVOITURAGE
     public function nombreCovoiturages()
     {
     return $this->createQueryBuilder('c')
@@ -108,7 +116,7 @@ public function covoiturageDuree($covoiturage)
         ->getQuery()
         ->getSingleScalarResult();
     }
-
+//CALCUL NOMBRE DE COVOITURAGE PAR JOUR
     public function nombreCovoituragesParJour($year, $month)
     {
         $start = new \DateTime("first day of $year-$month");
@@ -125,7 +133,7 @@ public function covoiturageDuree($covoiturage)
             ->getArrayResult();
 
     }
-
+//CALCUL NOMBRE DE COVOITURAGE PAR MOIS
 public function nombreCovoituragesDuMois($year,$month)
 {
 
@@ -141,7 +149,7 @@ $end = new \DateTime("last day of $year-$month");
         ->getSingleScalarResult();
 }
 
-
+    //CREDIT PAR JOUR
     public function creditParJour()
     {
         return $this->createQueryBuilder('c')

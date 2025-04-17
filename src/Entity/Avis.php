@@ -46,9 +46,12 @@ class Avis
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $passager = null; // Celui qui donne l'avis
 
-    #[ORM\ManyToOne(inversedBy: 'avis')]
+    /* #[ORM\ManyToOne(inversedBy: 'avis')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Covoiturage $covoiturage = null;
+    private ?Covoiturage $covoiturage = null;  */
+
+    #[ORM\Column(type: 'json')]
+    private ?array $covoiturage = null; 
 
     #[ORM\Column(nullable: false)]
     private ?bool $isSignal = false;
@@ -131,17 +134,6 @@ class Avis
         return $this;
     }
 
-    public function getCovoiturage(): ?covoiturage
-    {
-        return $this->covoiturage;
-    }
-
-    public function setCovoiturage(?covoiturage $covoiturage): static
-    {
-        $this->covoiturage = $covoiturage;
-
-        return $this;
-    }
 
     public function isSignal(): ?bool
     {
@@ -155,4 +147,15 @@ class Avis
         return $this;
     }
 
+    public function getCovoiturage()
+    {
+        return $this->covoiturage;
+    }
+
+    public function setCovoiturage($covoiturage)
+    {
+        $this->covoiturage = $covoiturage;
+
+        return $this;
+    }
 }

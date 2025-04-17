@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Repository\UtilisateurRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\UtilisateurRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
@@ -29,13 +29,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     /**
-     * @var list<string> The user roles
+     * @var list<string>
      */
     #[ORM\Column]
     private array $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string 
      */
     #[Assert\NotBlank (message:"Veuillez saisir un mot de passe.")]
     #[ORM\Column]
@@ -64,18 +64,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $is_actif = true;
 
-    /**
-     * @var Collection<int, Covoiturage>
-     */
-    #[ORM\ManyToMany(targetEntity: Covoiturage::class, inversedBy: 'utilisateurs')]
-    private Collection $covoiturage;
-
-    /*
-     * @var Collection<int, Avis>
-     */
-    /* #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'utilisateur')]
-    private Collection $avis; */
-
     #[ORM\OneToMany(mappedBy: 'passager', targetEntity: Avis::class)]
     private Collection $avisPassager; // Avis donnés en tant que passager
 
@@ -100,18 +88,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isPassager = false;
 
-    /**
-     * @var Collection<int, Covoiturage>
-     */
-    #[ORM\ManyToMany(targetEntity: Covoiturage::class, mappedBy: 'validateUsers')]
-    private Collection $validateCovoiturages;
-
     public function __construct()
     {
-        $this->covoiturage = new ArrayCollection();
-        /* $this->avis = new ArrayCollection(); */
         $this->voiture = new ArrayCollection();
-        $this->validateCovoiturages = new ArrayCollection();
         $this->avisPassager = new ArrayCollection();
         $this->avisConducteur = new ArrayCollection();
     }
@@ -191,7 +170,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getNom(): ?string
     {
-        return $this->nom;
+        return ucfirst(strtolower($this->nom));
     }
 
     public function setNom(string $nom): static
@@ -203,7 +182,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPrenom(): ?string
     {
-        return $this->prenom;
+        return ucfirst(strtolower($this->prenom));
     }
 
     public function setPrenom(string $prenom): static
@@ -261,29 +240,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Covoiturage>
-     */
-    public function getCovoiturage(): Collection
-    {
-        return $this->covoiturage;
-    }
-
-    public function addCovoiturage(Covoiturage $covoiturage): self
-    {
-        if (!$this->covoiturage->contains($covoiturage)) {
-            $this->covoiturage->add($covoiturage);
-        }
-        return $this;
-    }
-
-    public function removeCovoiturage(Covoiturage $covoiturage): self
-    {
-        $this->covoiturage->removeElement($covoiturage);
-
-        return $this;
-    }
-
     public function getAvisPassager(): Collection
 {
     return $this->avisPassager;
@@ -293,36 +249,6 @@ public function getAvisConducteur(): Collection
 {
     return $this->avisConducteur;
 }
-
-    /*
-     * @return Collection<int, Avis>
-     */
-    /* public function getAvis(): Collection
-    {
-        return $this->avis;
-    }
-
-    public function addAvis(Avis $avis): static
-    {
-        if (!$this->avis->contains($avis)) {
-            $this->avis->add($avis);
-            $avis->setConducteur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvis(Avis $avis): static
-    {
-        if ($this->avis->removeElement($avis)) {
-            // set the owning side to null (unless already changed)
-            if ($avis->setConducteur() === $this) {
-                $avis->setConducteur(null);
-            }
-        }
-
-        return $this;
-    } */
 
     /**
      * @return Collection<int, Voiture>
@@ -399,33 +325,6 @@ public function getAvisConducteur(): Collection
     public function setPassager(bool $isPassager): static
     {
         $this->isPassager = $isPassager;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Covoiturage>
-     */
-    public function getValidateCovoiturages(): Collection
-    {
-        return $this->validateCovoiturages;
-    }
-
-    public function addValidateCovoiturage(Covoiturage $validateCovoiturage): static
-    {
-        if (!$this->validateCovoiturages->contains($validateCovoiturage)) {
-            $this->validateCovoiturages->add($validateCovoiturage);
-            $validateCovoiturage->addValidateUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeValidateCovoiturage(Covoiturage $validateCovoiturage): static
-    {
-        if ($this->validateCovoiturages->removeElement($validateCovoiturage)) {
-            $validateCovoiturage->removeValidateUser($this);
-        }
 
         return $this;
     }

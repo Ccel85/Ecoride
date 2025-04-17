@@ -11,41 +11,32 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CovoiturageMongo
 {
     #[ODM\Id(strategy: "AUTO")]
-    /* #[ODM\GeneratedValue]
-    #[ODM\Column] */
     private ?string $id = null;
 
     #[Assert\NotBlank (message:"Le tarif est obligatoire.")]
     #[ODM\Field(type: "int")]
-    /* #[ODM\Column] */
     private ?int $prix = null;
 
     #[Assert\NotBlank (message:"Veuillez renseigner la date de départ.")]
     #[ODM\Field(type: "date")]
-    /* #[ODM\Column(type: Types::DATETIME_MUTABLE)] */
     private ?\DateTimeInterface $dateDepart = null;
 
     #[Assert\NotBlank (message:"Veuillez renseigner le lieu de départ.")]
     #[ODM\Field(type: "string")]
-    /* #[ODM\Column(length: 255)] */
     private ?string $lieuDepart = null;
 
     #[Assert\NotBlank (message:"Veuillez renseigner l'heure de départ.")]
     #[ODM\Field(type: "date")]
-    /* #[ODM\Column(type: Types::DATETIME_MUTABLE)] */
     private ?\DateTimeInterface $heureDepart = null;
 
     #[Assert\NotBlank (message:"Veuillez renseigner le lieu d'arrivée.")]
     #[ODM\Field(type: "string")]
-   /*  #[ODM\Column(length: 255)] */
     private ?string $lieuArrivee = null;
 
     #[Assert\NotBlank (message:"Veuillez renseigner l'heure d'arrivée.")]
     #[ODM\Field(type: "date")]
-    /* #[ODM\Column(type: Types::DATETIME_MUTABLE)] */
     private ?\DateTimeInterface $heureArrivee = null;
 
-    /* #[ODM\Column()] */
     #[ODM\Field(type: "bool")]
     private ?bool $status = true;
 
@@ -53,7 +44,6 @@ class CovoiturageMongo
     #[Assert\Type(
         type: 'integer')]
     #[ODM\Field(type: "int")]
-    /* #[ODM\Column(nullable: true)] */
     private ?int $placeDispo = null;
 
     #[ODM\Field(type: "string")] // Stocke l'ID de la voiture (relation avec MySQL)
@@ -62,55 +52,29 @@ class CovoiturageMongo
     #[ODM\Field(type: "string")] // Stocke l'ID du conducteur (relation avec MySQL)
     private ?string $conducteurId = null;
 
-    /* #[ODM\Column] */
     #[ODM\Field(type: "date")]
     private ?\DateTime $createdAt = null;
 
-   /*  #[ODM\Column] */
     #[ODM\Field(type: "bool")]
     private ?bool $isGo = false;
 
-    /* #[ODM\Column] */
     #[ODM\Field(type: "bool")]
     private ?bool $isArrived = false;
 
     #[ODM\Field(type: "collection")] // Stocke une liste d'IDs d'utilisateurs
     private array $passagersIds = [];
     
+    #[ODM\Field(type: 'collection')]
+    private array $validateUsers = [];
+
     private ?bool $dateFuture = null;
     private ?bool $dateAujourdhui = null;
 
-    /* /**
-     * @var Collection<int, Utilisateur>
-    
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'covoiturage')]
-    private Collection $utilisateurs;
-
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "conducteur_id", referencedColumnName: "id")]
-    private ?Utilisateur $conducteur = null;
-
-
-    /**
-     * @var Collection<int, Utilisateur>
-     
-    #[ORM\ManyToMany(targetEntity: Utilisateur::class, inversedBy: 'validateCovoiturages')]
-    private Collection $validateUsers;
-
-    /**
-     * @var Collection<int, Avis>
-     
-    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'covoiturage')]
-    private Collection $avis;
-
-
     public function __construct()
     {
-        $this->utilisateurs = new ArrayCollection();
-        $this->validateUsers = new ArrayCollection();
-        $this->avis = new ArrayCollection();
+        $this->createdAt = new \DateTime();
     }
- */
+
     public function getId(): ?string
     {
         return $this->id;
@@ -142,7 +106,7 @@ class CovoiturageMongo
 
     public function getLieuDepart(): ?string
     {
-        return $this->lieuDepart;
+        return ucfirst(strtolower($this->lieuDepart));
     }
 
     public function setLieuDepart(string $lieuDepart): static
@@ -166,7 +130,7 @@ class CovoiturageMongo
 
     public function getLieuArrivee(): ?string
     {
-        return $this->lieuArrivee;
+        return ucfirst(strtolower($this->lieuArrivee));
     }
 
     public function setLieuArrivee(string $lieuArrivee): static
@@ -211,30 +175,28 @@ class CovoiturageMongo
 
         return $this;
     }
-
     
-    public function getUtilisateurs(): array
+    public function getPassagersIds(): array
     {
         return $this->passagersIds;
     }
 
-    public function addUtilisateur(string $passagerId): static
+    public function addPassagersIds(string $passagerId): static
     {
-      if (!in_array($passagerId, $this->passagersIds,true)) {
+        if (!in_array($passagerId, $this->passagersIds,true)) {
         $this->passagersIds[] = $passagerId;
     }
 
         return $this;
     }
 
-    public function removeUtilisateur(string $passagerId): static
+    public function removePassagersIds(string $passagerId): static
     {
         $index = array_search($passagerId, $this->passagersIds, true);
         if ($index !== false) {
             unset($this->passagersIds[$index]); // Supprime l'ID du passager
             $this->passagersIds = array_values($this->passagersIds); // Réindexe le tableau
         }
-    
         return $this;
     }
     
@@ -250,22 +212,12 @@ class CovoiturageMongo
 
         return $this;
     }
-    public function __construct()
-    {
-        $this->createdAt = new \DateTime();
-    }
 
     public function getCreatedAt(): ?\DateTime
     {
         return $this->createdAt;
     }
 
-   /*  public function setCreatedAt(\DateTime $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    } */
     #[ODM\PrePersist]
     public function setCreatedAtValue()
     {
@@ -309,30 +261,19 @@ class CovoiturageMongo
 
         return $this;
     }
-/* 
-    /**
-     * @return Collection<int, utilisateur>
-     
-    public function getValidateUsers(): Collection
+
+    public function getValidateUsers(): array
     {
         return $this->validateUsers;
     }
 
-    public function addValidateUser(utilisateur $validateUser): static
+    public function addValidateUser(int $userId): void
     {
-        if (!$this->validateUsers->contains($validateUser)) {
-            $this->validateUsers->add($validateUser);
+        if (!in_array($userId, $this->validateUsers, true)) {
+            $this->validateUsers[] = $userId;
         }
 
-        return $this;
     }
-
-    public function removeValidateUser(utilisateur $validateUser): static
-    {
-        $this->validateUsers->removeElement($validateUser);
-
-        return $this;
-    } */
 
     public function isDateFuture(): ?bool
     {
@@ -388,4 +329,5 @@ class CovoiturageMongo
         return $this;
     } */
     
+
 }

@@ -50,24 +50,13 @@ class Voiture
     #[ORM\Column]
     private ?int $nbrePlace = null;
 
-    /**
-     * @var Collection<int, Covoiturage>
-     */
-    #[ORM\OneToMany(targetEntity: Covoiturage::class, mappedBy: 'voiture')]
-    private Collection $covoiturages;
-
     #[ORM\ManyToOne(inversedBy: 'voiture')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    public function __construct()
-    {
-        $this->covoiturages = new ArrayCollection();
-    }
-
+    private ?\DateTimeImmutable $createdAt = null;  
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -165,36 +154,6 @@ class Voiture
     public function setNbrePlace(int $nbrePlace): static
     {
         $this->nbrePlace = $nbrePlace;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Covoiturage>
-     */
-    public function getCovoiturages(): Collection
-    {
-        return $this->covoiturages;
-    }
-
-    public function addCovoiturage(Covoiturage $covoiturage): static
-    {
-        if (!$this->covoiturages->contains($covoiturage)) {
-            $this->covoiturages->add($covoiturage);
-            $covoiturage->setVoiture($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCovoiturage(Covoiturage $covoiturage): static
-    {
-        if ($this->covoiturages->removeElement($covoiturage)) {
-            // set the owning side to null (unless already changed)
-            if ($covoiturage->getVoiture() === $this) {
-                $covoiturage->setVoiture(null);
-            }
-        }
 
         return $this;
     }
