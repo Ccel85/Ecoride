@@ -60,6 +60,8 @@
 
             {% for key, covoiturage in covoiturages %}
                 {% set conducteur = conducteurs[key] %}
+                {% set avisExiste = avisExistants[key] %}
+                {% set voiture = voitures[key] %}
                 {% if covoiturage.dateFuture and covoiturage.placeDispo > 0 
                 and (app.user is null or conducteur.id != app.user.id)  %} 
             <div class="col-12 col-md-4 mb-4">
@@ -76,7 +78,11 @@
                     </div>
                     <div class="card-body">
                             <p>Membre depuis <strong>{{ conducteur.createdAt | date ('Y')}}</strong> </p>
+                            {% if avisExiste == true %}
                             <p><i class="bi bi-star-fill star">  {{ covoiturage.rate }}/5</i></p>
+                            {% else %}
+                            <p> Il n'y a pas d'avis déposé.</p>
+                            {% endif %}
                             <div>
                                 <p>Départ le : {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
                             </div>

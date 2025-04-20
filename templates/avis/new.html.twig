@@ -3,30 +3,39 @@
 {% block title %}Ajouter un avis{% endblock %}
 
 {% block body %}
-<div class="container p-4">
+<div class="container ">
     <h1 class="text-center p-4">Ajout d'avis</h1>
-    <div class="row">
+    <div class="row f-column">
         <div class="form-group col-12 col-md-6 m-auto">
-
-            {{ form_errors(form) }}
-            
             {{ form_start(form) }}
 
+            {{ form_errors(form) }}
+
             {{ form_row(form.comments, {
-                'label': 'votre commentaire',
-                'attr': {'class': 'form-control','rows': '4'}
+                'label':' ',
+                'attr': {
+                    'class': 'form-control mb-3 ',
+                    'placeholder':'Votre commentaire' ,
+                    'aria-label':'Votre commentaire',
+                    'rows': 6
+                }
             }) }}
 
             {{ form_row(form.rateComments, {
-                'label': 'Votre note',
-                'attr': {'class': 'form-control'}
+                'label':' ',
+                'attr': {
+                    'class': 'form-control mb-3',
+                    'placeholder':'Votre note' ,
+                    'aria-label':'Votre note',
+                }
             }) }}
-            <div class="d-flex justify-content-evenly">
-                <button type="submit" class="btn btn-success ">Enregistrer</button>
-            {{ form_end(form) }}
 
-            <button class="btn btn-success" href="{{ path('app_profil') }}" >
-            Retour</button>
+            <div class="d-flex justify-content-evenly p-4">
+                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <a class="btn btn-secondary" href="{{ path('app_profil') }}">Retour</a>
+            </div>
+
+            {{ form_end(form) }}
         </div>
     </div>
 </div>

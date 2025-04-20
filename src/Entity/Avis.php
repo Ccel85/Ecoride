@@ -50,8 +50,8 @@ class Avis
     #[ORM\JoinColumn(nullable: false)]
     private ?Covoiturage $covoiturage = null;  */
 
-    #[ORM\Column(type: 'json')]
-    private ?array $covoiturage = null; 
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $covoiturage = null; 
 
     #[ORM\Column(nullable: false)]
     private ?bool $isSignal = false;

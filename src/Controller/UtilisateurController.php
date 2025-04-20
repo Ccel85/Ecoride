@@ -141,27 +141,20 @@ class UtilisateurController extends AbstractController
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
         }
-
         $userId = (string) $user->getId(); // Convertit l'ID en string
 
         //récupération des covoiturages de l'utilisateur connecté
             //récupération quand conducteur (string):
         $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
                         ->findBy(['conducteurId' => $userId]);
-        dump($covoituragesConducteur);
+    
             //récupération quand passager (int):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
                         ->findBy(['passagersIds' => $userId]);
-        dump($covoituragesPassager);
+    
         //association de tous les covoiturages:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
 
-       /*  foreach ($covoiturages as $covoiturage){
-            $conducteurId = (int) $covoiturage->getConducteurId();
-            $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
-            
-        }
-        dump($conducteur); */
         // Récuperation des données:
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
@@ -202,20 +195,20 @@ class UtilisateurController extends AbstractController
                     $dateAujourdhui = $covoiturage->setDateAujourdhui($dateAujourdhui);
                 }
 
-                /* // Affiche tous les covoiturages validés par l'utilisateur
-                if ($isValidateUser = $validatedCovoiturages->contains($covoiturage)){
-                    // Vérifie si le covoiturage en question est validé
-                $isValidateUser = true;
-                break;
-                } */
+                $validateUser = in_array($userId, $covoiturage->getValidateUsers());
                 
+                if ($validateUser){
+                    $isValidateUser = true;
+                }
+
+                 //AVIS LAISSE PAR L'UTILISATEUR
+            $avisUser = $avisRepository->findOneBy([
+                'passager' => $user,
+                'covoiturage'=>$covoiturage->getId()
+            ]);
+            $avisUserExiste = $avisUser ? true: false;
             }
         }
-        //AVIS LAISSE PAR L'UTILISATEUR
-        $avisUser = $avisRepository->findOneBy([
-            'passager' => $user,
-        ]);
-        $avisUserExiste = $avisUser !== null;
 
             return $this->render('utilisateur/profil.html.twig', [
                 'utilisateur' => $user,
@@ -231,14 +224,13 @@ class UtilisateurController extends AbstractController
                 //'conducteur'=>$covoituragesConducteur,
                 ]);
         }
-    
 
     //affichage profil selon Id
     #[Route('/profil/{id}', name: 'app_profil_id' ,requirements: ['id' => '\d+'])]
-    public function profil(
-        int $id,
-        EntityManagerInterface $em,
-        DocumentManager $documentManager): Response
+        public function profil(
+            string $id,
+            EntityManagerInterface $em,
+            DocumentManager $documentManager):Response
         {
         //recuperer l'utilisateur selon son ID (int)
         $user = $em->getRepository(Utilisateur::class)->find($id);
@@ -256,14 +248,16 @@ class UtilisateurController extends AbstractController
             //récupération quand conducteur (string):
         $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
             ->findBy(['conducteurId' => $userId]);
-            //dump($covoituragesConducteur);
+            
         //récupération quand passager (int):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
             ->findBy(['passagersIds' => $user->getId()]);
-            //dump($covoituragesPassager);
+            
         //association de tous les covoiturages de l'utilisateur:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
-        //dump($covoiturages);
+        usort($covoiturages, function ($a, $b) {
+            return $a->getDateDepart() <=> $b->getDateDepart();
+        });
 
         // Récupération des données utilisateur
         $observations = $user->getObservation();
@@ -275,22 +269,14 @@ class UtilisateurController extends AbstractController
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
         
         //récuperer les covoiturages validé par l'utilisateur
-        $validatedCovoituragesIds =  $documentManager->getRepository(CovoiturageMongo::class)
+       /*  $validatedCovoituragesIds =  $documentManager->getRepository(CovoiturageMongo::class)
         ->findBy(['validateUsers' => $user->getId()]);
-
-        /* // Récupérer les objets MongoDB correspondants
-        $validatedCovoiturages = [];
-        foreach ($validatedCovoituragesIds as $covoiturageId) {
-            $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find($covoiturageId);
-            if ($covoiturage) {
-                $validatedCovoiturages[] = $covoiturage;
-        } */
+ */
         // initialisation des variables:
         $dateAujourdhui = false;
         $isValidateUser = false;
         $avisUserExiste = false;
         $avisUser = null;
-        /* $conducteurs = [];  */
 
         //selectionner les dates futures à la date du jour:
         if ($covoiturages !== null) {
@@ -310,19 +296,13 @@ class UtilisateurController extends AbstractController
                     $dateAujourdhui = $covoiturage->setDateAujourdhui();
                 }
 
-                /* // Récupérer le conducteur pour chaque covoiturage
-        $conducteurId = $covoiturage->getConducteurId();
-        if (!is_int($conducteurId)) {
-            $conducteurId = (int) $conducteurId; // mettre en int si c'est pas le cas */ 
-
                  //récuperer l'avis du covoiturage selon le passager
                 $avisUser = $em->getRepository(Avis::class)->findOneBy([
                     'passager' => $user,
-                    'covoiturage' => $covoiturage
+                    'covoiturage' => $covoiturage->getId()
                 ]);
                 // création donnée si il y a des avis:
                 $avisUserExiste = $avisUser !== null;
-
                 
             }
 

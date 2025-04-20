@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Avis;
 use App\Form\AvisFormType;
+use App\Entity\Utilisateur;
 use App\Document\CovoiturageMongo;
 use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,26 +50,30 @@ final class AvisController extends AbstractController{
     }
 
 //Créer un avis
-    #[Route('/avis/new/{id}', name: 'app_avis_new', requirements: ['id' => '\d+'])]
+    #[Route('/avis/new/{id}', name: 'app_avis_new', requirements: ['id' => '.+'])]
 
-    public function avisNew(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
+    public function avisNew(string $id,
+    Request $request,
+    EntityManagerInterface $em,
+    DocumentManager $documentManager,
+    Security $security): Response
     {
-        $utilisateur = $security->getUser();
+        $user = $security->getUser();
 
-       /*  $rate = $request->query->get('rate'); */
-
-        if (!$utilisateur) {
+        if (!$user) {
             $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
             return $this->redirectToRoute('app_login');
         }
 
-        $covoiturage = $em->getRepository(CovoiturageMongo::class)->find($id);
+        $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find($id);
 
         if (!$covoiturage) {
             throw $this->createNotFoundException('Covoiturage non trouvé.');
         }
 
-        $conducteur = $covoiturage->getConducteur();
+        $conducteurId = $covoiturage->getConducteurId();
+
+        $conducteur = $em->getrepository(Utilisateur::class)->find($conducteurId);
 
             $avis = new Avis();
 
@@ -78,8 +84,8 @@ final class AvisController extends AbstractController{
             if ($form->isSubmitted() && $form->isValid()) {
             
                 $avis->setConducteur($conducteur);
-            
-               /*  $avis->addAvis($utilisateur); */
+                $avis->setCovoiturage($id);
+                $avis->setPassager($user);
                 
                 $em->persist($avis);
                 $em->flush();
@@ -89,11 +95,11 @@ final class AvisController extends AbstractController{
             }
             return $this->render('avis/new.html.twig', [
                 'form' => $form->createView(),
-                'conducteur'=> $conducteur,
+                'covoiturage'=>$covoiturage
             ]);
     }
 
-    #[Route('/avis/signaler/{id}', name: 'app_avis_signaler', requirements: ['id' => '\d+'])]
+    #[Route('/avis/signaler/{id}', name: 'app_avis_signaler', requirements: ['id' => '.+'])]
 
     public function avisSignaler(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
     {
