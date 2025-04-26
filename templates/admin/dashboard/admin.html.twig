@@ -27,7 +27,7 @@
         </div>
         {#  Fin du dropdown #}
         <!--SideBar-->
-        <div class="sidebar d-none d-lg-flex flex-column flex-shrink-0 " >
+        <div data-controller="chart-toggle" class="sidebar d-none d-lg-flex flex-column flex-shrink-0 " >
             <div class="d-flex align-items-center m-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <span class="fs-4 m-2 text-white">Tableau de bord</span>
             </div>
@@ -37,8 +37,8 @@
                 <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_employe') }}" >Gestion des comptes employés</a></li>
                 <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
                 <hr class="text-white">
-                <li><a class="nav-link btn text-white fs-5 text-start" id="chartButton">Nombre de covoiturage </a></li>
-                <li><a class="nav-link btn text-white fs-5 text-start" id="chartCreditButton" >Nombre de crédits </a></li>
+                <li><a  data-action="click->chart-toggle#showChart" class="nav-link btn text-white fs-5 text-start" id="chartButton">Nombre de covoiturage </a></li>
+                <li><a  data-action="click->chart-toggle#showChartCredit" class="nav-link btn text-white fs-5 text-start" id="chartCreditButton" >Nombre de crédits </a></li>
             </ul>
         </div>
         <!-- card-->
@@ -91,13 +91,14 @@
                             <option>{{year}}</option>
                         </select>
                     {% endfor %} #}
-                    <div id="chart" class="chart d-none"style="height: 500px;">
+                    <div  data-chart-toggle-target="chart" id="chart" class="chart "style="height: 500px;">
                         {{ render_chart(chart) }}
                     </div>
                     <hr>
-                    <div id="chartCredit" class="chart d-none" style="height: 500px;">
+                    <div data-chart-toggle-target="chartCredit" id="chartCredit" class="chart  " style="height: 500px;">
                         {{ render_chart(chartCredit) }}
                     </div>
+                </div>
             </div>
         </div>
     </div>
@@ -106,6 +107,6 @@
     Vous n'avez pas accès à cette page.
     </div>
 {% endif %}
-{# <script src="{{ asset('js/chart.js') }}" ></script> #}
 {% endblock %}
+
 

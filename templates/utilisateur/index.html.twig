@@ -17,7 +17,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Liste des utilisateurs </li>
             </ol>
         </nav>
-        <div class="card w-100 mb-xxl-0">
+        <div class="card mb-4 w-100 mb-xxl-0">
             <div class="header-list card-header">
                 <div class="row align-items-center">
                     <div class="d-flex justify-content-around">
@@ -30,9 +30,9 @@
                     <thead>
                         <tr>
                         <th class="fs-sm">Id</th>
-                        <th class="fs-sm d-none d-md-flex"></th>
+                        <th class="fs-sm "></th>
                         <th class="fs-sm">Nom</th>
-                        <th class="fs-sm d-none d-md-flex">Email</th>
+                        <th class="fs-sm ">Email</th>
                         <th class="fs-sm">Note</th>
                         <th class="fs-sm">Crédits</th>
                         <th class="fs-sm">Status</th>
@@ -45,7 +45,7 @@
                                 <div class="d-flex align-items-center text-nowrap">{{utilisateur.id}}
                                 </div>
                             </td>
-                            <td class="d-none d-md-flex">
+                            <td class="">
                                 <div>
                                     <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
                                 </div>
@@ -58,7 +58,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="d-none d-md-flex">
+                            <td class="">
                                 <div class="d-flex align-items-center text-nowrap">{{utilisateur.email}}
                                 </div>
                             </td>

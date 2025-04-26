@@ -19,11 +19,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class UtilisateurController extends AbstractController
 {
+    //liste utilisateur
     #[Route('/utilisateur', name: 'app_utilisateur')]
-    public function indexUtilisateur(Security $security,
-    UtilisateurRepository $utilisateurRepository,
-    EntityManagerInterface $em): Response
-    {
+        public function indexUtilisateur(
+            Security $security,
+            UtilisateurRepository $utilisateurRepository,
+            EntityManagerInterface $em): Response
+        {
         $utilisateurs = $utilisateurRepository->findByRole("ROLE_USER");
         $user = $security->getUser();
 
@@ -42,11 +44,10 @@ class UtilisateurController extends AbstractController
             'user' =>$user,
         ]);
     }
-
     //liste employe
     #[Route('/employe', name: 'app_employe')]
-    public function indexEmploye(UtilisateurRepository $utilisateurRepository): Response
-    {
+        public function indexEmploye(UtilisateurRepository $utilisateurRepository): Response
+        {
         $employes = $utilisateurRepository->findByRole('ROLE_EMPLOYE');
         
         if (!$employes){
@@ -57,12 +58,13 @@ class UtilisateurController extends AbstractController
             'employes' => $employes,
         ]);
     }
-
+    //mise en archivage utilisateur
     #[Route('/utilisateur/{id}/archive', name: 'app_utilisateur_archive', requirements: ['id' => '\d+'])]
-    public function archiveUtilisateur(int $id,
-    EntityManagerInterface $em,
-    Security $security): Response
-    {
+        public function archiveUtilisateur(
+            int $id,
+            EntityManagerInterface $em,
+            Security $security): Response
+        {
         //récuperation de l'utilisateur
         $repository = $em->getRepository(Utilisateur::class);
         $utilisateur = $repository->find($id);
@@ -77,29 +79,24 @@ class UtilisateurController extends AbstractController
          // récuperation du role de l'utlisateur connecté
         $user = $security->getUser();
         $roleUser = $user->getRoles();
-
+        dump($roleUser);
         $this->addFlash('success', 'L\'archivage a été effectué pour le profil concerné .');
 
         //redirection en fonction du role
-        if ($roleUser == ['ROLE_ADMIN']){
-
-            //retour sur la liste des employés
+        if (in_array("ROLE_ADMIN", $roleUser)) {
             return $this->redirectToRoute('app_employe');
-
         } else {
-            //retour sur liste utilisateurs
             return $this->redirectToRoute('app_utilisateur');
-
         }
     }
-
     //Rendre utilisateur actif
     #[Route('/utilisateur/{id}/active', name: 'app_utilisateur_active', requirements: ['id' => '\d+'])]
     
-    public function activeUtilisateur(int $id,
-    EntityManagerInterface $em,
-    Security $security): Response
-    {
+        public function activeUtilisateur(
+            int $id,
+            EntityManagerInterface $em,
+            Security $security): Response
+        {
         //récuperation de l'utilisateur
         $repository = $em->getRepository(Utilisateur::class);
         $utilisateur = $repository->find($id);
@@ -114,28 +111,25 @@ class UtilisateurController extends AbstractController
         // récuperation du role de l'utlisateur connecté
         $user = $security->getUser();
         $roleUser = $user->getRoles();
-
+        dump($roleUser);
         $this->addFlash('success', 'L\'activation a été effectué pour le profil concerné.');
         
         //redirection en fonction du role
-        if ($roleUser == ['ROLE_ADMIN']){
-        //retour sur la liste des employés  
+        if (in_array("ROLE_ADMIN", $roleUser)) {
             return $this->redirectToRoute('app_employe');
-
         } else {
-             //retour sur liste utilisateurs
             return $this->redirectToRoute('app_utilisateur');
         }
     }
-
     //Affichage profil connecté
     #[Route('/profil', name: 'app_profil')]
     
-    public function profilUtilisateur(Security $security,
-    EntityManagerInterface $em,
-    DocumentManager $documentManager,
-    AvisRepository $avisRepository): Response
-    {
+        public function profilUtilisateur(
+            Security $security,
+            EntityManagerInterface $em,
+            DocumentManager $documentManager,
+            AvisRepository $avisRepository): Response
+        {
         $user = $security->getUser(); // Récupérer l'utilisateur connecté
         
         if (!$user) {
@@ -224,7 +218,6 @@ class UtilisateurController extends AbstractController
                 //'conducteur'=>$covoituragesConducteur,
                 ]);
         }
-
     //affichage profil selon Id
     #[Route('/profil/{id}', name: 'app_profil_id' ,requirements: ['id' => '\d+'])]
         public function profil(
@@ -269,9 +262,9 @@ class UtilisateurController extends AbstractController
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
         
         //récuperer les covoiturages validé par l'utilisateur
-       /*  $validatedCovoituragesIds =  $documentManager->getRepository(CovoiturageMongo::class)
+        /*  $validatedCovoituragesIds =  $documentManager->getRepository(CovoiturageMongo::class)
         ->findBy(['validateUsers' => $user->getId()]);
- */
+         */
         // initialisation des variables:
         $dateAujourdhui = false;
         $isValidateUser = false;
@@ -322,16 +315,14 @@ class UtilisateurController extends AbstractController
             ]);
         }
     }
-
-
+    //Affichage profil pour MAJ
     #[Route('/profil/{id}/update', name: 'app_profil_update',requirements: ['id' => '\d+'])]
     
-    public function profilUtilisateurUpdate(
-    int $id,
-    EntityManagerInterface $em,
-    Security $security,
-    Request $request): Response
-    {
+        public function profilUtilisateurUpdate(
+            EntityManagerInterface $em,
+            Security $security,
+            Request $request): Response
+        {
         $user = $security->getUser(); // Récupérer l'utilisateur connecté
         
         /* $user = $em->getRepository(Utilisateur::class)->find($id); */

@@ -128,11 +128,10 @@
                             {% endif %}
                         </div>
                     {#  </div> #}
-                    
                 </div>
             </div>
         </div>
-</header>
+    </header>
     <main class="pt-5">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
@@ -160,5 +159,8 @@
             </div>
         </div>  
     </footer>
+    {# {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    {% endblock %} #}
 </body>
 </html>

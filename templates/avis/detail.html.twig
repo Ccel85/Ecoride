@@ -20,8 +20,9 @@
     <div class="card mb-4 shadow-sm ">
       <div class="text-secondary d-flex justify-content-between">
         <div class="ps-3">Le {{ covoiturage.dateDepart|date('d-m-Y') }}</div>
-        <div class="pe-3">Réf: 00{{ covoiturage.id }}</div>
+        <div class="pe-3">Réf: {{ covoiturage.id }}</div>
       </div>
+      
       <div class="voyage container-fluid">
         <div class="itineraire">
           <div class="itineraire d-flex justify-content-evenly align-items-center">
@@ -64,10 +65,46 @@
           <p class="email">Email : {{passager.email}}</p>
         </div>
         <div class="infoUser d-flex align-items-center flex-column justify-content-end" >
-              <p class="text-center">Membre depuis<br> {{ passager.createdAt | date ('Y')}} </p>
-              <p><i class="bi bi-star-fill star"> {{ rateUser }}/5</i></p>
-          </div>
+          <p class="text-center">Membre depuis<br> {{ passager.createdAt | date ('Y')}} </p>
+          {% if avisExiste == true %}
+                            <p><i class="bi bi-star-fill star">  {{ rateUser }}/5</i></p>
+                            {% else %}
+                            <p> Il n'y a pas de note.</p>
+                            {% endif %}
+          {# <p><i class="bi bi-star-fill star"> {{ rateUser }}/5</i></p> #}
+        </div>
       </div>
+      <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
+      <div class="card-body">
+        <div class="d-flex justify-content-around ">
+          <div class="commentaires d-flex justify-content-around align-items-center flex-grow-1">
+            <div class=" commentaire mb-3 p-3">
+              <div class="text-secondary fs-7">Le {{ avis.createdAt|date('d-m-Y') }}
+              </div>
+              <div class="rate">
+                <i class="bi bi-star-fill star"> {{ avis.rateComments }}/5</i>
+              </div>
+            </div>
+            <div class="comments">
+              <p>{{ avis.comments }}</p>
+            </div>
+            <div class="d-flex flex-column align-items-center ">
+              <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
+              <div class="form-check form-switch m-2  ">
+                <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ avis.id }}" id="isValid_{{ avis.id }}"  >
+                <label class="form-check-label" for="isValid_{{ avis.id }}"></label>
+              </div> 
+              <div>
+                <button type="submit" id="avisValidateAvis" class="btn btn-success p-2 m-2">Valider les avis</button>
+              </div>
+              <a class="btn btn-danger" name="removeAvis" id="trash_{{ avis.id }}" data-url="{{ path('app_avis_remove', {'id': avis.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
+                <i class="bi bi-trash3"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      </form>
     </div>
     {# Fiche conducteur #}
     <div class="profil conducteur card mb-4 shadow-sm " >
@@ -79,21 +116,26 @@
         </div>
         <div class="infoUser d-flex align-items-center flex-column justify-content-end" >
               <p class="text-center">Membre depuis <br> {{ conducteur.createdAt | date ('Y')}} </p>
-              <p>
+              {% if avisExiste == true %}
+                            <p><i class="bi bi-star-fill star">  {{ rateUser }}/5</i></p>
+                            {% else %}
+                            <p> Il n'y a pas de note.</p>
+                            {% endif %}
+              {#  <p>
                 <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
-              </p>
+              </p> #}
         </div>
       </div>
       <!-- body -->
       <div class="card-body">
         <div class="d-flex justify-content-around ">
           <div class="commentaires flex-grow-1">
-            {% if commentaires is empty %}
-              <p>Il n'y a pas d'avis.</p>
-              {% else %}
+            {% for commentaire in commentaires %}
+              {% if commentaire.isvalid ==false or commentaire is empty %}
+              <p class="text-center">Il n'y a pas d'avis.</p>
+              {% elseif commentaire.isValid == true %}
               <h4 class="text-decoration-underline text-center"> Avis:</h4>
-              {% for commentaire in commentaires %}
-              {% if commentaire.isValid == true %}
+              {# {% if commentaire.isValid == true %} #}
               <div class="card commentaire mb-3 p-3">
                 <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
                 </div>
@@ -106,7 +148,7 @@
               </div>
               {% endif %}
               {% endfor %}
-            {% endif %}
+            {# {% endif %} #}
           </div>
         </div>
       </div>

@@ -97,7 +97,7 @@
                   <div>
                     <a class="btn btn-success" href= "{{path('app_avis_detail',{ 'id':commentaire.id }) }}"> Détails</a>
                   </div>
-                  <div class="d-flex flex-column align-items-center ">
+                  <div class=" validAvis d-flex flex-column align-items-center ">
                       <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
                       <div class="form-check form-switch m-2  ">
                         <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
@@ -106,13 +106,13 @@
                       <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
                         <i class="bi bi-trash3"></i>
                       </a>
-                    </div>
+                  </div>
                 </div>
               </div>
               {% endfor %}
               <div>
                 <button type="submit" id="avisValidateAvis" class="btn btn-success">Valider les avis</button>
-              </div >
+              </div>
             </form>
           {% endif %}
           </div>

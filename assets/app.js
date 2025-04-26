@@ -9,10 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM chargé');
 });
 
-
 // Import Bootstrap
 import 'bootstrap';
-
 
 // Import des fichiers CSS personnalisés
 import './styles/app.css';

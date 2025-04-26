@@ -10,6 +10,8 @@ use App\Entity\Avis;
 use App\Document\CovoiturageMongo;
 use Symfony\UX\Chartjs\Model\Chart;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\CovoiturageRepository;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,27 +21,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class DashboardController extends AbstractController
 {
     #[Route('/admin/dashboard/admin', name: 'app_admin_dashboard')]
-    public function admin(EntityManagerinterface $em,ChartBuilderInterface $chartBuilder,Request $request): Response
-    {
+        public function admin(
+            DocumentManager $dm,
+            ChartBuilderInterface $chartBuilder,
+            Request $request): Response
+        {
     
-    $covoiturages = $em->getRepository(CovoiturageMongo::class);
+    $covoiturageRepository = $dm->getRepository(CovoiturageMongo::class);
+    
+    //$totalCovoiturages = $covoiturages->isGo();
     $month = $request->query->get('month', (new \DateTime())->format('m'));
     $year = 2025;
     
-    $countCovoiturages = $covoiturages->nombreCovoiturages();
+    //Recherche nbre crédits cumulés
+    $countCovoiturages = $covoiturageRepository->findByGo(true);
     $creditscovoiturage = $countCovoiturages * 2;
-    // nombre de covoiturage par mois
-    $totalMois = $month ? $covoiturages->nombreCovoituragesDuMois($year, $month) : 0;
-    // nombre de covoiturage par jour
-    $resultData =  $covoiturages->nombreCovoituragesParJour($year, $month) ?: [];
 
+    // nombre de covoiturage par mois
+    $totalMois = $month ? $covoiturageRepository->nombreCovoituragesMois($year, $month) : 0;
+
+    // GRAPH : nombre de covoiturage par jour
+    $resultData =  $covoiturageRepository->nombreCovoiturages($year, $month) ?: [];
     $result = [];
     foreach ($resultData as $row) {
-        $dateKey = $row['jour']->format('d-m-Y');
-        $result[$dateKey] = $row;
+        $id = $row['_id'];
+        $dateKey = sprintf('%02d-%02d-%04d', $id['day'], $id['month'], $id['year']);
+        $result[$dateKey] = $row['total'];
     }
-
-
+    
     // date
     $start = new \DateTime("first day of $year-$month");
     $end = new \DateTime("last day of $year-$month");
@@ -50,13 +59,15 @@ class DashboardController extends AbstractController
             'values' => [],
             'credits' => []
         ];
-    foreach ($period as $date) {
-        $formattedDate = $date->format('d-m-Y');
-        $data['labels'][] = $formattedDate;
-        $data['values'][] = isset($result[$formattedDate]) ? $result[$formattedDate]['total'] : 0;
-        $data['credits'][] = isset($result[$formattedDate]) ? $result[$formattedDate]['total'] * 2 : 0;
+        
+        foreach ($period as $date) {
+            $formattedDate = $date->format('d-m-Y');
+            $data['labels'][] = $formattedDate;
+            $value = $result[$formattedDate] ?? 0;
+            $data['values'][] = $value;
+            $data['credits'][] = $value * 2;
     }
-        //création du graphique COVOITURAGE / jour
+     //création du graphique COVOITURAGE / jour
         $chart = $chartBuilder->createChart(Chart::TYPE_BAR);
         $chart->setData([
             'labels' =>$data['labels'],
@@ -127,7 +138,7 @@ class DashboardController extends AbstractController
                     ]
                 ]
             ],
-        ]);
+        ]); 
 
 
         return $this->render('admin/dashboard/admin.html.twig',[
@@ -144,8 +155,10 @@ class DashboardController extends AbstractController
     }
 
     #[Route('/admin/dashboard/employe', name: 'app_employe_dashboard')]
-    public function employe(EntityManagerInterface $em): Response
-    {
+    public function employe(
+        DocumentManager $dm,
+        EntityManagerInterface $em): Response
+        {
         $invalidComments = $em->getRepository(Avis::class)->invalidComments();
         $countInvalidComments = count($invalidComments);
         $signalComments = $em->getRepository(Avis::class)->signalComments();

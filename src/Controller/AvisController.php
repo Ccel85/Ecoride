@@ -10,13 +10,17 @@ use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 final class AvisController extends AbstractController{
-    #[Route('/avis', name: 'app_avis')]
+
+//avis
+#[Route('/avis', name: 'app_avis')]
 
     public function index(AvisRepository $avisRepositpory): Response
     {
@@ -35,8 +39,8 @@ final class AvisController extends AbstractController{
             'passager'=>$passagers,
         ]);
     }
-
-    #[Route('/signalement', name: 'app_signalement')]
+//signalement
+#[Route('/signalement', name: 'app_signalement')]
 
     public function signalement(AvisRepository $avisRepositpory): Response
     {
@@ -50,7 +54,7 @@ final class AvisController extends AbstractController{
     }
 
 //Créer un avis
-    #[Route('/avis/new/{id}', name: 'app_avis_new', requirements: ['id' => '.+'])]
+#[Route('/avis/{id}/new', name: 'app_avis_new', requirements: ['id' => '.+'])]
 
     public function avisNew(string $id,
     Request $request,
@@ -98,8 +102,8 @@ final class AvisController extends AbstractController{
                 'covoiturage'=>$covoiturage
             ]);
     }
-
-    #[Route('/avis/signaler/{id}', name: 'app_avis_signaler', requirements: ['id' => '.+'])]
+//signaler un avis
+#[Route('/avis/{id}/signaler', name: 'app_avis_signaler', requirements: ['id' => '.+'])]
 
     public function avisSignaler(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
     {
@@ -150,9 +154,13 @@ final class AvisController extends AbstractController{
     }
 
 //Valider un avis
-    #[Route('/avis/update', name: 'app_avis_update' )]
+#[Route('/avis/update', name: 'app_avis_update' )]
 
-    public function avisUpdate(AvisRepository $avisRepository,Request $request,EntityManagerInterface $em,Security $security): Response
+    public function avisUpdate(AvisRepository $avisRepository,
+    Request $request,
+    EntityManagerInterface $em,
+    MailerInterface $mailer,
+    Security $security): Response
     {
         $utilisateur = $security->getUser();
 
@@ -161,29 +169,46 @@ final class AvisController extends AbstractController{
             $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
             return $this->redirectToRoute('app_login');
         }
-
         // Récupérer tous les avis invalides
-        $selectedIds = $request->request->get('isValid', []);
-
+            $selectedIds = $request->request->all('isValid', []);
+        // Récupérer les emails des utilisateurs participants
+            $emails = [];
+        
         if (!empty($selectedIds)) {
             $invalidAvis = $avisRepository->findBy(['id' => $selectedIds]);
-        //si le bouton archive est selectionner:
+            //si le bouton archive est selectionner:
             if ($request->request->has('isValid')) {
                 foreach ($invalidAvis as $avis) {
                     $avis->setValid(true);
                     $em->persist($avis);
-                }
-                $em->flush();
-                $this->addFlash('success', 'Avis validé avec succès !');
+                    $passager = $avis->getPassager();
+            //$passager = $entityManager->getRepository(Utilisateur::class)->find($passagerId);
+            if ($passager && $passager->getEmail()) {
+                $emails[] = $passager->getEmail();
+            }
+        }
+        // Envoyer un email à chaque utilisateur
+        foreach ($emails as $email) {
+            $emailUser = (new TemplatedEmail())
+            ->from('hello@example.com')
+            ->to($email)
+            ->subject('Ecoride:Votre avis est validé!')
+            ->htmlTemplate('email/avisValide.html.twig');
+
+            $mailer->send($emailUser);
+        }
+            }
+            $em->flush();
+            $this->addFlash('success', 'Avis validé avec succès !,Email envoyé!');
+                
             } else {
                 $this->addFlash('warning', 'Aucun avis sélectionné.');
             }
             return $this->redirectToRoute('app_employe_dashboard');
             }
-    }
-
+        
 //Supprimer un avis
-    #[Route('/avis/{id}/remove', name: 'app_avis_remove', requirements: ['id' => '\d+'] )]
+#[Route('/avis/{id}/remove', name: 'app_avis_remove', requirements: ['id' => '.+'] )]
 
     public function avisRemove(int $id,EntityManagerInterface $em,Security $security): Response 
     {
@@ -208,21 +233,37 @@ final class AvisController extends AbstractController{
     }
 
 //Avis details
-    #[Route('/avis/{id}/detail', name: 'app_avis_detail', requirements: ['id' => '\d+'] )]
+#[Route('/avis/{id}/detail', name: 'app_avis_detail', requirements: ['id' => '.+'] )]
 
-    public function détailAvis(EntityManagerInterface $em,int $id): Response
-    
+    public function détailAvis(
+    EntityManagerInterface $em,
+    DocumentManager $dm,
+    int $id): Response
     {
-        $avis = $em->getRepository(Avis::class)->find($id);
+        $avisRepository = $em->getRepository(Avis::class);
+        $avis = $avisRepository->find($id);
 
-        $covoiturage = $avis->getCovoiturage();
+        $covoiturageId = $avis->getCovoiturage();
+        $covoiturage = $dm->find(CovoiturageMongo::class,  $covoiturageId);
 
         if (!$covoiturage) {
             throw $this->createNotFoundException("Le covoiturage n'existe pas.");
         }
         // Récupération des informations liées
-        $conducteur = $avis->getConducteur();//conducteur lié a l'avis;
-        $passager = $avis->getPassager();//passager lié a l'avis;
+        $conducteur = $avis->getConducteur();//conducteur lié à l'avis;
+        
+        $avisValide = $avisRepository->findOneBy([
+            'conducteur' => $conducteur,
+            'isValid' => true,
+        ]);
+        if ($avisValide) {
+            // Le conducteur a au moins un avis valide
+            $avisExiste = true;
+        } else {
+            // Aucun avis valide trouvé
+            $avisExiste = false;
+        }
+        $passager = $avis->getPassager();//passager lié à l'avis;
         $rateUser =round($em->getRepository(Avis::class)->rateUser($conducteur),1);
         $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
 
@@ -232,8 +273,9 @@ final class AvisController extends AbstractController{
             'commentaires'=>$commentsUser,
             'passager'=>$passager,
             'rateUser'=>$rateUser,
-
+            'avis'=>$avis,
+            'avisExiste'=>$avisExiste
         ]);
-}
+    }
 }
 

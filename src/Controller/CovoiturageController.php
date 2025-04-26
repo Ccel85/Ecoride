@@ -246,11 +246,9 @@ class CovoiturageController extends AbstractController
 
     //Recherche covoiturage
 #[Route('/covoiturageRecherche', name: 'app_covoiturage_recherche', methods: ['GET'])]
-
     public function covoiturageRecherche(
         AvisRepository $avisRepository,
-        CovoiturageRepository $repository,
-        DocumentManager $documentManager,
+        DocumentManager $dm,
         EntityManagerInterface $entityManager,
         Request $request): Response
     {
@@ -300,11 +298,12 @@ class CovoiturageController extends AbstractController
         dump($dateDepart); */
 
         //recuperer les covoiturages en fonction des criteres
-        $covoiturages = $repository->findCovoiturage($dateDepart,$lieuDepart,$lieuArrivee,$prix);
+        $covoiturageRepository = $dm->getRepository(CovoiturageMongo::class);
+        $covoiturages = $covoiturageRepository->findCovoiturage($dateDepart,$lieuDepart,$lieuArrivee,$prix);
         
         if (empty($covoiturages)) {
     
-            $covoiturages = $repository->findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee,$prix);
+            $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee,$prix);
             
             foreach ($covoiturages as $key => $covoiturage) {
 
@@ -333,7 +332,6 @@ class CovoiturageController extends AbstractController
                 //$avis = $avisRepository->findOneBy(['covoiturage' => $covoiturageId]);
                 $avis = $avisRepository->findOneBy(['conducteur' => $conducteur]);
                 $avisExistants[$key] = $avis ? true : false;
-                dump($avis);
                 $rateUser =round($avisRepository->rateUser($conducteur),1);
 
                 //filtre des covoiturages en fonction de la duree du voyage
@@ -374,7 +372,6 @@ class CovoiturageController extends AbstractController
 
                 $covoiturageId = $covoiturage->getId();
                 $avis = $avisRepository->findOneBy(['conducteur' => $conducteur]);
-                dump($avis);
                 $avisExistants[$key] = $avis ? true : false;
 
                 $rateUser =round($avisRepository->rateUser($conducteur),1); // Appeler la méthode sur l'objet conducteur
@@ -398,9 +395,7 @@ class CovoiturageController extends AbstractController
             }
             
         }
-        // Si aucun covoiturage trouvé, chercher une date proche
-        dump($avis);
-        dump($avisExistants);
+        
         return $this->render('covoiturage/index.html.twig', [
             'covoiturages'=>$covoiturages,
             'dateFuture'=>$dateFuture,
