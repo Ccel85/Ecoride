@@ -13,6 +13,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
@@ -23,6 +24,7 @@ class MailerController extends AbstractController
     public function sendEmail(
     string $id,
     MailerInterface $mailer,
+    UrlGeneratorInterface $urlGenerator,
     DocumentManager $documentManager ,
     EntityManagerInterface $entityManager): Response
     {
@@ -41,13 +43,24 @@ class MailerController extends AbstractController
                 $emails[] = $passager->getEmail();
             }
         }
+        //Generer l'adresse URL du covoiturage
+        $urlCovoiturage = $urlGenerator->generate('app_covoiturage_id', [
+            'id' => $covoiturage->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+
         // Envoyer un email à chaque utilisateur
         foreach ($emails as $email) {
             $emailUser = (new TemplatedEmail())
             ->from('hello@example.com')
             ->to($email)
             ->subject('Ecoride:Vous êtes arrivé!')
-            ->htmlTemplate('email/index.html.twig');
+            ->htmlTemplate('email/index.html.twig')
+            ->textTemplate('email/index.text.twig')
+            ->context([
+                'covoiturageUrl' => $urlCovoiturage,
+                'passager' =>$passager,
+                'covoiturage'=>$covoiturage
+            ]);
             $mailer->send($emailUser);
         }
         $this->addFlash('success', 'Un email est envoyé à chaque passager pour déposer un avis.');
@@ -65,6 +78,8 @@ class MailerController extends AbstractController
         SessionInterface $session,
         Security $security,
         MailerInterface $mailer,
+        DocumentManager $dm,
+        UrlGeneratorInterface $urlGenerator
         ): Response
         {
     try {
@@ -74,6 +89,10 @@ class MailerController extends AbstractController
             $this->addFlash('warning', 'Utilisateur non connecté.');
             return $this->redirectToRoute('app_login');
         }
+        $covoiturage = $dm->find(CovoiturageMongo::class, $id);
+
+        $urlCovoiturageRecherche = $urlGenerator->generate('app_covoiturageRecherche',[],
+                                    UrlGeneratorInterface::ABSOLUTE_URL);
 
         //recuperer les email en session:
         $emails = $session->get('emails_utilisateurs', []);
@@ -89,7 +108,12 @@ class MailerController extends AbstractController
             ->from('ecoride.annulation@mail.com')
             ->to($email)
             ->subject('Ecoride: Votre covoiturage a été annulé!')
-            ->htmlTemplate('email/remove.html.twig');
+            ->htmlTemplate('email/remove.html.twig')
+            ->textTemplate('email/remove.txt.twig')
+            ->context([
+                'covoiturage'=>$covoiturage,
+                'urlCovoiturageRecherche'=>$urlCovoiturageRecherche
+            ]);
 
             $mailer->send($emailUser);
         }
@@ -140,8 +164,12 @@ class MailerController extends AbstractController
             $emailUser = (new TemplatedEmail())
             ->from('hello@example.com')
             ->to($email)
-            ->subject('Ecoride:Vous êtes arrivé!')
-            ->htmlTemplate('email/index.html.twig');
+            ->subject('Ecoride:votre avis est validé!')
+            ->htmlTemplate('email/avisValide.html.twig')
+            ->textTemplate('email/avisValide.text.twig')
+            ->context([
+                'passager'=>$passager
+            ]);
 
         $mailer->send($emailUser);
         }

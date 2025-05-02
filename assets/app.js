@@ -3,6 +3,7 @@ import './bootstrap.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
 import './js/chart.js';
 import './js/sweetAlert.js';
+import './js/timeOut.js';
 
 console.log('JS chargé');
 document.addEventListener('DOMContentLoaded', () => {

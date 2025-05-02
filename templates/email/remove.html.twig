@@ -5,17 +5,17 @@
 <div>
     <h1>Votre covoiturage a été annulé!!</h1><br>
 
-    <p>Le conducteur à annulé votre covoiturage au départ de {# {{% covoiturage.lieuDepart %}}  #} dont le départ était prévu le {# {{% covoiturage.dateDepart %}} #}<br>
+    <p>Le conducteur à annulé votre covoiturage au départ de {{ covoiturage.lieuDepart|capitalize}} dont le départ était prévu le {{covoiturage.dateDepart|capitalize }} <br>
     <br>
     Votre crédit a donc été réactualisé.</p>
     <p>Nous sommes désolé de ce changement,je vous laisse rechercher à nouveau un covoiturage pour ce trajet.</p>
     <p>Croyez bien que toute l'équpe d'Ecoride s'en excuse.</p>
     
-    <a class="btn btn-success" href='http://127.0.0.1:8000/covoiturageRecherche'>Ecoride</a>
-    <p>A très bientôt,avec Ecoride.</p>
+    <a class="btn btn-success" href={{ urlCovoiturageRecherche }}>Ecoride,recherche de Covoiturage</a>
+    <p>A très bientôt avec Ecoride.</p>
     <hr>
     <div class="d-flex align-items-center">
-        <img src="{{ asset('logo/Logo.png') }}" alt='logo Ecoride' style="max-width: 150px; height: auto; display: block;">
+        <img src="https://127.0.0.1:8000/assets/logo/Logo.png" alt="Logo" width="100" height="100">
     </div>
 </div>
 {% endblock %}

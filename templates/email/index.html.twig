@@ -4,15 +4,16 @@
 {% block body %}
 
 <div>
-    <h1>Votre voyage est terminé! ✅</h1><br>
+    <h1>Votre voyage est terminé,{{passager.prenom|capitalize}}! ✅</h1><br>
 
-    <p>Merci d'avoir participer à ce covoiturage avec ECORIDE.<br>
+    <p>Merci d'avoir participer à ce covoiturage avec <span style="color :#39B54E;font-weight: bold"> ECORIDE </span>.<br>
     <br>
     Veuillez valider votre arrivée et y mettre un avis en cliquant sur le lien ci dessous:</p>
-    <a href='http://127.0.0.1:8000/avis/new/{id}' class="btn btn-success">Valider votre arrivé</a>
-    <p>A tres bientôt,pour un autre voyage avec Ecoride.</p>
-    <div class="d-flex align-items-center">
-        <img src="{{ asset('logo/Logo.png') }}" alt='logo Ecoride' style="max-width: 150px; height: auto; display: block;">
-    </div<
-</div>
+    <a href="{$urlCovoiturage}" style="color :#39B54E;font-weight: bold">Valider votre arrivé</a>
+    <p>A très bientôt,pour un autre voyage avec <span style="color :#39B54E;font-weight: bold"> ECORIDE </span>.</p>
+    <div style="text-align: center;">
+        <img src="https://127.0.0.1:8000/assets/logo/Logo.png" alt="Logo" width="100" height="100">
+        <p style="text-align: center; font-size: 12px; color: #888;">Merci de votre confiance</p>
+    </div>
+
 {% endblock %}
