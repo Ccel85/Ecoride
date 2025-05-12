@@ -27,7 +27,7 @@
         </div>
         {#  Fin du dropdown #}
         <!--SideBar-->
-        <div data-controller="chart-toggle" class="sidebar d-none d-lg-flex flex-column flex-shrink-0 " >
+        <div  class="sidebar d-none d-lg-flex flex-column flex-shrink-0 " >
             <div class="d-flex align-items-center m-3 mb-md-0 me-md-auto text-white text-decoration-none">
                 <span class="fs-4 m-2 text-white">Tableau de bord</span>
             </div>
@@ -35,10 +35,11 @@
             <ul class="nav nav-pills flex-column m-2 mb-auto">
                 <li class="nav-item"><a class="nav-link text-white fs-5" href="{{ path('app_home') }}" aria-current="page">Accueil</a></li>
                 <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_employe') }}" >Gestion des comptes employés</a></li>
-                <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
                 <hr class="text-white">
+                <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
+                {# <div data-controller="chart-toggle">
                 <li><a  data-action="click->chart-toggle#showChart" class="nav-link btn text-white fs-5 text-start" id="chartButton">Nombre de covoiturage </a></li>
-                <li><a  data-action="click->chart-toggle#showChartCredit" class="nav-link btn text-white fs-5 text-start" id="chartCreditButton" >Nombre de crédits </a></li>
+                <li><a   data-action="click->chart-toggle#showChartCredit" class="nav-link btn text-white fs-5 text-start" id="chartCreditButton" >Nombre de crédits </a></li>#}
             </ul>
         </div>
         <!-- card-->
@@ -91,13 +92,24 @@
                             <option>{{year}}</option>
                         </select>
                     {% endfor %} #}
-                    <div  data-chart-toggle-target="chart" id="chart" class="chart "style="height: 500px;">
-                        {{ render_chart(chart) }}
+                    <div data-controller="chart-toggle">
+                        <div class="d-flex d-sm-flex-column align-items-center justify-content-around">
+                            <button  data-action="click->chart-toggle#showChart"  data-chart-toggle-target="buttonChart"
+                            class="btn btn-outline-secondary btn-lg m-2 fs-5 " id="chartButton">
+                            Nombre de covoiturage </button>
+                            <button  data-action="click->chart-toggle#showChartCredit"  data-chart-toggle-target="buttonChartCredit"
+                            class="btn btn-outline-secondary btn-lg m-2 fs-5 " id="chartCreditButton" >
+                            Nombre de crédits </button>
+                        </div>
+                        <div  data-chart-toggle-target="chart" id="chart" class="chart d-none "style="height: 500px;">
+                            {{ render_chart(chart) }}
+                        </div>
+                        <hr>
+                        <div data-chart-toggle-target="chartCredit" id="chartCredit" class="chart d-none " style="height: 500px;">
+                            {{ render_chart(chartCredit) }}
+                        </div>
                     </div>
-                    <hr>
-                    <div data-chart-toggle-target="chartCredit" id="chartCredit" class="chart  " style="height: 500px;">
-                        {{ render_chart(chartCredit) }}
-                    </div>
+                </div>
                 </div>
             </div>
         </div>

@@ -2,12 +2,12 @@
 
 namespace App\Document;
 
-use App\Repository\CovoiturageRepository;
+use App\Repository\CovoiturageMongoRepository;
 use Doctrine\ODM\MongoDB\Mapping\Annotations as ODM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ODM\Document(
-    repositoryClass: CovoiturageRepository::class,
+    repositoryClass: CovoiturageMongoRepository::class,
     collection: 'covoiturages'
 )]
 #[ODM\HasLifecycleCallbacks()]

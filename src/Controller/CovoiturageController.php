@@ -10,7 +10,7 @@ use App\Document\CovoiturageMongo;
 use App\Repository\AvisRepository;
 use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\CovoiturageRepository;
+use App\Repository\CovoiturageMongoRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -264,7 +264,9 @@ class CovoiturageController extends AbstractController
         $rateUser = null;
         $dateFuture = false;
         $conducteurs = [];
-        $voiture = null;
+        $voitures = null;
+        $avis = null;
+
 
         $avisExistants[]= false;
 
@@ -290,6 +292,9 @@ class CovoiturageController extends AbstractController
                 $this->addFlash('warning', 'Format de date invalide. Résultats affichés à partir d’aujourd’hui.');
                 $dateDepart = (new \DateTime('today'));
             }
+            if ($dateDepart === null) {
+                $dateDepart = new \DateTime('today');
+            }
         /* if (!$submit) {
             $dateDepart = new \DateTime(); // déjà un objet DateTime
         } elseif ($dateDepart) {
@@ -300,11 +305,11 @@ class CovoiturageController extends AbstractController
         //recuperer les covoiturages en fonction des criteres
         $covoiturageRepository = $dm->getRepository(CovoiturageMongo::class);
         $covoiturages = $covoiturageRepository->findCovoiturage($dateDepart,$lieuDepart,$lieuArrivee,$prix);
-        
+        dump($covoiturages);
         if (empty($covoiturages)) {
     
             $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee,$prix);
-            
+            dump($covoiturages);
             foreach ($covoiturages as $key => $covoiturage) {
 
                 //on filtre les covoiturages futures

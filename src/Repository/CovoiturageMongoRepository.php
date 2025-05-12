@@ -8,7 +8,7 @@ use App\Document\CovoiturageMongo;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 
-class CovoiturageRepository extends DocumentRepository
+class CovoiturageMongoRepository extends DocumentRepository
 {
     
     /* public function findCovoiturageByDateOrdered()
@@ -27,7 +27,7 @@ public function findCovoiturageByDateNear(
     ?string $lieuArrivee,
     ?string $prix)
     {
-        $qb= $this->dm->createQueryBuilder(CovoiturageMongo::class);
+        $qb = $this->createQueryBuilder();
 
         $qb->field('dateDepart') ->gte($dateDepart);
 
@@ -52,7 +52,8 @@ public function findCovoiturage(
     ?string $lieuArrivee,
     ?string $prix)
     {
-    $qb = $this->dm->createQueryBuilder(CovoiturageMongo::class);
+        $qb = $this->createQueryBuilder();
+
     // Construction la requête pour filtrer les covoiturages
     if ($dateDepart) {
         $startDate = $dateDepart;

@@ -79,7 +79,7 @@ class UtilisateurController extends AbstractController
          // récuperation du role de l'utlisateur connecté
         $user = $security->getUser();
         $roleUser = $user->getRoles();
-        dump($roleUser);
+    
         $this->addFlash('success', 'L\'archivage a été effectué pour le profil concerné .');
 
         //redirection en fonction du role
@@ -111,7 +111,7 @@ class UtilisateurController extends AbstractController
         // récuperation du role de l'utlisateur connecté
         $user = $security->getUser();
         $roleUser = $user->getRoles();
-        dump($roleUser);
+        
         $this->addFlash('success', 'L\'activation a été effectué pour le profil concerné.');
         
         //redirection en fonction du role
@@ -145,10 +145,9 @@ class UtilisateurController extends AbstractController
             //récupération quand passager (int):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
                         ->findBy(['passagersIds' => $userId]);
-    
         //association de tous les covoiturages:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
-
+        
         // Récuperation des données:
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
