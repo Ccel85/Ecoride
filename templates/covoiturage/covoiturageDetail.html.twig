@@ -61,9 +61,18 @@
                   <i class="check bi bi-check-lg fs-1"></i>
                 </div>
                 {% elseif covoiturage.placeDispo >= 0 %}
-                <div class="participer">
-                  <a class="btn btn-success" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
-                  Participer</a>
+              {#  <div class="participer" data-controller ="sweet_alert">
+                  <button class="btn btn-success" data-action="click->sweet_alert#validButton" data-url="{{ path('app_covoiturage_participate', { 'id':covoiturage.id }) }}" id="participer">
+                  Participer</button>
+                </div> #}
+                <div class="participer" data-controller="sweet-alert">
+                  <button 
+                      class="btn btn-success"
+                      data-action="click->sweet-alert#validButton"
+                      data-url="{{ path('app_covoiturage_participate', { 'id': covoiturage.id }) }}"
+                      id="participer">
+                      Participer
+                  </button>
                 </div>
               {% endif %}
             {% else %}

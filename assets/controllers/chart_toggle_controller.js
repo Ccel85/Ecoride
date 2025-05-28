@@ -8,7 +8,7 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['chart', 'chartCredit','buttonChart','buttonChartCredit']
     
-     connect() {
+    connect() {
         console.log('🎯 chart_toggle_controller connecté');
     }
 

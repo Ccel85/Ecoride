@@ -3,9 +3,7 @@
 import './bootstrap.js';
 import 'bootstrap/dist/js/bootstrap.min.js';
 
-import './js/sweetAlert.js';
-
-
+//import './js/sweetAlert.js';
 
 console.log('JS chargé');
 document.addEventListener('DOMContentLoaded', () => {

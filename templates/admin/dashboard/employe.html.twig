@@ -103,9 +103,15 @@
                         <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ commentaire.id }}" id="isValid_{{ commentaire.id }}"  >
                         <label class="form-check-label" for="isValid_{{ commentaire.id }}"></label>
                       </div> 
-                      <a class="btn btn-danger" name="removeAvis" id="trash_{{ commentaire.id }}" data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
-                        <i class="bi bi-trash3"></i>
-                      </a>
+                      <div data-controller="sweet-alert">
+                        <a class="btn btn-danger" name="removeAvis" 
+                          id="trash_{{ commentaire.id }}" 
+                          data-url="{{ path('app_avis_remove', {'id': commentaire.id}) }}"
+                          data-action = "click->sweet-alert#removeAvisButton"  
+                          data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
+                            <i class="bi bi-trash3"></i>
+                        </a>
+                      </div>
                   </div>
                 </div>
               </div>

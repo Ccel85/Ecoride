@@ -46,7 +46,6 @@
             <button type="submit" class="btn p-0 mx-3">
             <i class="bi bi-search icon-hover "></i></button>
     </form>
-{% if submit %}
     <div>
         {% if covoiturages is empty %}
             <p class="text-center fs-5 ms-4">Il n'y a pas de covoiturage avec les critères saisies,<br>
@@ -62,7 +61,7 @@
                 {% set conducteur = conducteurs[key] %}
                 {% set avisExiste = avisExistants[key] %}
                 {% set voiture = voitures[key] %}
-                {% if covoiturage.dateFuture and covoiturage.placeDispo > 0 
+                {% if covoiturage.placeDispo > 0 
                 and (app.user is null or conducteur.id != app.user.id)  %} 
             <div class="col-12 col-md-4 mb-4">
                 <div class="card h-100">
@@ -142,5 +141,4 @@
         </div>
     </div>
 </div>
-{% endif %}
 {% endblock %}

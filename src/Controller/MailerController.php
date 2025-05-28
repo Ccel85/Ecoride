@@ -89,9 +89,11 @@ class MailerController extends AbstractController
             $this->addFlash('warning', 'Utilisateur non connecté.');
             return $this->redirectToRoute('app_login');
         }
-        $covoiturage = $dm->find(CovoiturageMongo::class, $id);
-
-        $urlCovoiturageRecherche = $urlGenerator->generate('app_covoiturageRecherche',[],
+        //$covoiturage = $dm->find(CovoiturageMongo::class, $id);
+        //recuperer le covoiturage en session:
+        $covoiturage = $session->get('covoiturage');
+        dump($covoiturage);
+        $urlCovoiturageRecherche = $urlGenerator->generate('app_covoiturage_recherche',[],
                                     UrlGeneratorInterface::ABSOLUTE_URL);
 
         //recuperer les email en session:

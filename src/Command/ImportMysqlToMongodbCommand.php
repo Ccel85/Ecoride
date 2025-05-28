@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'import:mysql-to-mongodb',
-    description: 'Add a short description for your command',
+    description: 'Importation des données SQL pour MongoDB',
 )]
 class ImportMysqlToMongodbCommand extends Command
 {

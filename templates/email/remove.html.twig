@@ -5,7 +5,7 @@
 <div>
     <h1>Votre covoiturage a été annulé!!</h1><br>
 
-    <p>Le conducteur à annulé votre covoiturage au départ de {{ covoiturage.lieuDepart|capitalize}} dont le départ était prévu le {{covoiturage.dateDepart|capitalize }} <br>
+    <p>Le conducteur à annulé votre covoiturage au départ de {{ covoiturage.lieuDepart|capitalize}} dont le départ était prévu le {{ covoiturage.dateDepart|date('d-m-Y') }} à {{covoiturage.heureDepart}}.
     <br>
     Votre crédit a donc été réactualisé.</p>
     <p>Nous sommes désolé de ce changement,je vous laisse rechercher à nouveau un covoiturage pour ce trajet.</p>

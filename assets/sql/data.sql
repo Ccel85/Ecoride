@@ -1,16 +1,16 @@
 -- Active: 1715943590648@@127.0.0.1@3306@ecoride
 CREATE DATABASE IF NOT EXISTS `ecorides`
-  CHARACTER SET utf8
-  COLLATE utf8_general_ci;
+    CHARACTER SET utf8
+    COLLATE utf8_general_ci;
 
 -- Création de l’utilisateur BDD backoffice pour la création de compte
 CREATE USER 'user'@'localhost' IDENTIFIED BY 'test';
 
-  -- Attribution des droits sur la table "users"
+    -- Attribution des droits sur la table "users"
 GRANT SELECT, INSERT, UPDATE, DELETE ON ecorides.utilisateur TO 'user'@'localhost';
 
 --création de compte utilisateur BDd tous privilèges 
-  CREATE USER 'root'@'localhost' IDENTIFIED BY '';
+CREATE USER 'root'@'localhost' IDENTIFIED BY '';
   GRANT ALL PRIVILEGES ON * . * TO 'root'@'localhost';
 
 -- CREATION DES TABLES
@@ -34,7 +34,7 @@ CREATE TABLE `avis` (
     CONSTRAINT `FK_8F91ABF0F16F4AC6` FOREIGN KEY (`conducteur_id`) REFERENCES `utilisateur` (`id`)
     );
 
-CREATE TABLE `covoiturage` (
+/* CREATE TABLE `covoiturage` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `prix` INTEGER NOT NULL,
     `date_depart` DATETIME NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE `covoiturage` (
     CONSTRAINT `FK_28C79E89181A8BA` FOREIGN KEY (`voiture_id`) REFERENCES `voiture` (`id`),
     CONSTRAINT `FK_28C79E89F16F4AC6` FOREIGN KEY (`conducteur_id`) REFERENCES `utilisateur` (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
-
+ */
 CREATE TABLE `covoiturage_utilisateur` (
     `covoiturage_id` INTEGER NOT NULL,
     `utilisateur_id` INTEGER NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE `utilisateur` (
     UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
 
-CREATE TABLE `utilisateur_covoiturage` (
+/* CREATE TABLE `utilisateur_covoiturage` (
     `utilisateur_id` INTEGER NOT NULL,
     `covoiturage_id` INTEGER NOT NULL,
     PRIMARY KEY (
@@ -100,7 +100,7 @@ CREATE TABLE `utilisateur_covoiturage` (
     CONSTRAINT `FK_DC21931A62671590` FOREIGN KEY (`covoiturage_id`) REFERENCES `covoiturage` (`id`) ON DELETE CASCADE,
     CONSTRAINT `FK_DC21931AFB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'liaison utilisateur/covoiturage'
-
+ */
 CREATE TABLE `voiture` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `immat` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -156,10 +156,10 @@ INSERT INTO `avis` (`id`, `is_valid`, `comments`, `rate_comments`, `created_at`,
 (5, 0, 'a ne pas reproduire', 1, '2025-02-10 10:52:00', 1, 5, 6, 1);
 
 
-INSERT INTO `covoiturage` (`id`, `prix`, `date_depart`, `lieu_depart`, `heure_depart`, `lieu_arrivee`, `status`, `place_dispo`, `voiture_id`, `created_at`, `heure_arrivee`, `conducteur_id`, `is_go`, `is_arrived`) VALUES
+/* INSERT INTO `covoiturage` (`id`, `prix`, `date_depart`, `lieu_depart`, `heure_depart`, `lieu_arrivee`, `status`, `place_dispo`, `voiture_id`, `created_at`, `heure_arrivee`, `conducteur_id`, `is_go`, `is_arrived`) VALUES
 (1, 5, '2025-02-10 00:00:00', 'Angers', '2025-01-07 09:00:00', 'Nantes', 1, 3, 1, '2024-12-30 00:00:00', '2025-01-07 10:00:00', 5, 1, 1),
 (4, 3, '2025-05-01 00:00:00', 'Montaigu', '2025-01-07 16:30:00', 'Nantes', 1, 2, 4, '2024-11-20 00:00:00', '2025-01-07 17:00:00', 8, 0, 0),
 (5, 5, '2025-03-20 00:00:00', 'Nantes', '2025-01-07 20:00:00', 'Angers', 1, 4, 5, '2024-11-30 00:00:00', '2025-01-07 21:00:00', 9, 0, 0),
 (6, 8, '2025-03-24 00:00:00', 'Nantes', '1970-01-01 10:00:00', 'Rennes', 1, 3, 1, '2025-01-08 20:27:38', '1970-01-01 11:30:00', 1, 0, 0),
 (15, 5, '2025-03-31 00:00:00', 'Angers', '1970-01-01 10:00:00', 'Nantes', 1, 0, 11, '2025-01-20 18:26:54', '1970-01-01 12:00:00', 12, 0, 0),
-(21, 10, '2025-03-20 00:00:00', 'PARIS', '1970-01-01 18:00:00', 'NANTES', 1, 2, 6, '2025-02-15 12:49:20', '1970-01-01 22:00:00', 6, 0, 0);
+(21, 10, '2025-03-20 00:00:00', 'PARIS', '1970-01-01 18:00:00', 'NANTES', 1, 2, 6, '2025-02-15 12:49:20', '1970-01-01 22:00:00', 6, 0, 0); */

@@ -44,10 +44,11 @@
                                 <li><a  class="dropdown-item fs-5" href="{{ path('app_employe') }}" >Gestion des comptes employés</a></li>
                                 <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item fs-5" id="chartButton">
+                                <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
+                                {# <li><a class="dropdown-item fs-5" id="chartButton">
                                     <i class="bi bi-bar-chart-line"></i> Nombre de covoiturage </a></li>
                                 <li><a class="dropdown-item fs-5" id="chartCreditButton" >
-                                    <i class="bi bi-graph-up"></i> Nombre de crédits </a></li>
+                                    <i class="bi bi-graph-up"></i> Nombre de crédits </a></li> #}
                             </ul>
                         {% elseif is_granted("ROLE_EMPLOYE") %}
                             <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

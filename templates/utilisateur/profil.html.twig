@@ -275,12 +275,15 @@
                       and isValidateUser == false %}
                       <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                         <p class="m-0">Valider votre voyage:</p>
-                        <a  id='validate' 
-                        class="btn btn-success m-2" 
-                        {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
-                        data-url ="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}">
-                          <i class="bi bi-check-lg"></i>
-                        </a>
+                        <div data-controller ="sweet-alert" >
+                          <a  id='validate' 
+                          class="btn btn-success m-2" 
+                          {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
+                          data-url ="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}"
+                          data-action = "click->sweet-alert#validateButton">
+                            <i class="bi bi-check-lg"></i>
+                          </a>
+                        </div>
                       </div>
                     {# Pas conducteur:si l'utilsateur à valider le voyage mais n'a pas mis d'avis #}
                     {% elseif  covoiturage.id is not null 
@@ -292,9 +295,11 @@
                       %}                    
                       <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                         <p class="m-0">Laisser un avis</p>
+                        <div data-controller="sweet-alert">
                         <a  id='checkAvis' class="btn btn-success m-2" 
                         {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
-                        data-url ="{{ path('app_avis_new',{ 'id': covoiturage.id }) }}">
+                        data-url ="{{ path('app_avis_new',{ 'id': covoiturage.id }) }}"
+                        data-action="click->sweet-alert#avisButton">
                           <i class="bi bi-check-lg"></i>
                         </a>
                       </div>
@@ -357,8 +362,13 @@
                       {# Affichage bouton stop #}
                       {% if covoiturage.isGo 
                         and covoiturage.isArrived == false %}
-                          <a id='carStop' data-url="{{ path('app_covoiturage_stop',{ 'id': covoiturage.id }) }}" class="btn btn-warning m-2">
+                        <div data-controller="sweet-alert">
+                          <a id='carStop' 
+                          data-url="{{ path('app_covoiturage_stop',{ 'id': covoiturage.id }) }}" 
+                          data-action = "click->sweet-alert#stopButton"
+                          class="btn btn-warning m-2">
                             <i class="bi bi-sign-stop"></i></a> 
+                        </div>
                         {#  Affichage bouton check #}
                         {% elseif covoiturage.isGo  
                         and covoiturage.isArrived  %}
@@ -372,9 +382,14 @@
                       and covoiturage.isGo == false and covoiturage.isArrived == false
                       %}
                         <div class="boutons d-flex flex-column ">
-                          <a  id="trash_{{ covoiturage.id }}" class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
-                            <i class="bi bi-trash3 "></i>
-                          </a>
+                          <div data-controller="sweet-alert">
+                            <a  id="trash_{{ covoiturage.id }}" 
+                            class="btn btn-danger m-2" 
+                            data-action = "click->sweet-alert#trashCovoiturage"
+                            data-url="{{ path('app_covoiturage_remove', { 'id': covoiturage.id }) }}">
+                              <i class="bi bi-trash3 "></i>
+                            </a>
+                          </div>
                           <a href="{{ path('app_covoiturage_update', { 'id': covoiturage.id }) }}" class="btn btn-success m-2">
                               <i class="bi bi-pencil-square "></i>
                           </a>
@@ -385,17 +400,24 @@
                       and covoiturage.conducteurId == app.user.id 
                       and covoiturage.dateAujourdhui 
                       and covoiturage.isGo == false %}
-                      <a id='carGo' data-url="{{ path('app_covoiturage_go',{ 'id': covoiturage.id }) }}" class="btn custom-bg btn-success m-2">
+                      <div data-controller="sweet-alert">
+                      <a id='carGo' 
+                      data-url="{{ path('app_covoiturage_go',{ 'id': covoiturage.id }) }}" 
+                      class="btn custom-bg btn-success m-2"
+                      data-action = "click->sweet-alert#goButton">
                         <i class="bi bi-car-front-fill "></i>
                       </a>
+                      </div>
                     {% endif %}
                       {# sinon bouton pour annuler la participation au covoiturage #}
                     {% if  covoiturage.id is not null 
                       and covoiturage.conducteurId != app.user.id 
                       and covoiturage.dateFuture
                       and covoiturage.isGo == false  %}
-                      <div class="boutons d-flex">
-                        <a id='trash' class="btn btn-danger m-2" data-url="{{ path('app_covoiturage_noparticipate', { 'id': covoiturage.id }) }}">
+                      <div class="boutons d-flex" data-controller = "sweet-alert">
+                        <a id="trash" class="btn btn-danger m-2" 
+                        data-url="{{ path('app_covoiturage_noparticipate', { 'id': covoiturage.id }) }}"
+                        data-action = "click->sweet-alert#trashButton">
                           <i class="bi bi-trash3 "></i>
                         </a>
                       </div>
@@ -404,7 +426,7 @@
                 </div>
               {# </div> #}
             </div>
-         </div>
+          </div>
       </div>
       {% endfor %}
     {% endif %}
