@@ -290,25 +290,29 @@
                       and covoiturage.conducteurId != app.user.id 
                       and utilisateur.id == app.user.id  
                       and covoiturage.isArrived 
-                      and isValidateUser
-                      and not avisUserExiste
-                      %}                    
+                      and covoiturage.isValidateUser
+                      and not covoiturage.isAvisUser
+                      %}           
                       <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                         <p class="m-0">Laisser un avis</p>
                         <div data-controller="sweet-alert">
-                        <a  id='checkAvis' class="btn btn-success m-2" 
-                        {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
-                        data-url ="{{ path('app_avis_new',{ 'id': covoiturage.id }) }}"
-                        data-action="click->sweet-alert#avisButton">
-                          <i class="bi bi-check-lg"></i>
-                        </a>
+                          <a  id='checkAvis' class="btn btn-success m-2" 
+                          {# href="{{ path('app_covoiturage_validate', { 'id': covoiturage.id }) }}" #} 
+                          data-url ="{{ path('app_avis_new',{ 'id': covoiturage.id }) }}"
+                          data-action="click->sweet-alert#avisButton">
+                            <i class="bi bi-check-lg"></i>
+                          </a>
+                        </div>
                       </div>
                       <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                         <p class="m-0">Signaler un covoiturage</p>
-                        <a  id='signaler' class="btn btn-danger m-2" 
-                            data-url ="{{ path('app_avis_signaler',{ 'id': covoiturage.id }) }}" >
-                          <i class="bi bi-exclamation-triangle-fill"></i>
-                        </a>
+                        <div data-controller="sweet-alert">
+                          <a  id='signaler' class="btn btn-danger m-2" 
+                              data-url ="{{ path('app_avis_signaler',{ 'id': covoiturage.id }) }}" 
+                              data-action="click->sweet-alert#signalButton">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                          </a>
+                        </div>
                       </div>
                     {% endif %}
                     {# Pas conducteur:si voyage validé et avis déposé #}
@@ -316,8 +320,8 @@
                       and covoiturage.conducteurId != app.user.id 
                       and utilisateur.id == app.user.id  
                       and covoiturage.isArrived 
-                      and isValidateUser
-                      and  avisUserExiste 
+                      and covoiturage.isValidateUser
+                      and  covoiturage.isAvisUser
                       %}                    
                       <div class="boutons d-flex flex-column align-items-center text-decoration-underline ">
                         <p class="m-0">Avis déposé</p>

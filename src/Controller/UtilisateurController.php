@@ -190,19 +190,21 @@ class UtilisateurController extends AbstractController
 
                 $validateUser = in_array($userId, $covoiturage->getValidateUsers());
                 
-                if ($validateUser){
-                    $isValidateUser = true;
-                }
-
+                $isValidateUser = $validateUser ? true: false;
+                $covoiturage->isValidateUser = $isValidateUser;
+                
                  //AVIS LAISSE PAR L'UTILISATEUR
-            $avisUser = $avisRepository->findOneBy([
-                'passager' => $user,
-                'covoiturage'=>$covoiturage->getId()
-            ]);
-            $avisUserExiste = $avisUser ? true: false;
+                $avisUser = $avisRepository->findOneBy([
+                    'passager' => $user,
+                    'covoiturage'=>(string) $covoiturage->getId()
+                ]);
+                $covoiturage->avisUser = $avisUser;
+                
+                $isAvisUser = $avisUser ? true: false;
+                $covoiturage->isAvisUser = $isAvisUser;
+                
             }
         }
-
             return $this->render('utilisateur/profil.html.twig', [
                 'utilisateur' => $user,
                 'commentairesUSer'=> $commentairesUser,
@@ -212,8 +214,9 @@ class UtilisateurController extends AbstractController
                 'dateAujourdhui'=>$dateAujourdhui,
                 'isValidateUser'=>$isValidateUser,
                 'rate'=>$rateUser,
-                'avisUserExiste'=>$avisUserExiste,
+                'isAvisUser' => $isAvisUser,
                 'conducteur'=>$conducteur,
+                'avisUser'=>$avisUser,
                 //'conducteur'=>$covoituragesConducteur,
                 ]);
         }

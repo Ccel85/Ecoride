@@ -22,12 +22,17 @@ export default class extends Controller {
             showCancelButton: true,
             confirmButtonText: 'Réserver',
             cancelButtonText: "Annuler",
+            iconColor: '#39B54E',
+            color:'#324D4D',
+            cancelButtonColor:'#324D4D',
+            confirmButtonColor: '#39B54E',
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({ 
                 title:"Votre covoiturage est confirmé",
                 text:"", 
                 icon:"success",
+                confirmButtonColor: '#39B54E',
                 timer: 1500, }); // Durée de l'affichage
 
                 // Redirection vers l'URL
@@ -51,6 +56,10 @@ export default class extends Controller {
                 showCancelButton: true,
                 confirmButtonText: 'Annuler',
                 cancelButtonText: "Retour",
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
             }).then((result) => {
             if (result.isConfirmed) {
             // Afficher un message de succès avant la redirection
@@ -78,6 +87,10 @@ export default class extends Controller {
         showCancelButton: true,
         confirmButtonText: 'Supprimer',
         cancelButtonText: "Retour",
+        iconColor: '#39B54E',
+        color:'#324D4D',
+        cancelButtonColor:'#324D4D',
+        confirmButtonColor: '#39B54E',
         }).then((result) => {
         if (result.isConfirmed) {
             // Afficher un message de succès avant la redirection
@@ -106,8 +119,13 @@ export default class extends Controller {
             confirmButtonText: 'Oui',
             showCancelButton: true,
             cancelButtonText: 'Non',
+            iconColor: '#39B54E',
+            color:'#324D4D',
+            cancelButtonColor:'#324D4D',
+            confirmButtonColor: '#39B54E',
             }).then((result) => {
             if (result.isConfirmed) {
+                
                 // Récupération de l'URL de validation (route Symfony)
                 const validationUrl = button.getAttribute('data-url');
 
@@ -119,7 +137,8 @@ export default class extends Controller {
                 Swal.fire({
                     title: 'Validation réussie !',
                     text: 'Votre voyage a bien été validé.',
-                    icon: 'success'
+                    icon: 'success',
+                    confirmButtonColor: '#39B54E',
                 })
                 })
             }
@@ -137,6 +156,33 @@ export default class extends Controller {
                 confirmButtonText: 'Oui',
                 showCancelButton: true,
                 cancelButtonText: 'Non',
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
+                }).then((reviewResult) => {
+                if (reviewResult.isConfirmed) {
+                    // Redirection vers la page d'avis
+                    window.location.href = button.getAttribute('data-url'); 
+                }
+                })
+            }
+
+//Ajouter un signalement
+    signalButton(event) {
+        const button = event.currentTarget;
+        
+            // Affichage de l'alerte pour laisser un avis
+            Swal.fire({
+                text: 'Souhaitez-vous laisser un signalement ?',
+                icon: 'question',
+                confirmButtonText: 'Oui',
+                showCancelButton: true,
+                cancelButtonText: 'Non',
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
                 }).then((reviewResult) => {
                 if (reviewResult.isConfirmed) {
                     // Redirection vers la page d'avis
@@ -154,12 +200,17 @@ export default class extends Controller {
                 showCancelButton: true,
                 confirmButtonText: 'Go!!',
                 cancelButtonText: "Annuler",
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
             }).then((result) => {
                         if (result.isConfirmed) {
                             Swal.fire({ 
                             title:"Bonne route !",
                             text:"", 
-                            icon:"success",})
+                            icon:"success",
+                            confirmButtonColor: '#39B54E',})
                         window.location.href = button.getAttribute('data-url');
                         }
                     });
@@ -175,12 +226,17 @@ export default class extends Controller {
                 showCancelButton: true,
                 confirmButtonText: 'Arrivé!',
                 cancelButtonText: "Annuler",
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
             }).then((result) => {
                         if (result.isConfirmed) {
                             Swal.fire({ 
                             title:"Merci pour ce covoiturage.",
                             text:"", 
-                            icon:"success",})
+                            icon:"success",
+                            confirmButtonColor: '#39B54E',})
                         window.location.href = button.getAttribute('data-url');
                         }
                     });
@@ -213,6 +269,10 @@ export default class extends Controller {
                     showCancelButton: true,
                     confirmButtonText: 'Oui',
                     cancelButtonText: 'Non',
+                    iconColor: '#39B54E',
+                    color:'#324D4D',
+                    cancelButtonColor:'#324D4D',
+                    confirmButtonColor: '#39B54E',
                 }).then((result) => {
                     if (result.isConfirmed) {
                         avisForm.submit(); // Soumet le formulaire en POST
@@ -234,6 +294,10 @@ export default class extends Controller {
                     showCancelButton: true,
                     confirmButtonText: 'Oui',
                     cancelButtonText: 'Non',
+                    iconColor: '#39B54E',
+                    color:'#324D4D',
+                    cancelButtonColor:'#324D4D',
+                    confirmButtonColor: '#39B54E',
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = button.getAttribute('data-url'); 

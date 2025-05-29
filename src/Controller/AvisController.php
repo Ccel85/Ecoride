@@ -56,7 +56,8 @@ final class AvisController extends AbstractController{
 //Créer un avis
 #[Route('/avis/{id}/new', name: 'app_avis_new', requirements: ['id' => '.+'])]
 
-    public function avisNew(string $id,
+    public function avisNew(
+    string $id,
     Request $request,
     EntityManagerInterface $em,
     DocumentManager $documentManager,
@@ -105,24 +106,31 @@ final class AvisController extends AbstractController{
 //signaler un avis
 #[Route('/avis/{id}/signaler', name: 'app_avis_signaler', requirements: ['id' => '.+'])]
 
-    public function avisSignaler(int $id,Request $request, EntityManagerInterface $em,Security $security): Response
+    public function avisSignaler(
+    string $id,
+    Request $request,
+    EntityManagerInterface $em,
+    DocumentManager $documentManager,
+    Security $security): Response
     {
-        $utilisateur = $security->getUser();
+        $user = $security->getUser();
 
        /*  $rate = $request->query->get('rate'); */
 
-        if (!$utilisateur) {
+        if (!$user) {
             $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
             return $this->redirectToRoute('app_login');
         }
-
-        $covoiturage = $em->getRepository(CovoiturageMongo::class)->find($id);
+        $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find($id);
+        //$covoiturage = $em->getRepository(CovoiturageMongo::class)->find($id);
 
         if (!$covoiturage) {
             throw $this->createNotFoundException('Covoiturage non trouvé.');
         }
 
-        $conducteur = $covoiturage->getConducteur();
+        $conducteurId = $covoiturage->getConducteurId();
+
+        $conducteur = $em->getrepository(Utilisateur::class)->find($conducteurId);
 
             $avis = new Avis();
 
@@ -136,9 +144,9 @@ final class AvisController extends AbstractController{
 
                 $avis->setIsSignal(true);
 
-                $avis->setPassager($utilisateur);
+                $avis->setPassager($user);
 
-                $avis->setCovoiturage($covoiturage);
+                $avis->setCovoiturage($id);
             
                 
                 $em->persist($avis);
