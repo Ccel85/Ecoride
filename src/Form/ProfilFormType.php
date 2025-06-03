@@ -4,6 +4,7 @@ namespace App\Form;
 use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -18,7 +19,13 @@ class ProfilFormType extends AbstractType
             ->add('nom',TextType::class)
             ->add('prenom',TextType::class)
             ->add('pseudo',TextType::class)
-            /* ->add('photo_path') */
+            ->add('imageFile', VichImageType::class, [
+            'required' => false,
+            'allow_delete' => false,
+            'download_uri' => false,
+            'label' => 'Photo de profil',
+            'image_uri' => false,
+        ])
             ->add('observation',TextType::class,[
                 'required' => false,
             ])

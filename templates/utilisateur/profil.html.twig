@@ -16,16 +16,19 @@
     {% if id is defined and id > 0 %}
       <div class="card profil container m-4" >
         <div class="card-header row justify-content-evenly align-items-center">
-          {% if utilisateur.photoPath is not empty %}
+          {% if utilisateur.imageName is not empty %}
             <div class="col-2 p-2">
-                <a href="{{ path('app_profil',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
+                <a href="{{ path('app_profil',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(utilisateur, 'imageFile') }}" alt="" width="64" height="64" ></a>
+                <a href="{{ path('app_profil_update', {'id': utilisateur.id}) }}" class="edit-icon">
+            <i class="fas fa-pencil-alt"></i> 
+        </a>
             </div>
             {% else %}
             <div class="col-2 p-2">
-                <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32"> </i></a>
+                <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="Avatar" width="64" height="64"> </i></a>
             </div>
           {% endif %}
-          {# <img src="{{ asset('download/'~ utilisateur.photoPath) }}" class=" col-1 avatar rounded-circle" alt="..."> #}
+          {# <img src="{{ asset('download/'~ utilisateur.imageFile) }}" class=" col-1 avatar rounded-circle" alt="..."> #}
           <div class="col-10 text-center">
             <h3 class="card-title text-center">Mon profil</h3>
             <h3 class="card-text text-center">{{utilisateur.prenom|capitalize}}</h3>
@@ -107,23 +110,30 @@
       {#Page profil détail #}
       <div class="card container m-4 profil" >
         <div class="card-header row justify-content-evenly align-items-center">
-        {% if app.user.photoPath is not empty %}
+        {% if app.user.imageName is not empty %}
           <div class="col-2 p-2">
-            <a href="{{ path('app_profil') }}">
-            <img class=" avatar rounded-circle" src="{{asset('download/' ~ app.user.photoPath) }}" alt="" width="32" height="32" ></a>
+            {# <a href="{{ path('app_profil') }}">
+            <img class=" avatar rounded-circle" src="{{asset('download/' ~ app.user.imageFile) }}" alt="" width="32" height="32" ></a> #}
+            <div class="profile-pic-wrapper">
+              <a href="{{ path('app_profil',{'id': utilisateur.id}) }}">
+                <img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(utilisateur, 'imageFile') }}" alt="Photo de profil" width="64" height="64">
+              </a>
+          </div>
           </div>
           {% else %}
           <div class="col-2 p-2">
             <a href="{{ path('app_profil') }}">
-            <i class="avatar bi bi-person-circle " alt="mail Icon" > </i></a>
+            <i class="avatar bi bi-person-circle " alt="avatar" > </i></a>
           </div>
           {% endif %}
-          {# <img src="{{ asset('download/'~ app.user.photoPath) }}" class=" col-1 avatar rounded-circle" alt="..."> #}
           <div class="col-10 text-center">
-            <h3 class="card-title text-center">Mon profil</h3>
+            <h3 class="card-title text-center">Mon profil</h3><a href="{{path('app_profil_update',{id: app.user.id}) }}" class="btn btn-success">
+                <i class="bi bi-pencil-square"></i>
+              </a>
             <h3 class="card-text text-center">{{app.user.prenom|capitalize}}</h3>
             <p class="card-text text-center text-secondary fs-6">Crédits: {{app.user.credits}}</p>
           </div>
+          
         </div>
         <!-- body -->
         <div class="card-body p-0">
@@ -146,7 +156,6 @@
                 </li>
                 {% endif %}
                 </ul>
-
                 <!--Voiture-->
                 {% if voitureUser is not null %}
                   {% for voiture in voitureUser %}
@@ -172,7 +181,6 @@
                 <hr>
                 <p>Pas de véhicule enregistré.</p>
                 {% endif %}
-
                 <!-- observations-->
               <hr>
               {% if utilisateur.observation > 0 %}
@@ -191,7 +199,6 @@
                   <a href="{{ path('app_profil_update',{id: app.user.id}) }}">Ajouter des informations</a>
               {% endif %}
             </div>
-
             <!--avis-->
               <div class="avis col-6">
                 {% if commentairesUSer is empty %}
@@ -258,8 +265,8 @@
                       {# {% endif %} #}
                       {% else %}
                       <p class="text-decoration-underline m-0">Conducteur:</p> <span >{{ conducteur.pseudo|capitalize }}</span>
-                        {% if conducteur.photoPath  is not empty %}
-                          <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
+                        {% if conducteur.imageName  is not empty %}
+                          <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(conducteur, 'imageFile') }}" alt="mail Icon" width="64" height="64" ></a>
                           {% else %}
                           <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32"> </i></a>
                         {% endif %}

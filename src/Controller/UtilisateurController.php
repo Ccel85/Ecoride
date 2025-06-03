@@ -170,7 +170,9 @@ class UtilisateurController extends AbstractController
         $dateAujourdhui = false;
         $isValidateUser = false;
         $avisUserExiste = false;
+        $isAvisUser = false;
         $avisUser = null;
+        $conducteur = null;
 
         if ($covoituragesConducteur !== null) {
             foreach ($covoiturages as $covoiturage) {
@@ -217,7 +219,7 @@ class UtilisateurController extends AbstractController
                 'isAvisUser' => $isAvisUser,
                 'conducteur'=>$conducteur,
                 'avisUser'=>$avisUser,
-                //'conducteur'=>$covoituragesConducteur,
+                
                 ]);
         }
     //affichage profil selon Id
@@ -326,8 +328,6 @@ class UtilisateurController extends AbstractController
             Request $request): Response
         {
         $user = $security->getUser(); // Récupérer l'utilisateur connecté
-        
-        /* $user = $em->getRepository(Utilisateur::class)->find($id); */
 
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour accéder à cette page.');
@@ -342,16 +342,24 @@ class UtilisateurController extends AbstractController
     
         // Gérer la soumission du formulaire
         $form->handleRequest($request);
-
+try {
         if ($form->isSubmitted() && $form->isValid()) {
         
             // Persister les modifications
             $em->flush();
 
+             // <-- Évite la sérialisation de UploadedFile en session
+            $user->setImageFile(null);
+            
             $this->addFlash('success', 'Votre profil a bien été modifié .');
         
             // Rediriger après la sauvegarde
             return $this->redirectToRoute('app_profil', ['id' => $user->getId()]);
+        }
+        } catch (\Throwable $e) {
+            dump($e->getMessage());
+            dump($e->getTraceAsString());
+            throw $e; // ou return une réponse d'erreur
         }
 
         // Afficher le formulaire

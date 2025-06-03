@@ -23,7 +23,7 @@
                     {% for commentaire in invalidComments %}
                     <div class="card d-flex align-items-center justify-content-md-evenly flex-md-row mb-3 p-3">
                         <div class="d-flex flex-column">
-                            <a href="{{ path('app_profil',{'id':commentaire.passager.id}) }}"><img src="{{ asset('download/'~ commentaire.passager.photoPath) }}" class=" img-fluid avatar rounded-circle p-2" alt="avatar"></a>
+                            <a href="{{ path('app_profil',{'id':commentaire.passager.id}) }}"><img {# src="{{ asset('download/'~ commentaire.passager.imageFile) }}" #}src="{{ vich_uploader_asset(commentaire.passager, 'imageFile') }}" class=" img-fluid avatar rounded-circle p-2" alt="avatar"></a>
                             <p class="text-secondary">Ref: 00{{commentaire.passager.id}}</p>
                         </div>
                         <div class="rate">

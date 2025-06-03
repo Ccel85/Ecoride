@@ -12,33 +12,31 @@
 
             {{ form_start(registrationForm) }}
 
-            {{ form_row(registrationForm.nom, {
-                label: 'Nom',
-                'attr': {'class': 'form-control','placeholder' : 'DOE'}
-            }) }}
-            {{ form_row(registrationForm.prenom, {
-                label: 'Prénom',
-                'attr': {'class': 'form-control','placeholder' : 'John'}
-            }) }}
-            {{ form_row(registrationForm.pseudo, {
-                label: 'Pseudo',
-                'attr': {'class': 'form-control','placeholder' : 'jdoe'}
-            }) }}
-            {{ form_row(registrationForm.email,
-            {'attr': {'class': 'form-control','placeholder' : '@'}
-            }) }}
-            {{ form_row(registrationForm.plainPassword, {
-                label: 'Mot de passe',
-                'attr': {'class': 'form-control'}
-            }) }}  
-            
-            <div class='text-center'>
-                <button type="submit" class="btn btn-success">Enregistrer</button>
-            </div>
+                {{ form_row(registrationForm.nom, {
+                    label: 'Nom',
+                    'attr': {'class': 'form-control','placeholder' : 'DOE'}
+                }) }}
+                {{ form_row(registrationForm.prenom, {
+                    label: 'Prénom',
+                    'attr': {'class': 'form-control','placeholder' : 'John'}
+                }) }}
+                {{ form_row(registrationForm.pseudo, {
+                    label: 'Pseudo',
+                    'attr': {'class': 'form-control','placeholder' : 'jdoe'}
+                }) }}
+                {{ form_row(registrationForm.email,
+                {'attr': {'class': 'form-control','placeholder' : '@'}
+                }) }}
+                {{ form_row(registrationForm.plainPassword, {
+                    label: 'Mot de passe',
+                    'attr': {'class': 'form-control'}
+                }) }}  
+                <div class='text-center m-4'>
+                    <button type="submit" class="btn btn-success">Enregistrer</button>
+                </div>
+            {{ form_end(registrationForm) }}
         </div>
     </div>
-
-    {{ form_end(registrationForm) }}
 </div>
 {% endblock %}
 

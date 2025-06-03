@@ -5,7 +5,9 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -15,6 +17,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
 #[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 #[ORM\HasLifecycleCallbacks]
+#[Vich\Uploadable]
 
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -37,7 +40,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string 
      */
-    #[Assert\NotBlank (message:"Veuillez saisir un mot de passe.")]
     #[ORM\Column]
     private ?string $password = null;
 
@@ -57,9 +59,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         type: 'integer')]
     #[ORM\Column(nullable: true)]
     private ?int $credits = 0;
+    
+    /* #[Ignore] */
+    #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'imageName')]
+    private ?File $imageFile  = null;
 
-    #[ORM\Column(length: 255,nullable: true)]
-    private ?string $photo_path = null;
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
 
     #[ORM\Column]
     private ?bool $is_actif = true;
@@ -216,16 +222,29 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhotoPath(): ?string
+    public function getimageFile(): ?File
     {
-        return $this->photo_path;
+        return $this->imageFile;
     }
 
-    public function setPhotoPath(string $photo_path): static
+    public function setImageFile(?File $imageFile = null): void
     {
-        $this->photo_path = $photo_path;
+        $this->imageFile = $imageFile;
+        //Pour que Vich soit appelé mettre une date de création ,sinon doctrine pensera que l'entité n'a pas changée.
+        if ($imageFile !== null) {
+        $this->createdAt = new \DateTimeImmutable(); 
+    }
+    }
 
-        return $this;
+    public function getImageName():?string
+    {
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $imageName):void
+    {
+        $this->imageName = $imageName;
+
     }
 
     public function isActif(): ?bool

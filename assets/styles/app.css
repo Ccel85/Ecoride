@@ -105,6 +105,25 @@
     width: 70px;
     height: 70px;
 }
+.profile-pic-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    
+.edit-icon{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: rgb(221, 19, 19);
+    border-radius: 50%;
+    padding: 5px;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    .edit-icon:hover {
+        background-color: #f0f0f0;
+    }
 
 .page-profil{
     min-height: 100vh;

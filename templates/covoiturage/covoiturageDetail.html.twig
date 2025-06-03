@@ -91,7 +91,7 @@
     <div class="profil card container m-4 " >
       <div class="card-header row justify-content-evenly align-items-center">
         <div class="col-2">
-          <img src="{{ asset('download/'~ conducteur.photoPath) }}" class="avatar rounded-circle" alt="...">
+          <img src="{{ vich_uploader_asset(conducteur, 'imageFile') }}" class="avatar rounded-circle" alt="...">
         </div>
         <div class="col-6 text-center">
           <h3 class="card-title text-center">Conducteur:</h3>

@@ -6,10 +6,10 @@
 <div class="container p-4">
     <h1 class="text-center p-4">Modification de profil</h1>
     <div class="row">
-        <div class="form-group col-12 col-md-6 m-auto">
+        <div class="form-group w-75 w-md-50 m-auto">
             {{ form_errors(form) }}
             
-            {{ form_start(form, {'method': 'POST'}) }}
+            {{ form_start(form, {'attr': {'enctype': 'multipart/form-data','method': 'POST' }} ) }}
 
 
             {{ form_row(form.nom, {
@@ -36,12 +36,15 @@
                 'label': 'Observations',
                 'attr': {'class': 'form-control'}
             }) }}
+            <div class= "d-flex align-items-center">
+                
+                {{ form_row(form.imageFile)}}
 
-            {# {{ form_row(form.photoPath, {
-                'label': 'Photo',
-                'attr': {'class': 'form-control'}
-            }) }} #}
-
+                {% if utilisateurs.imageName %}
+                    <img src = "{{ vich_uploader_asset(utilisateurs, 'imageFile') }}"
+                    alt="Photo de profil" class="rounded-circle m-2" width="100">
+                {% endif %}
+            </div>
             {#  {{ form_row(form.voiture, {
                 'label': 'Mes voitures',
                 'attr': {'class': 'form-control'}

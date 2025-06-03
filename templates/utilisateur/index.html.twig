@@ -47,7 +47,7 @@
                             </td>
                             <td class="">
                                 <div>
-                                    <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ utilisateur.photoPath) }}" alt="" width="64" height="64" ></a>
+                                    <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(utilisateur, 'imageFile') }}" alt="" width="64" height="64" ></a>
                                 </div>
                             </td>
                             <td>

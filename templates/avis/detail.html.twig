@@ -59,7 +59,7 @@
     {# Fiche passager #}
     <div class="profil passager card mb-4 shadow-sm" >
       <div class="card-header d-flex justify-content-evenly align-items-center ">
-        <a href="{{ path('app_profil',{'id': passager.id}) }}"><img src="{{ asset('download/'~ passager.photoPath) }}" class=" img-fluid avatar rounded-circle" alt="avatar"></a>
+        <a href="{{ path('app_profil',{'id': passager.id}) }}"><img src="{{ vich_uploader_asset(passager, 'imageFile') }}" class=" img-fluid avatar rounded-circle" alt="avatar"></a>
         <div class="flex-grow-1 text-center">
           <h3 class="passagerInfo">Avis déposé par: {{passager.pseudo|capitalize}}</h3>
           <p class="email">Email : {{passager.email}}</p>
@@ -109,7 +109,7 @@
     {# Fiche conducteur #}
     <div class="profil conducteur card mb-4 shadow-sm " >
       <div class="card-header d-flex justify-content-evenly align-items-center">
-        <img src="{{ asset('download/'~ conducteur.photoPath) }}" class="img-fluid avatar rounded-circle" alt="avatar">
+        <img src="{{ vich_uploader_asset(conducteur, 'imageFile') }}" class="img-fluid avatar rounded-circle" alt="avatar">
         <div class="flex-grow-1 text-center">
           <h3 class="conducteurInfo">Conducteur : {{conducteur.pseudo|capitalize}}</h3>
           <p class="email">Email : {{conducteur.email}}</p>

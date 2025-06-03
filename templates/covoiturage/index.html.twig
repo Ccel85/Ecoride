@@ -68,10 +68,10 @@
                     <div class="card-header text-center">
                         <div class="conducteur d-flex flex-column align-items-center">
                             <p class="m-1">Conducteur:</p>
-                            {% if conducteur.photoPath is empty%}
+                            {% if conducteur.imageName is empty%}
                             <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon"> </i></a>
                             {% else %}
-                            <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ conducteur.photoPath) }}" alt="mail Icon" width="64" height="64" ></a>
+                            <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(conducteur, 'imageFile') }}" alt="mail Icon" width="64" height="64" ></a>
                             {% endif %}
                         </div>
                     </div>

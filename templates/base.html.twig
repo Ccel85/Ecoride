@@ -62,13 +62,13 @@
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                             </ul>
                         {% elseif is_granted("ROLE_USER") %}
-                            {% if app.user.photoPath is not empty %}
+                            {% if app.user.imageName is not empty %}
                                 <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{asset('download/' ~ app.user.photoPath) }}" alt="mdo" width="32" height="32" class=" icon-hover rounded-circle">
+                                    <img src=src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="mdo" width="48" height="48" class=" icon-hover rounded-circle">
                                 </a>
                             {% else %}
                                 <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{ asset('logo/Logo.png') }}" alt="mdo" width="32" height="32" class=" icon-hover rounded-circle">
+                                    <img src="{{ asset('logo/Logo.png') }}" alt="mdo" width="48" height="48" class=" icon-hover rounded-circle">
                                 </a>
                             {% endif %}
                             <ul class="dropdown-menu text-small">
@@ -79,7 +79,7 @@
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                             </ul>                            
                         {% else %}
-                            <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32" ></i>
+                            <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="48" height="48" ></i>
                             <ul class="dropdown-menu text-small">
                                 <li><a class="dropdown-item" href="{{ path('app_home') }}">Accueil</a></li>
                                 <li><a class="dropdown-item" href="{{ path('app_covoiturage_recherche') }}">Rechercher un voyage</a></li>
@@ -107,23 +107,23 @@
                         <div class="position-relative end-0 top-50 d-flex justify-content-end">
                             {% if app.user and is_granted("ROLE_USER") %}
                                 <div class="d-none d-lg-flex align-items-center p-2">
-                                    <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="32" height="32" class="rounded-circle"></i> 
+                                    <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="48" height="48" class="rounded-circle"></i> 
                                     <a href="{{ path('app_covoiturage_new') }}" class="custom-links px-2">Publier un voyage</a>
                                 </div>
-                                {% if app.user.photoPath is not empty %}
+                                {% if app.user.imageName is not empty %}
                                 <div class="align-items-center p-2 d-none d-lg-flex">
-                                    <a href="{{ path('app_profil') }}"><img class="icon-hover rounded-circle" src="{{asset('download/' ~ app.user.photoPath) }}" alt="" width="32" height="32" ></a>
+                                    <a href="{{ path('app_profil') }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="" width="32" height="32" ></a>
                                     <a href="{{ path('app_logout') }}"  class="custom-links px-2 ">Déconnexion</a>
                                 </div>
                                 {% else %}
                                 <div class="d-none d-lg-flex align-items-center p-2">
-                                    <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32"> </i></a>
+                                    <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon" width="48" height="48"> </i></a>
                                     <a href="{{ path('app_logout') }}"  class="custom-links px-2 ">Déconnexion</a>
                                 </div>
                                 {% endif %}
                             {% else %}
                             <div class="d-none d-md-flex align-items-center p-2">
-                                <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="32" height="32" ></i>
+                                <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="48" height="48" ></i>
                                 <a href="{{ path('app_login') }}" class="custom-links px-2 ">Se connecter</a>
                             </div>
                             {% endif %}

@@ -32,9 +32,11 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Votre compte est créé ,veuillez vous connecter !');
+            
             return $this->redirectToRoute('app_login');
         }
-
+        
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
         ]);
@@ -60,6 +62,8 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Le compte utilisateur a été créé .');
+            
             return $this->redirectToRoute('app_admin_dashboard');
         }
 

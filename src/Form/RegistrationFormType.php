@@ -46,11 +46,8 @@ class RegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
-            ])
-            ->add('_token', HiddenType::class, [
-                'mapped' => false,
-                'data' => $options['csrf_token_id'],
             ]);
+            
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -58,6 +55,8 @@ class RegistrationFormType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Utilisateur::class,
             'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id'   => 'utilisateur_item',
         ]);
     }
 }
