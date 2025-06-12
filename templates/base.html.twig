@@ -19,7 +19,7 @@
 </head>
 <body>
     <header>
-        {# Logo #}
+            {# Logo #}
             <div class="header pb-3 border-bottom">
                 <div class="container">
                     <div class="row justify-content-center">
@@ -45,10 +45,6 @@
                                 <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
-                                {# <li><a class="dropdown-item fs-5" id="chartButton">
-                                    <i class="bi bi-bar-chart-line"></i> Nombre de covoiturage </a></li>
-                                <li><a class="dropdown-item fs-5" id="chartCreditButton" >
-                                    <i class="bi bi-graph-up"></i> Nombre de crédits </a></li> #}
                             </ul>
                         {% elseif is_granted("ROLE_EMPLOYE") %}
                             <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -64,11 +60,11 @@
                         {% elseif is_granted("ROLE_USER") %}
                             {% if app.user.imageName is not empty %}
                                 <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src=src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="mdo" width="48" height="48" class=" icon-hover rounded-circle">
+                                    <img src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="mdo" width="48" height="48" class=" icon-hover rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Profil">
                                 </a>
                             {% else %}
                                 <a href="{{ path('app_profil') }}" class="d-block  link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <img src="{{ asset('logo/Logo.png') }}" alt="mdo" width="48" height="48" class=" icon-hover rounded-circle">
+                                    <img src="{{ asset('logo/Logo.png') }}" alt="mdo" width="48" height="48" class=" icon-hover rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Profil">
                                 </a>
                             {% endif %}
                             <ul class="dropdown-menu text-small">
@@ -90,48 +86,55 @@
                         {% endif %}
                     </div>
                 {#  Fin du dropdown #}
-                    {% if is_granted("ROLE_ADMIN") %}
+                    {% if is_granted("ROLE_ADMIN") %}{# si connecter avec role ADMIN #}
+                        <div class="search position-relative start-0 top-50 d-md-flex align-items-center justify-content-center mx-2">
+                            <a href="{{ path('app_admin_dashboard') }}" class="custom-links px-2 d-flex align-items-center">
+                                <i class="bi bi-clipboard-data icon-hover fs-4" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Dashboard"></i>
+                                <p class=" custom-links d-none d-md-inline ms-2 mb-0 ">Dashboard</p>
+                            </a>
+                        </div>
+                    {% elseif is_granted("ROLE_EMPLOYE") %} {# sinon avec role Employe #}
                         <div  class="search position-relative start-0 top-50  d-md-flex align-items-center justify-content-center mx-2">
-                        <i class="bi bi-clipboard-data icon-hover " alt="board Icon" width="32" height="32"></i>
-                        <a href="{{ path('app_admin_dashboard') }}" class="custom-links px-2">Dashboard</a></div>
-                    {% elseif is_granted("ROLE_EMPLOYE") %}
-                        <div  class="search position-relative start-0 top-50  d-md-flex align-items-center justify-content-center mx-2">
-                        <i class="bi bi-clipboard-data icon-hover " alt="board Icon" width="32" height="32"></i>
-                        <a href="{{ path('app_employe_dashboard') }}" class="custom-links px-2">Dashboard</a></div>
+                            <a href="{{ path('app_employe_dashboard') }}" class="custom-links px-2 d-flex align-items-center">
+                                <i class="bi bi-clipboard-data icon-hover " alt="board Icon" width="32" height="32" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Dashboard"></i>
+                                <p class=" custom-links d-none d-md-inline ms-2 mb-0 ">Dashboard</p></a>
+                        </div>
                     {% endif %}
                         <div class="search position-relative top-50  d-md-flex align-items-center justify-content-center mx-2">
-                            <i  class=" bi bi-search icon-hover" alt="Position Icon" width="32" height="32"></i>
-                            <a href="{{ path('app_covoiturage_recherche') }}" class="custom-links px-2">Rechercher un voyage</a>
+                            <a href="{{ path('app_covoiturage_recherche') }}" class="custom-links px-2">
+                                <i  class=" bi bi-search icon-hover" alt="Position Icon" width="32" height="32" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rechercher un voyage"></i>
+                                <p class=" custom-links d-none d-md-inline ms-2 mb-0 ">Rechercher un voyage</p></a>
                         </div>
-                    {# <div class=" position-absolute end-0 top-50 d-flex justify-content-end"> #}
                         <div class="position-relative end-0 top-50 d-flex justify-content-end">
-                            {% if app.user and is_granted("ROLE_USER") %}
-                                <div class="d-none d-lg-flex align-items-center p-2">
-                                    <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="48" height="48" class="rounded-circle"></i> 
-                                    <a href="{{ path('app_covoiturage_new') }}" class="custom-links px-2">Publier un voyage</a>
+                            {% if app.user and is_granted("ROLE_USER") %}{# si connecter avec profil utilisateur #}
+                                <div class="d-none d-md-flex align-items-center p-2">
+                                    <a href="{{ path('app_covoiturage_new') }}" class="custom-links px-2">
+                                        <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="48" height="48" class="rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Publier un voyage" ></i> 
+                                        <p class=" custom-links d-none d-md-inline ms-2 mb-0 ">Publier un voyage</p></a>
                                 </div>
-                                {% if app.user.imageName is not empty %}
+                                {% if app.user.imageName is not empty %} {# si connecter avec image de profil #}
                                 <div class="align-items-center p-2 d-none d-lg-flex">
-                                    <a href="{{ path('app_profil') }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="" width="32" height="32" ></a>
+                                    <a href="{{ path('app_profil') }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="" width="32" height="32"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Profil"></a>
                                     <a href="{{ path('app_logout') }}"  class="custom-links px-2 ">Déconnexion</a>
                                 </div>
                                 {% else %}
-                                <div class="d-none d-lg-flex align-items-center p-2">
-                                    <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="mail Icon" width="48" height="48"> </i></a>
+                                <div class="d-none d-md-flex align-items-center p-2">
+                                    <a href="{{ path('app_profil') }}"><i class="bi bi-person-circle icon-hover" alt="Icon" width="48" height="48"data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Profil"> </i></a>
                                     <a href="{{ path('app_logout') }}"  class="custom-links px-2 ">Déconnexion</a>
                                 </div>
                                 {% endif %}
-                            {% else %}
+                            {% else %}{# pas de connection faite #}
                             <div class="d-none d-md-flex align-items-center p-2">
-                                <i class="bi bi-person-circle icon-hover" alt="mail Icon" width="48" height="48" ></i>
-                                <a href="{{ path('app_login') }}" class="custom-links px-2 ">Se connecter</a>
+                                <a href="{{ path('app_login') }}" class="custom-links px-2 ">
+                                <i class="bi bi-person-circle icon-hover m-2" alt="mail Icon" width="48" height="48" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="se connecter" ></i>
+                                <p class=" custom-links d-none d-md-inline ms-2  mb-0 ">Se connecter</p></a>
                             </div>
                             {% endif %}
                         </div>
                     {#  </div> #}
-                </div>
+                {# </div> #}
             </div>
-        </div>
+        {#  </div> #}
     </header>
     <main class="pt-5">
         {% for label, messages in app.flashes %}
@@ -160,8 +163,5 @@
             </div>
         </div>  
     </footer>
-    {# {% block javascripts %}
-        {% block importmap %}{{ importmap('app') }}{% endblock %}
-    {% endblock %} #}
 </body>
 </html>

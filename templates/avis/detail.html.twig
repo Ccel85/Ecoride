@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Covoiturage en détail{% endblock %}
+{% block title %}Avis en détail{% endblock %}
 
 {% block body %}
 {% if is_granted('ROLE_EMPLOYE')%}
@@ -22,7 +22,7 @@
         <div class="ps-3">Le {{ covoiturage.dateDepart|date('d-m-Y') }}</div>
         <div class="pe-3">Réf: {{ covoiturage.id }}</div>
       </div>
-      
+      {# Voyage #}
       <div class="voyage container-fluid">
         <div class="itineraire">
           <div class="itineraire d-flex justify-content-evenly align-items-center">
@@ -88,18 +88,25 @@
             <div class="comments">
               <p>{{ avis.comments }}</p>
             </div>
-            <div class="d-flex flex-column align-items-center ">
+            <div class="d-flex flex-column align-items-center" data-controller ="sweet-alert">
               <p class='text-decoration-underline mb-0 text-secondary fs-7'>Valider l'avis:</p>
-              <div class="form-check form-switch m-2  ">
+              <div class="form-check form-switch m-2" data-controller ="sweet-alert" >
                 <input class="form-check-input" data-bs-toggle="tooltip" data-bs-placement="top" title="Valider l'avis" type="checkbox" role="switch" name="isValid[]" value="{{ avis.id }}" id="isValid_{{ avis.id }}"  >
                 <label class="form-check-label" for="isValid_{{ avis.id }}"></label>
               </div> 
+              <button type="submit" id="validateButton" 
+                class="btn btn-success p-2 m-2" data-bs-toggle="tooltip" 
+                data-bs-placement="top" title="Valider l'avis" data-action = "click->sweet-alert#setupValidation">
+                Valider l'avis
+              </button>
               <div>
-                <button type="submit" id="avisValidateAvis" class="btn btn-success p-2 m-2">Valider les avis</button>
+                <a class="btn btn-danger" name="removeAvis" id=" removeAvisButton{# trash_{{ avis.id }} #}" 
+                  data-url="{{ path('app_avis_remove', {'id': avis.id}) }}"  
+                  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis"
+                  data-action = "click->sweet-alert#removeAvisButton">
+                  <i class="bi bi-trash3"></i>
+                </a>
               </div>
-              <a class="btn btn-danger" name="removeAvis" id="trash_{{ avis.id }}" data-url="{{ path('app_avis_remove', {'id': avis.id}) }}"  data-bs-toggle="tooltip" data-bs-placement="top" title="Supprimer l'avis">
-                <i class="bi bi-trash3"></i>
-              </a>
             </div>
           </div>
         </div>
@@ -131,9 +138,9 @@
         <div class="d-flex justify-content-around ">
           <div class="commentaires flex-grow-1">
             {% for commentaire in commentaires %}
-              {% if commentaire.isvalid ==false or commentaire is empty %}
-              <p class="text-center">Il n'y a pas d'avis.</p>
-              {% elseif commentaire.isValid == true %}
+              {# {% if commentaire.isvalid ==false or commentaire is empty %}
+              <p class="text-center">Il n'y a pas d'avis.</p> #}
+              {% if commentaire.isValid == true %}
               <h4 class="text-decoration-underline text-center"> Avis:</h4>
               {# {% if commentaire.isValid == true %} #}
               <div class="card commentaire mb-3 p-3">

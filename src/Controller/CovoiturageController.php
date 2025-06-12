@@ -276,6 +276,7 @@ class CovoiturageController extends AbstractController
         $prix = $request->query->get('prix');
         $dureeMax = $request->query->get('dureeMax');
         $rate = $request->query->get('rate');
+
          // Valeur par défaut
         $dureeVoyage = null;
         $rateUser = null;
@@ -284,52 +285,55 @@ class CovoiturageController extends AbstractController
         $voitures = null;
         $avis = null;
         $covoiturageRepository = $dm->getRepository(CovoiturageMongo::class);
-
+        $covoiturages = null;
         $avisExistants[]= false;
 
         // Convertir les heures en minutes pour la comparaison
         $intervalMax = $dureeMax ? new \DateInterval('PT' . ((int) $dureeMax) . 'H'):null;
 
-        $submit = trim((string)$request->query->get('date')) !== '' ||
+        $buttonSearch = $request->query->has('valid');
+        
+        $submit = $buttonSearch ||
+            trim((string)$request->query->get('date')) !== '' ||
             trim((string)$request->query->get('depart')) !== '' ||
             trim((string)$request->query->get('arrivee')) !== '' ||
             trim((string)$request->query->get('prix')) !== '' ||
             trim((string)$request->query->get('dureeMax')) !== '' ||
             trim((string)$request->query->get('rate')) !== '';
 
-        
-            //$date = $request->query->get('date'); // 'date' est une chaîne (ex : '2025-04-15')
-            //$dateDepart = null;
             try {
-                if (!$date) {
-                    // Si aucune recherche : par défaut, on prend aujourd'hui à minuit
+                    if (!$date) {
+                    // Si aucune recherche : par défaut, on prend aujourd'hui à minuit en datetime
+                        $dateDepart = (new \DateTime('today'));
+
+                    } elseif (!empty($date)) {
+                    // Si l'utilisateur a mis une date dans le filtre on la modifie en datetime
+                        $dateDepart = (new \DateTime($date));
+                        
+                    }
+                } catch (\Exception $e) {
+                    // Si Mauvais format de date 
+                    $this->addFlash('warning', 'Format de date invalide. Résultats affichés à partir d’aujourd’hui.');
                     $dateDepart = (new \DateTime('today'));
-                } elseif (!empty($date)) {
-                    // Si l'utilisateur a mis une date dans le filtre on la modife en datetime
-                    $dateDepart = (new \DateTime($date));
-                    dump($dateDepart);}
-                /* } else { //si dateDepart n'est pas rentrée mais il y a un submit sur autre donnée
-                    $dateDepart = null; 
-                } */
-            } catch (\Exception $e) {
-                // Mauvais format de date ? On met null et éventuellement un message flash
-                $this->addFlash('warning', 'Format de date invalide. Résultats affichés à partir d’aujourd’hui.');
-                $dateDepart = (new \DateTime('today'));
-            }
-            /* if ($dateDepart === null) {
-                $dateDepart = new \DateTime('today');
-            }
- */
-        //Recuperer les covoiturages en fonction des criteres
-        if($date) {
-        $covoiturages = $covoiturageRepository->findCovoiturage($dateDepart,$lieuDepart,$lieuArrivee,$prix);
-        dump($covoiturages);
-
-        } else {
-            $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart,$lieuDepart,$lieuArrivee,$prix);
-            dump($covoiturages);
-
-        }
+                }
+                $notCovoiturages = false;
+                if ($submit){
+                    //Recuperer les covoiturages en fonction des criteres saisis
+                    $covoiturages = $covoiturageRepository->findCovoiturage($dateDepart, $lieuDepart, $lieuArrivee, $prix);
+                    dump($covoiturages);
+                        
+                    // Aucun covoiturage exact, on cherche des covoiturages proches
+                    if (empty($covoiturages)) {
+                        $notCovoiturages = true;
+                        $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee, $prix);
+                    
+                    }
+                } else {
+                    // Aucun critère saisi => chercher autour de la date du jour
+                    $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee, $prix);
+                    $notCovoiturages = true;
+                    
+                }
 
         foreach ($covoiturages as $key => $covoiturage) {
 
@@ -354,8 +358,6 @@ class CovoiturageController extends AbstractController
             }
 
             //Recherche les avis du covoiturage
-            //$covoiturageId = $covoiturage->getId();
-            //$avis = $avisRepository->findOneBy(['covoiturage' => $covoiturageId]);
             $avis = $avisRepository->findOneBy(['conducteur' => $conducteur]);
             $avisExistants[$key] = $avis ? true : false;
             $rateUser =round($avisRepository->rateUser($conducteur),1);
@@ -422,6 +424,7 @@ class CovoiturageController extends AbstractController
         
             return $this->render('covoiturage/index.html.twig', [
             'covoiturages'=>$covoiturages,
+            'notCovoiturages'=>$notCovoiturages,
             //'dateFuture'=>$dateFuture,
             'dateDepart'=>$dateDepart,
             'lieuDepart'=>$lieuDepart,

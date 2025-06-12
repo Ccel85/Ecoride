@@ -7,11 +7,14 @@ import Swal from 'sweetalert2';
 */
 /* stimulusFetch: 'lazy' */
 export default class extends Controller {
-    static targets = ['validButton', 'trashButton', 'trashButtons', 'validateButton', 'avisButton', 'avisForm', 'removeAvisButton', 'goButton', 'stopButton']
+    static targets = ['validButton', 'trashButton', 'trashButtons', 'validateButton', 'avisButton','avisValidateSignalement', 'avisForm', 'removeAvisButton', 'goButton', 'stopButton']
     
     connect() {
         console.log('validButton_controller connecté');
     }
+
+//Manipulation covoiturage
+
 //Réserver un covoiturage
     validButton(event) {
         const button = event.currentTarget;
@@ -145,51 +148,6 @@ export default class extends Controller {
             })
         }
 
-//Ajouter avis
-    avisButton(event) {
-        const button = event.currentTarget;
-        
-            // Affichage de l'alerte pour laisser un avis
-            Swal.fire({
-                text: 'Souhaitez-vous laisser un avis ?',
-                icon: 'question',
-                confirmButtonText: 'Oui',
-                showCancelButton: true,
-                cancelButtonText: 'Non',
-                iconColor: '#39B54E',
-                color:'#324D4D',
-                cancelButtonColor:'#324D4D',
-                confirmButtonColor: '#39B54E',
-                }).then((reviewResult) => {
-                if (reviewResult.isConfirmed) {
-                    // Redirection vers la page d'avis
-                    window.location.href = button.getAttribute('data-url'); 
-                }
-                })
-            }
-
-//Ajouter un signalement
-    signalButton(event) {
-        const button = event.currentTarget;
-        
-            // Affichage de l'alerte pour laisser un avis
-            Swal.fire({
-                text: 'Souhaitez-vous laisser un signalement ?',
-                icon: 'question',
-                confirmButtonText: 'Oui',
-                showCancelButton: true,
-                cancelButtonText: 'Non',
-                iconColor: '#39B54E',
-                color:'#324D4D',
-                cancelButtonColor:'#324D4D',
-                confirmButtonColor: '#39B54E',
-                }).then((reviewResult) => {
-                if (reviewResult.isConfirmed) {
-                    // Redirection vers la page d'avis
-                    window.location.href = button.getAttribute('data-url'); 
-                }
-                })
-            }
 //démarrer un voyage
     goButton(event) {
         const button = event.currentTarget;
@@ -242,6 +200,74 @@ export default class extends Controller {
                     });
                 }
 
+//Manipulation avis
+
+//Ajouter avis
+    avisButton(event) {
+        const button = event.currentTarget;
+        
+            // Affichage de l'alerte pour laisser un avis
+            Swal.fire({
+                text: 'Souhaitez-vous laisser un avis ?',
+                icon: 'question',
+                confirmButtonText: 'Oui',
+                showCancelButton: true,
+                cancelButtonText: 'Non',
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
+                }).then((reviewResult) => {
+                if (reviewResult.isConfirmed) {
+                    // Redirection vers la page d'avis
+                    window.location.href = button.getAttribute('data-url'); 
+                }
+                })
+            }
+
+//Ajouter un signalement
+    signalButton(event) {
+        const button = event.currentTarget;
+        
+            // Affichage de l'alerte pour laisser un avis
+            Swal.fire({
+                text: 'Souhaitez-vous laisser un signalement ?',
+                icon: 'question',
+                confirmButtonText: 'Oui',
+                showCancelButton: true,
+                cancelButtonText: 'Non',
+                iconColor: '#39B54E',
+                color:'#324D4D',
+                cancelButtonColor:'#324D4D',
+                confirmButtonColor: '#39B54E',
+                }).then((reviewResult) => {
+                if (reviewResult.isConfirmed) {
+                    // Redirection vers la page d'avis
+                    window.location.href = button.getAttribute('data-url'); 
+                }
+                })
+            }
+            
+//Supprimer Avis
+    removeAvisButton(event) {
+        const button = event.currentTarget;
+                // Affichage de l'alerte SweetAlert pour confirmer
+                Swal.fire({
+                    text: 'Voulez-vous supprimer l\'avis ?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Oui',
+                    cancelButtonText: 'Non',
+                    iconColor: '#39B54E',
+                    color:'#324D4D',
+                    cancelButtonColor:'#324D4D',
+                    confirmButtonColor: '#39B54E',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = button.getAttribute('data-url'); 
+                    }
+                });
+            }
 //A revoir:
 //Valider Avis page employé
     setupValidation(event) {
@@ -284,25 +310,5 @@ export default class extends Controller {
                 setupValidation('avisValidateSignalement', 'avisFormSignalement');
             }
 
-//Supprimer Avis
-    removeAvisButton(event) {
-        const button = event.currentTarget;
-                // Affichage de l'alerte SweetAlert pour confirmer
-                Swal.fire({
-                    text: 'Voulez-vous supprimer l\'avis ?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Oui',
-                    cancelButtonText: 'Non',
-                    iconColor: '#39B54E',
-                    color:'#324D4D',
-                    cancelButtonColor:'#324D4D',
-                    confirmButtonColor: '#39B54E',
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location.href = button.getAttribute('data-url'); 
-                    }
-                });
-            }
 
-            }
+}

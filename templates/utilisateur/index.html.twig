@@ -45,10 +45,31 @@
                                 <div class="d-flex align-items-center text-nowrap">{{utilisateur.id}}
                                 </div>
                             </td>
-                            <td class="">
-                                <div>
-                                    <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(utilisateur, 'imageFile') }}" alt="" width="64" height="64" ></a>
+                            <td >
+                            {% if utilisateur.imageName is not empty %}
+                                <div class="col-2 p-2">
+                                    {# <a href="{{ path('app_profil') }}">
+                                    <img class=" avatar rounded-circle" src="{{asset('download/' ~ app.user.imageFile) }}" alt="" width="32" height="32" ></a> #}
+                                    <div class="text-center">
+                                        <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}">
+                                            <img class="rounded-circle" 
+                                            src="{{ vich_uploader_asset(utilisateur, 'imageFile') }}" 
+                                            alt="profil" width="64" height="64">
+                                        </a>
+                                    </div>
                                 </div>
+                                {% else %}
+                                <div class="col-2 p-2 text-center">
+                                    <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}">
+                                            <img class="rounded-circle" 
+                                            src="{{ asset('logo/Logo.png') }}" 
+                                            alt="profil" width="64" height="64">
+                                        </a>
+                                </div>
+                            {% endif %}
+                                {# <div>
+                                    <a href="{{ path('app_profil_id',{'id': utilisateur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(utilisateur, 'imageFile') }}" alt="" width="64" height="64" ></a>
+                                </div> #}
                             </td>
                             <td>
                                 <div class="d-flex align-items-center">

@@ -23,8 +23,8 @@ class ProfilFormType extends AbstractType
             'required' => false,
             'allow_delete' => false,
             'download_uri' => false,
-            'label' => 'Photo de profil',
             'image_uri' => false,
+            'label' =>false,
         ])
             ->add('observation',TextType::class,[
                 'required' => false,

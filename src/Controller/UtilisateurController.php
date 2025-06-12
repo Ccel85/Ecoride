@@ -147,7 +147,9 @@ class UtilisateurController extends AbstractController
                         ->findBy(['passagersIds' => $userId]);
         //association de tous les covoiturages:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
-        
+        usort($covoiturages, function ($a, $b) {
+            return $a->getDateDepart() <=> $b->getDateDepart();
+        });
         // Récuperation des données:
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
@@ -172,19 +174,19 @@ class UtilisateurController extends AbstractController
         $avisUserExiste = false;
         $isAvisUser = false;
         $avisUser = null;
-        $conducteur = null;
+        $conducteurs = null;
+        $conducteurId = null;
 
         if ($covoituragesConducteur !== null) {
-            foreach ($covoiturages as $covoiturage) {
-                
+            foreach ($covoiturages as $key=>$covoiturage) {
                 $conducteurId = (int) $covoiturage->getConducteurId();
                 $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
-                
+                $conducteurs[$key] = $conducteur;
                 //selectionner les dates futures à la date du jour
                 $now = new \DateTimeImmutable();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $covoiturage->setDateFuture($dateFuture) ;
-                
+                dump($dateFuture);
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
                     $dateAujourdhui = $covoiturage->setDateAujourdhui($dateAujourdhui);
@@ -214,10 +216,13 @@ class UtilisateurController extends AbstractController
                 'covoiturages'=> $covoiturages,
                 'observations'=>$observationExplode,
                 'dateAujourdhui'=>$dateAujourdhui,
+                'dateFutur'=>$dateFuture,
                 'isValidateUser'=>$isValidateUser,
                 'rate'=>$rateUser,
                 'isAvisUser' => $isAvisUser,
-                'conducteur'=>$conducteur,
+                //'conducteur'=>$conducteur,
+                'conducteurs'=>$conducteurs,
+                'conducteurId'=>$conducteurId,
                 'avisUser'=>$avisUser,
                 
                 ]);
@@ -227,7 +232,7 @@ class UtilisateurController extends AbstractController
         public function profil(
             string $id,
             EntityManagerInterface $em,
-            DocumentManager $documentManager):Response
+            DocumentManager $documentManager): Response
         {
         //recuperer l'utilisateur selon son ID (int)
         $user = $em->getRepository(Utilisateur::class)->find($id);
@@ -240,12 +245,10 @@ class UtilisateurController extends AbstractController
         $userId =(string) $user->getId();
         
         // Récuperation des données:
-
         //récupération des covoiturages de l'utilisateur connecté
             //récupération quand conducteur (string):
         $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
             ->findBy(['conducteurId' => $userId]);
-            
         //récupération quand passager (int):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
             ->findBy(['passagersIds' => $user->getId()]);
@@ -262,6 +265,7 @@ class UtilisateurController extends AbstractController
         $observationExplode = explode(',' ,$observations);
 
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
+        
         $rateUser =round($em->getRepository(Avis::class)->rateUser($user),1);
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
         
@@ -278,11 +282,12 @@ class UtilisateurController extends AbstractController
         //selectionner les dates futures à la date du jour:
         if ($covoiturages !== null) {
             $now = new \DateTime();
-            foreach ($covoiturages as $covoiturage) {
+            foreach ($covoiturages as $key=> $covoiturage) {
 
                 $conducteurId = (int) $covoiturage->getConducteurId();
                 $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
-                
+                $conducteurs[$key] = $conducteur;
+
                 //verifier si le covoiturage est futur
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
@@ -302,7 +307,7 @@ class UtilisateurController extends AbstractController
                 $avisUserExiste = $avisUser !== null;
                 
             }
-
+        }
         return $this->render('utilisateur/profil.html.twig', [
             'utilisateur' => $user,
             'commentairesUSer'=> $commentairesUser,
@@ -312,12 +317,13 @@ class UtilisateurController extends AbstractController
             'id' => $id,
             'observations'=>$observationExplode,
             'dateAujourdhui'=>$dateAujourdhui,
+            'dateFutur'=>$dateFuture,
             'avisUserExiste'=>$avisUserExiste,
             'rate'=>$rateUser,
             'isValidateUser'=>$isValidateUser,
             'conducteur'=>$conducteur,
+            'conducteurs'=>$conducteurs,
             ]);
-        }
     }
     //Affichage profil pour MAJ
     #[Route('/profil/{id}/update', name: 'app_profil_update',requirements: ['id' => '\d+'])]
@@ -342,33 +348,33 @@ class UtilisateurController extends AbstractController
     
         // Gérer la soumission du formulaire
         $form->handleRequest($request);
-try {
-        if ($form->isSubmitted() && $form->isValid()) {
-        
-            // Persister les modifications
-            $em->flush();
-
-             // <-- Évite la sérialisation de UploadedFile en session
-            $user->setImageFile(null);
+        try {
+            if ($form->isSubmitted() && $form->isValid()) {
             
-            $this->addFlash('success', 'Votre profil a bien été modifié .');
-        
-            // Rediriger après la sauvegarde
-            return $this->redirectToRoute('app_profil', ['id' => $user->getId()]);
-        }
-        } catch (\Throwable $e) {
-            dump($e->getMessage());
-            dump($e->getTraceAsString());
-            throw $e; // ou return une réponse d'erreur
-        }
+                // Persister les modifications
+                $em->flush();
 
-        // Afficher le formulaire
-        return $this->render('utilisateur/update.html.twig', [
-            'form' => $form->createView(),
-            'utilisateurs' => $user,
-            'voitureUser'=> $voitureUser,
-            'observations'=>$observations,
-        ]);
-    }
+                // Évite la sérialisation de UploadedFile en session
+                $user->setImageFile(null);
+                
+                $this->addFlash('success', 'Votre profil a bien été modifié .');
+            
+                // Rediriger après la sauvegarde
+                return $this->redirectToRoute('app_profil', ['id' => $user->getId()]);
+            }
+            } catch (\Throwable $e) {
+                dump($e->getMessage());
+                dump($e->getTraceAsString());
+                throw $e; // ou return une réponse d'erreur
+            }
+
+            // Afficher le formulaire
+            return $this->render('utilisateur/update.html.twig', [
+                'form' => $form->createView(),
+                'utilisateurs' => $user,
+                'voitureUser'=> $voitureUser,
+                'observations'=>$observations,
+            ]);
+        }
     
 }

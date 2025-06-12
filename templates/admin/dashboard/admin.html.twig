@@ -5,12 +5,12 @@
 {% block body %}
 {% if is_granted('ROLE_ADMIN')%}
     {% if app.user %}
-        <h4 class="text-center"> Bonjour {{ app.user.prenom|capitalize }} {{ app.user.nom|capitalize }},<br><span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </h4>
+        <h4 class="text-center m-4"> Bonjour {{ app.user.prenom|capitalize }} {{ app.user.nom|capitalize }},<br><span class="textRed "></span> vous êtes connecté en tant qu'<span class="textRed">Administrateur </span>. </h4>
         <hr>
     {% endif %}
     <div class="dashboard d-flex flex-grow-1 mb-2 ">
         {# Dropdown #}
-        <div class="dropdown text-down position-relative d-none text-white ">
+        {# <div class="dropdown text-down position-relative d-none text-white ">
             <button class="d-block btn link-body-emphasis dropdown-toggle text-success"  data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="bi bi-list text-success"></i>      
             </button>
@@ -22,12 +22,8 @@
                 <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Liste des covoiturages</a></li>
-                {# <li><a class="dropdown-item fs-5" id="chartButton">
-                <i class="bi bi-bar-chart-line"></i> Nombre de covoiturage </a></li>
-                <li><a class="dropdown-item fs-5" id="chartCreditButton" >
-                <i class="bi bi-graph-up"></i> Nombre de crédits </a></li> #}
             </ul>
-        </div>
+        </div> #}
         {#  Fin du dropdown #}
         <!--SideBar-->
         <div  class="sidebar d-none d-lg-flex flex-column flex-shrink-0 " >

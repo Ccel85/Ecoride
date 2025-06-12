@@ -29,7 +29,6 @@ class DashboardController extends AbstractController
     
     $covoiturageRepository = $dm->getRepository(CovoiturageMongo::class);
     
-    //$totalCovoiturages = $covoiturages->isGo();
     $month = $request->query->get('month', (new \DateTime())->format('m'));
     $year = 2025;
     

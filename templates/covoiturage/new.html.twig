@@ -50,7 +50,9 @@
         {{ form_row(form.voitureId, {
         'attr': {'class': 'form-control'},
         }) }}
-
+        <div class="text-center mb-4">
+        <a href="{{ path('app_voiture_new') }}" class="">Ajouter une voiture</a>
+        </div>
         {{ form_row(form.prix,{
         'label' : 'Prix par personne',
         'attr' : {'class': 'form-control'}

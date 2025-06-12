@@ -28,9 +28,11 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
             $user->setRoles(['ROLE_USER']);
             $user->setCredits( 20 );
+            
 
             $entityManager->persist($user);
             $entityManager->flush();
+            
 
             $this->addFlash('success', 'Votre compte est créé ,veuillez vous connecter !');
             

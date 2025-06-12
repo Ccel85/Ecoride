@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class VoitureController extends AbstractController
 {
-    #[Route('/voiture', name: 'app_voiture')]
+#[Route('/voiture', name: 'app_voiture')]
     public function index(): Response
     {
         return $this->render('voiture/index.html.twig', [
@@ -21,7 +21,7 @@ class VoitureController extends AbstractController
         ]);
     }
 
-    #[Route('/voiture/{id}/update', name: 'app_voiture_update')]
+#[Route('/voiture/{id}/update', name: 'app_voiture_update')]
     public function update(int $id, EntityManagerInterface $em,Request $request): Response
     {
         $voiture = $em->getRepository(Voiture::class)->find($id);
@@ -56,51 +56,50 @@ class VoitureController extends AbstractController
         ]);
     }
 
-// Création vehicule
 
 #[Route('/voiture/new', name: 'app_voiture_new')]
 
-public function NewVoiture(Request $request, EntityManagerInterface $entityManager,Security $security): Response
-{
-    $utilisateur = $security->getUser();
+    public function NewVoiture(Request $request, EntityManagerInterface $entityManager,Security $security): Response
+    {
+        $utilisateur = $security->getUser();
 
-    if ($utilisateur) {
+        if ($utilisateur) {
 
-    $voiture = new voiture();
-    $form = $this->createForm(VoitureFormType::class, $voiture,[
-        'utilisateur' => $utilisateur, // Passer l'utilisateur connecté);
-        'voitures' => $voiture
-    ]);
+        $voiture = new voiture();
+        $form = $this->createForm(VoitureFormType::class, $voiture,[
+            'utilisateur' => $utilisateur, // Passer l'utilisateur connecté);
+            'voitures' => $voiture
+        ]);
 
-    $form->handleRequest($request);
+        $form->handleRequest($request);
 
-    if ($form->isSubmitted() && $form->isValid()) {
-         //Récupérez l'utilisateur connecté
-    $utilisateur = $security->getUser();
+        if ($form->isSubmitted() && $form->isValid()) {
+            //Récupérez l'utilisateur connecté
+        $utilisateur = $security->getUser();
 
-    // Ajoutez l'utilisateur à la voiture
-    if ($utilisateur) {
-        $utilisateur->addVoiture($voiture);
+        // Ajoutez l'utilisateur à la voiture
+        if ($utilisateur) {
+            $utilisateur->addVoiture($voiture);
+        }
+
+            $entityManager->persist($voiture);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Le véhicule a été créé avec succès!');
+            return $this->redirectToRoute('app_profil');
+        }
+        return $this->render('voiture/new.html.twig', [
+            'form' => $form->createView(),
+            'utilisateur' => $utilisateur,
+            'voiture' => $voiture,
+        ]);
+    } else {
+        $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
+        return $this->redirectToRoute('app_login');
     }
-
-        $entityManager->persist($voiture);
-        $entityManager->flush();
-
-        $this->addFlash('success', 'Le véhicule a été créé avec succès!');
-        return $this->redirectToRoute('app_profil');
     }
-    return $this->render('voiture/new.html.twig', [
-        'form' => $form->createView(),
-        'utilisateur' => $utilisateur,
-        'voiture' => $voiture,
-    ]);
-} else {
-    $this->addFlash('warning', 'Veuillez vous connecter ou créer un compte.');
-    return $this->redirectToRoute('app_login');
-}
-}
  //Suppression voiture
-    #[Route('/voiture/{id}/remove', name: 'app_voiture_remove' , requirements: ['id' => '\d+']) ]
+#[Route('/voiture/{id}/remove', name: 'app_voiture_remove' , requirements: ['id' => '\d+']) ]
 
     public function RemoveVoiture(Security $security,Request $request,EntityManagerInterface $entityManager,Voiture $voiture): Response
     {
