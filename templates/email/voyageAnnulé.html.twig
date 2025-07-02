@@ -1,0 +1,22 @@
+{% block title %}Voyage annulé{% endblock %}
+
+{% block body %}
+
+<div>
+    <h1>Voyage annulé!</h1>
+    <p>Bonjour, {{passager.pseudo|capitalize}}.</p>
+    <p>Votre voyage prévu le <span> {{ covoiturage.dateDepart|date('d-m-Y')}} </span> 
+    pour un trajet de <span>{{covoiturage.lieuDepart|capitalize}} à {{ covoiturage.lieuArrivee|capitalize}}</span>
+    n'a pas été validé par le conducteur.<br>
+    Nous en sommes navré.<br>
+    Vous pouvez rechercher d'autre voyage par ce lien:<br>
+    <a href="https://127.0.0.1:8000/rechercheCovoiturage">Ecoride</a>
+    <br></p>
+
+    <p class="fs-4 text-center">A très bientôt,avec Ecoride.</p>
+    <div style="text-align: center;">
+        <img src="https://127.0.0.1:8000/assets/logo/Logo.png" alt="Logo" width="100" height="100">
+        <p style="text-align: center; font-size: 12px; color: #888;">Merci de votre confiance</p>
+    </div>
+</div>
+{% endblock %}

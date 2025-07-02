@@ -35,9 +35,9 @@
           </div>
         </div>
         <!-- body -->
-        <div class="card-body ">
+        <div class="card-body mt-3">
           <div class="row justify-content-around  ">
-            <div class="infoUser col-md-6 col-12 mt-3" >
+            <div class="infoUser col-md-6 col-12 " >
               <ul>
                 <li>Membre depuis {{ utilisateur.createdAt | date ('Y')}} </li>
               {% if utilisateur.isConducteur == 1 and utilisateur.isPassager == 0 %}
@@ -139,7 +139,7 @@
           </div>
         </div>
         <!-- body -->
-        <div class="card-body p-0">
+        <div class="card-body p-0 mt-3">
           <div class="row justify-content-around ">
             <div class="infoUser col-6" >
               <ul>
@@ -230,7 +230,7 @@
     {% endif %}
   </div>
     <!--voyages-->
-  <div class="MesVoyages col-12 p-4">
+  <div class="MesVoyages col-12 p-0">
     {# Page profil#}
     {% if covoiturages is empty %}
         <p class="text-center">Il n'y a pas de voyage pour lequel vous participez.</p>
@@ -253,7 +253,7 @@
       {% for key, covoiturage in covoiturages %}
       {% set conducteur = conducteurs[key] %}
       <div class="card container m-4 ">
-        <div class="voyage text-decoration-underline text-secondary ">
+        <div class="dateVoyage text-decoration-underline text-secondary ">
           <a  href="{{path('app_covoiturage_id',{'id': covoiturage.id}) }}">Le {{ covoiturage.dateDepart|date('d-m-Y') }}</a>
         </div>
         <span>Prix: {{ covoiturage.prix }} € </span>

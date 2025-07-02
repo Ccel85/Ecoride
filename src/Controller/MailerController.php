@@ -78,7 +78,6 @@ class MailerController extends AbstractController
         SessionInterface $session,
         Security $security,
         MailerInterface $mailer,
-        DocumentManager $dm,
         UrlGeneratorInterface $urlGenerator
         ): Response
         {
@@ -184,6 +183,198 @@ class MailerController extends AbstractController
     // Redirection après l'envoi
 
     return $this->redirectToRoute('app_profil'); // Remplacez 'home' par la route souhaitée
+    }
+
+//envoyer mail au conducteur à la réservation d'un voyage par passager
+#[Route('/sendEmailReservation/{id}', name: 'app_send_email_reservation')]
+    public function sendEmailReservation(
+            string $id,
+            Security $security,
+            MailerInterface $mailer,
+            UrlGeneratorInterface $urlGenerator,
+            DocumentManager $documentManager ,
+            EntityManagerInterface $entityManager): Response
+    {
+    try {
+
+        $user = $security -> getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
+        
+        $covoiturage= $documentManager->getRepository(CovoiturageMongo::class)->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Covoiturage introuvable.');
+        }
+
+        // Récupérer l'email du conducteur
+        $conducteurId =(string) $covoiturage->getConducteurId();
+        $conducteur = $entityManager-> getRepository(Utilisateur::class) -> findOneBy (['id'=> $conducteurId]);
+        $conducteurMail = $conducteur -> getEmail();
+        
+         //Generer l'adresse URL du covoiturage
+        $urlCovoiturage = $urlGenerator->generate('app_covoiturage_id', [
+            'id' => $covoiturage->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+        $urlPassager = $urlGenerator->generate(
+            'app_profil_id',
+            ['id' => $user->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $urlValidPassager = $urlGenerator->generate(
+            'app_covoiturage_participateValid',
+            ['passagerId' => $user->getId(),
+            'id' => $covoiturage->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL);
+
+        $urlInvalidPassager = $urlGenerator->generate(
+            'app_send_email_invalid_reservation',
+            ['id' => $covoiturage->getId(),
+            'passagerId' => $user->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL);
+
+        // Envoyer un email au conducteur
+            $email = (new TemplatedEmail())
+            ->from('hello@example.com')
+            ->to($conducteurMail)
+            ->subject('Ecoride:Un nouveau passager pour votre voyage!')
+            ->htmlTemplate('email/validationPassager.html.twig')
+            //->textTemplate('email/validationPassager.text.twig')
+            ->context([
+                'passager'=>$user,
+                'conducteur'=>$conducteur,
+                'covoiturage'=>$covoiturage,
+                'covoiturageUrl' => $urlCovoiturage,
+                'passagerurl' => $urlPassager,
+                'urlValidPassager'=>$urlValidPassager,
+                'urlInvalidPassager'=>$urlInvalidPassager
+            ]);
+
+        $mailer->send($email);
+    
+        $this->addFlash('success', 'Un email est envoyé au conducteur pour validation.
+        Vous recevrez un email de confirmation des la validation effectuée.');
+
+    } catch (TransportExceptionInterface $e) {
+        $this->addFlash('error', 'Échec de l\'envoi de l\'email : ' . $e->getMessage());
+    }
+    // Redirection après l'envoi
+
+    return $this->redirectToRoute('app_profil');
+    }
+//envoyer mail au passager suite validation conducteur
+#[Route('/sendEmailValidReservation/{id}/{passagerId}', name: 'app_send_email_valid_reservation')]
+    public function sendEmailValidReservation(
+            string $id,
+            int $passagerId,
+            Security $security,
+            MailerInterface $mailer,
+            DocumentManager $documentManager ,
+            EntityManagerInterface $entityManager): Response
+    {
+    try {
+
+        $user = $security -> getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
+        
+        $covoiturage= $documentManager->getRepository(CovoiturageMongo::class)->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Covoiturage introuvable.');
+        }
+
+        // Récupérer l'email du passager
+        /* $conducteurId =(string) $covoiturage->getConducteurId(); */
+        $passager = $entityManager-> getRepository(Utilisateur::class) -> findOneBy (['id'=> $passagerId]);
+        $passagerMail = $passager -> getEmail();
+        
+        // Envoyer un email au passager
+            $email = (new TemplatedEmail())
+            ->from('hello@example.com')
+            ->to($passagerMail)
+            ->subject('Ecoride:Votre voyage est validé !')
+            ->htmlTemplate('email/voyageConfirme.html.twig')
+            //->textTemplate('email/validationPassager.text.twig')
+            ->context([
+                'passager'=>$passager,
+                //'conducteur'=>$conducteur,
+                'covoiturage'=>$covoiturage
+            ]);
+
+        $mailer->send($email);
+    
+        $this->addFlash('success', 'Un email est envoyé au passager pour confirmer son voyage.
+        ');
+
+    } catch (TransportExceptionInterface $e) {
+        $this->addFlash('error', 'Échec de l\'envoi de l\'email : ' . $e->getMessage());
+    }
+    // Redirection après l'envoi
+
+    return $this->redirectToRoute('app_profil');
+    }
+
+    //envoyer mail au passager suite refus conducteur
+#[Route('/sendEmailInvalidReservation/{id}/{passagerId}', name: 'app_send_email_invalid_reservation')]
+    public function sendEmailInvalidReservation(
+            string $id,
+            int $passagerId,
+            Security $security,
+            MailerInterface $mailer,
+            DocumentManager $documentManager ,
+            EntityManagerInterface $entityManager): Response
+    {
+    try {
+
+        $user = $security -> getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
+        
+        $covoiturage= $documentManager->getRepository(CovoiturageMongo::class)->find($id);
+
+        if (!$covoiturage) {
+            throw $this->createNotFoundException('Covoiturage introuvable.');
+        }
+
+        // Récupérer l'email du passager
+        /* $conducteurId =(string) $covoiturage->getConducteurId(); */
+        $passager = $entityManager-> getRepository(Utilisateur::class) -> findOneBy (['id'=> $passagerId]);
+        $passagerMail = $passager -> getEmail();
+        
+        // Envoyer un email au conducteur
+            $email = (new TemplatedEmail())
+            ->from('hello@example.com')
+            ->to($passagerMail)
+            ->subject('Ecoride:Votre voyage n\'a pas été validé !')
+            ->htmlTemplate('email/voyageAnnulé.html.twig')
+            //->textTemplate('email/validationPassager.text.twig')
+            ->context([
+                'passager'=>$passager,
+                //'conducteur'=>$conducteur,
+                'covoiturage'=>$covoiturage
+            ]);
+
+        $mailer->send($email);
+    
+        $this->addFlash('success', 'Un email est envoyé au passager pour notifier l\'annulation de sa réservation.
+        ');
+
+    } catch (TransportExceptionInterface $e) {
+        $this->addFlash('error', 'Échec de l\'envoi de l\'email : ' . $e->getMessage());
+    }
+    // Redirection après l'envoi
+
+    return $this->redirectToRoute('app_profil');
     }
 }
 

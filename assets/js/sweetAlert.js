@@ -1,14 +1,14 @@
-import Swal from 'sweetalert2';
+/* import Swal from 'sweetalert2';
 
 //valider participation au covoiturage
 document.addEventListener('DOMContentLoaded', () => {
   const validButton = document.getElementById('participer');
   if (validButton) {
 
-    /* const token = localStorage.getItem('authToken'); */
+    /* const token = localStorage.getItem('authToken'); 
 
     validButton.addEventListener('click', () => {
-      /* if (token) { */
+      /* if (token) { 
         Swal.fire({
               title: 'Confirmation !',
               text: 'Confirmez vous la réservation de ce covoiturage ?',
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
        /*  } else {
           //redirection si pas connecté
           window.location.href = 'http://127.0.0.1:8000/login';;
-        } */
+        } 
       });
   }
 });
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 /* goButton.textContent = "Arrivé!";
                 goButton.classList.remove('btn-succes');
-                goButton.classList.add('btn-danger'); */
+                goButton.classList.add('btn-danger'); 
                 });
             }
                 });
@@ -291,9 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 /* goButton.textContent = "Arrivé!";
                 goButton.classList.remove('btn-succes');
-                goButton.classList.add('btn-danger'); */
+                goButton.classList.add('btn-danger'); 
                 });
             }
                 });
 
                 
+ */

@@ -69,7 +69,8 @@
                   <button 
                       class="btn btn-success"
                       data-action="click->sweet-alert#validButton"
-                      data-url="{{ path('app_covoiturage_participate', { 'id': covoiturage.id }) }}"
+                      {# data-url="{{ path('app_covoiturage_participate', { 'id': covoiturage.id }) }}" #}
+                      data-url="{{ path('app_send_email_reservation', { 'id': covoiturage.id }) }}"
                       id="participer">
                       Participer
                   </button>

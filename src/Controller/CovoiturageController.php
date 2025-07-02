@@ -10,6 +10,7 @@ use App\Document\CovoiturageMongo;
 use App\Repository\AvisRepository;
 use App\Repository\VoitureRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +41,7 @@ class CovoiturageController extends AbstractController
         ]);
     }
 
-        //Création covoiturage
+//Création covoiturage
 #[Route('/covoiturage/new', name: 'app_covoiturage_new')]
     public function NewCovoiturage(
         Request $request,
@@ -129,6 +130,8 @@ class CovoiturageController extends AbstractController
         'voitures' => $voitures,
     ]);
     }
+
+//Suppression du covoiturage par le conducteur
 #[Route('/covoiturage/{id}/remove', name: 'app_covoiturage_remove' , requirements: ['id' => '.+']) ]
         public function RemoveCovoiturage( Security $security,
             DocumentManager $documentManager ,
@@ -213,7 +216,7 @@ class CovoiturageController extends AbstractController
             return $this->redirectToRoute('app_send_email_remove', ['id' => $id]); */
     }
 
-    //Mise à jour des covoiturages proprietaire
+//Mise à jour des covoiturages par le conducteur
 #[Route('/covoiturage/{id}/update', name: 'app_covoiturage_update',requirements: ['id' => '.+'])]
 
     public function UpdateCovoiturage(
@@ -442,7 +445,7 @@ class CovoiturageController extends AbstractController
     
     }
 
-    //validation participation covoiturage
+//demande participation covoiturage par le passager
 #[Route('/covoiturage/{id}/participate', name: 'app_covoiturage_participate', requirements: ['id' => '.+'])]
 
     public function participate(
@@ -487,24 +490,130 @@ class CovoiturageController extends AbstractController
             $this->addFlash('warning', 'Il n\'y a plus de place de disponible.');
             return $this->redirectToRoute('app_profil');
         }
-
         $user->setCredits($majcredit);
-        $user->setPassager(true);
+        $entityManager->persist($user);
+        $entityManager->flush();
+
+        $covoiturage->setPlaceDispo($majPlace);
+        $documentManager->persist($covoiturage);
+        $documentManager->flush();
+
+        //a partir de la envoyer email pour validation au conducteur et 
+        return $this->redirectToRoute('app_send_email_reservation');
+
+        //2- si validation  alors :
+       /*  $user->setPassager(true);
         $entityManager->persist($user);
         $entityManager->flush();
 
         $covoiturage->addPassagersIds($user->getId());
-        $covoiturage->setPlaceDispo($majPlace);
+        $documentManager->persist($covoiturage);
+        $documentManager->flush();
+ */
+       /*  $this->addFlash('success', 'Vous êtes enregistré pour ce covoiturage.');
+        return $this->redirectToRoute('app_profil');  */
+        //envoyer email de confirmation au passager
 
+        //si refus du conducteur pour ce passager
+        //email a envoyer au passager de refus 
+
+    }
+
+//participation valider par conducteur
+#[Route('/covoiturage/participateValid/{id}/{passagerId}', name: 'app_covoiturage_participateValid', requirements: ['id' => '.+'])]
+
+    public function participateValid(
+        string $id,
+        int $passagerId,
+        Security $security,
+        DocumentManager $documentManager,
+        EntityManagerInterface $entityManager,
+        UtilisateurRepository $utilisateurRepository
+        ) : Response
+    
+    {
+        //conducteur
+        $user = $security->getUser();
+
+        if (!$user){
+            $this->addFlash('warning','Vous devez être connecté ou créer un compte.');
+            return $this->redirectToRoute('app_login');
+        }
+
+        $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find ($id);
+        if (!$covoiturage) {
+        throw $this->createNotFoundException('Covoiturage introuvable');
+    }
+        /* //si validation  alors : 
+        $passager->setPassager(true);
+        $entityManager->persist($passager);
+        $entityManager->flush(); */
+
+        $passager = $utilisateurRepository->find($passagerId);
+        if (!$passager) {
+        throw $this->createNotFoundException('Passager introuvable');
+    }
+
+        //ajout du passager au covoiturage
+        $covoiturage->addPassagersIds($passager->getId());
         $documentManager->persist($covoiturage);
         $documentManager->flush();
 
-        $this->addFlash('success', 'Vous êtes enregistré pour ce covoiturage.');
-        return $this->redirectToRoute('app_profil'); // Redirection après succès
-        
+
+        $this->addFlash('success', 'Le passager a été validé avec succès.');
+        return $this->redirectToRoute('app_send_email_valid_reservation', [
+    'id'          => $covoiturage->getId(),
+    'passagerId'  => $passager->getId(),
+]);
+
+}
+
+        //refus du conducteur pour ce passager
+#[Route('/covoiturageParticipateInvalid/{id}/{passagerId}', name: 'app_covoiturage_ParticipateInvalid', requirements: ['id' => '.+'])]
+
+    public function ParticipateInvalid(
+        string $id,
+        int $passagerId,
+        Security $security,
+        DocumentManager $documentManager,
+        EntityManagerInterface $entityManager,
+        UtilisateurRepository $utilisateurRepository
+        ) : Response
+    {
+        $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find ($id);
+        if (!$covoiturage) {
+        throw $this->createNotFoundException('Covoiturage introuvable');
+        }
+
+        $passager = $utilisateurRepository->find($passagerId);
+            if (!$passager) {
+            throw $this->createNotFoundException('Passager introuvable');
+        }
+        //email a envoyer au passager refusé 
+        $placeDispo = $covoiturage->getPlaceDispo();
+        $majPlace = $placeDispo + 1;
+        $prix = $covoiturage->getPrix();
+        $credit = $passager->getCredits();
+        $majcredit = $credit + $prix;
+
+        $passager->setCredits($majcredit);
+        //$passager->setPassager(false);
+        $entityManager->persist($passager);
+        $entityManager->flush();
+
+        $covoiturage->setPlaceDispo($majPlace);
+        $documentManager->persist($covoiturage);
+        $documentManager->flush();
+
+
+        //email a envoyer au passager de refus 
+
+        $this->addFlash('success', 'Un mail notifiant le refus a été envoyé au passagé.');
+        return $this->redirectToRoute('app_profil');
+
     }
 
-     //validation participation covoiturage
+//si passager annule covoiturage
 #[Route('/covoiturage/{id}/noParticipate', name: 'app_covoiturage_noparticipate', requirements: ['id' => '.+'])]
 
     public function noParticipate(
@@ -548,6 +657,7 @@ class CovoiturageController extends AbstractController
         
     }
 
+//validé le depart du covoiturage par le conducteur
 #[Route('/covoiturage/{id}/go', name:'app_covoiturage_go', requirements: ['id' => '.+'])]
     
     public function carGO(
@@ -580,6 +690,7 @@ class CovoiturageController extends AbstractController
             return $this->redirectToRoute('app_profil');
     }
 
+//valide l'arrivée du covoiturage par le conducteur
 #[Route('/covoiturage/{id}/stop', name:'app_covoiturage_stop', requirements: ['id' => '.+'])]
     
     public function carStop(
@@ -623,7 +734,7 @@ class CovoiturageController extends AbstractController
         return $this->redirectToRoute('app_send_email', ['id' => $covoiturage->getId()]);
     }
 
-
+//valider le voyage terminé par les passagers
 #[Route('/covoiturage/{id}/validate', name:'app_covoiturage_validate', requirements:['id'=>'.+'])]
     
     public function validateCovoiturage(
@@ -677,7 +788,7 @@ class CovoiturageController extends AbstractController
             }
     }
 
-    // voir un covoiturage selon son Id
+// voir un covoiturage selon son Id
 #[Route('/covoiturage/{id}', name: 'app_covoiturage_id', requirements: ['id' => '.+']) ]
     public function détail(
         string $id,

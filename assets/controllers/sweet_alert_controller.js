@@ -32,7 +32,7 @@ export default class extends Controller {
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({ 
-                title:"Votre covoiturage est confirmé",
+                title:"Merci!",
                 text:"", 
                 icon:"success",
                 confirmButtonColor: '#39B54E',
