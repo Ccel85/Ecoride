@@ -145,6 +145,12 @@ class UtilisateurController extends AbstractController
             //récupération quand passager (int):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
                         ->findBy(['passagersIds' => $userId]);
+        if ($covoituragesPassager){
+            $isPassager = true;
+        }else {
+            $isPassager = false;
+        }
+
         //association de tous les covoiturages:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
         usort($covoiturages, function ($a, $b) {
@@ -176,17 +182,24 @@ class UtilisateurController extends AbstractController
         $avisUser = null;
         $conducteurs = null;
         $conducteurId = null;
-
+        $passager = [];
         if ($covoituragesConducteur !== null) {
             foreach ($covoiturages as $key=>$covoiturage) {
                 $conducteurId = (int) $covoiturage->getConducteurId();
                 $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
                 $conducteurs[$key] = $conducteur;
+                $passagerIds = $covoiturage->getPassagersIds();
+                $passagers = $em->getRepository(Utilisateur::class)->findBy(['id' => $passagerIds]);
+                $passager[$covoiturage->getId()] = $passagers;
+                //$passagers[$key] = $passager;
+                dump($passagerIds);
+                dump($passagers);
+                //dump($passagers[$key]);
                 //selectionner les dates futures à la date du jour
                 $now = new \DateTimeImmutable();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $covoiturage->setDateFuture($dateFuture) ;
-                dump($dateFuture);
+
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
                     $dateAujourdhui = $covoiturage->setDateAujourdhui($dateAujourdhui);
@@ -224,6 +237,9 @@ class UtilisateurController extends AbstractController
                 'conducteurs'=>$conducteurs,
                 'conducteurId'=>$conducteurId,
                 'avisUser'=>$avisUser,
+                'passager'=>$passager,
+                //'passagers'=>$passagers,
+                'isPassager'=>$isPassager,
                 
                 ]);
         }
@@ -234,7 +250,7 @@ class UtilisateurController extends AbstractController
             EntityManagerInterface $em,
             DocumentManager $documentManager): Response
         {
-        //recuperer l'utilisateur selon son ID (int)
+        //récuperer l'utilisateur selon son ID (int)
         $user = $em->getRepository(Utilisateur::class)->find($id);
         
         if (!$user) {
@@ -243,16 +259,21 @@ class UtilisateurController extends AbstractController
 
         //mettre l'id user au format string
         $userId =(string) $user->getId();
-        
         // Récuperation des données:
         //récupération des covoiturages de l'utilisateur connecté
             //récupération quand conducteur (string):
         $covoituragesConducteur = $documentManager->getRepository(CovoiturageMongo::class)
             ->findBy(['conducteurId' => $userId]);
-        //récupération quand passager (int):
+        //récupération quand passager (string):
         $covoituragesPassager = $documentManager->getRepository(CovoiturageMongo::class)
-            ->findBy(['passagersIds' => $user->getId()]);
-            
+            ->findBy(['passagersIds' => $userId]);
+        
+        if ($covoituragesPassager){
+            $isPassager = true;
+        }else {
+            $isPassager = false;
+        }
+
         //association de tous les covoiturages de l'utilisateur:
         $covoiturages = array_merge($covoituragesConducteur, $covoituragesPassager);
         usort($covoiturages, function ($a, $b) {
@@ -278,7 +299,7 @@ class UtilisateurController extends AbstractController
         $isValidateUser = false;
         $avisUserExiste = false;
         $avisUser = null;
-
+        $passager = [];
         //selectionner les dates futures à la date du jour:
         if ($covoiturages !== null) {
             $now = new \DateTime();
@@ -287,7 +308,9 @@ class UtilisateurController extends AbstractController
                 $conducteurId = (int) $covoiturage->getConducteurId();
                 $conducteur = $em->getRepository(Utilisateur::class)->findOneBy(['id' => $conducteurId]);
                 $conducteurs[$key] = $conducteur;
-
+                $passagerIds = $covoiturage->getPassagersIds();
+                $passagers = $em->getRepository(Utilisateur::class)->findBy(['id' => $passagerIds]);
+                $passager[$covoiturage->getId()] = $passagers;
                 //verifier si le covoiturage est futur
                 $dateFuture = $covoiturage->getDateDepart() > $now;
                 $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
@@ -323,6 +346,8 @@ class UtilisateurController extends AbstractController
             'isValidateUser'=>$isValidateUser,
             'conducteur'=>$conducteur,
             'conducteurs'=>$conducteurs,
+            'passager'=>$passager,
+            'isPassager'=>$isPassager,
             ]);
     }
     //Affichage profil pour MAJ

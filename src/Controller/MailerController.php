@@ -154,9 +154,9 @@ class MailerController extends AbstractController
         // Récupérer les emails des utilisateurs participants
         $emails = [];
         foreach ($covoiturage->getPassagersIds() as $passagerId) {
-            $passager = $entityManager->getRepository(Utilisateur::class)->find($passagerId);
-            if ($passager && $passager->getEmail()) {
-                $emails[] = $passager->getEmail();
+            $passagers = $entityManager->getRepository(Utilisateur::class)->find($passagerId);
+            if ($passagers && $passagers->getEmail()) {
+                $emails[] = $passagers->getEmail();
             }
         }
         
@@ -167,10 +167,7 @@ class MailerController extends AbstractController
             ->to($email)
             ->subject('Ecoride:votre avis est validé!')
             ->htmlTemplate('email/avisValide.html.twig')
-            ->textTemplate('email/avisValide.text.twig')
-            ->context([
-                'passager'=>$passager
-            ]);
+            ->textTemplate('email/avisValide.text.twig');
 
         $mailer->send($emailUser);
         }

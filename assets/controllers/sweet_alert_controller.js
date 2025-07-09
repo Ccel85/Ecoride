@@ -268,7 +268,7 @@ export default class extends Controller {
                     }
                 });
             }
-//A revoir:
+/* //A revoir:
 //Valider Avis page employé
     setupValidation(event) {
             const validateButton = event.buttonIdTarget;
@@ -277,7 +277,7 @@ export default class extends Controller {
             if (validateButton && avisForm) {
         /*  validateButton.addEventListener('click', (event) => {
                 event.preventDefault(); // Empêche la soumission immédiate du formulaire
-     */
+     
                 // Vérifie si au moins une case est cochée
                 const checkboxes = avisForm.querySelectorAll('input[name="isValid[]"]:checked');
                 if (checkboxes.length === 0) {
@@ -308,7 +308,7 @@ export default class extends Controller {
                 // Applique le script aux deux formulaires
                 setupValidation('avisValidateAvis', 'avisFormAvis');
                 setupValidation('avisValidateSignalement', 'avisFormSignalement');
-            }
+            } */
 
 
 }
