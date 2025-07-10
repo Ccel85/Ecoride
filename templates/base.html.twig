@@ -101,17 +101,19 @@
                         </div>
                     {% endif %}
                         <div class="search position-relative top-50  d-md-flex align-items-center justify-content-center mx-2">
-                            <a href="{{ path('app_covoiturage_recherche') }}" class="custom-links px-2">
+                            <a href="{{ path('app_covoiturage_recherche') }}" class="custom-links align-items-center p-2 d-none d-lg-flex">
                                 <i  class=" bi bi-search icon-hover" alt="Position Icon" width="32" height="32" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rechercher un voyage"></i>
                                 <p class=" custom-links d-none d-md-inline ms-2 mb-0 ">Rechercher un voyage</p></a>
                         </div>
                         <div class="position-relative end-0 top-50 d-flex justify-content-end">
-                            {% if app.user and is_granted("ROLE_USER") %}{# si connecter avec profil utilisateur #}
+                            {% if app.user and is_granted("ROLE_USER") %}
+                                {% if app.user and not (is_granted("ROLE_ADMIN") or is_granted("ROLE_EMPLOYE")) %}{# si connecter avec profil utilisateur #}
                                 <div class="d-md-flex align-items-center p-2">
                                     <a href="{{ path('app_covoiturage_new') }}" class="custom-links px-2">
                                         <i class="bi bi-plus-circle icon-hover" alt="plus Icon" width="48" height="48" class="rounded-circle" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Publier un voyage" ></i> 
                                         <p class=" custom-links d-none d-md-inline ms-2 mb-0 ">Publier un voyage</p></a>
                                 </div>
+                                {% endif %}
                                 {% if app.user.imageName is not empty %} {# si connecter avec image de profil #}
                                 <div class="align-items-center p-2 d-none d-lg-flex">
                                     <a href="{{ path('app_profil') }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="" width="32" height="32"  data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Profil"></a>

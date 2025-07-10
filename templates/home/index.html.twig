@@ -4,8 +4,10 @@
 
 {% block body %}
 <div>
-    {% if app.user %}
+    {% if app.user and not (is_granted("ROLE_ADMIN") or is_granted("ROLE_EMPLOYE")) %}
         <h3 class="ps-5 text-center text-md-start m-4 ">Bonjour <span>{{app.user.prenom|capitalize}}</span>, commencez votre voyage ici!</h3>
+    {# {% elseif app.user %}
+    <h3 class="ps-5 text-center text-md-start m-4 ">Bonjour <span>{{app.user.prenom|capitalize}} {{app.user.nom|capitalize}}</span>,vous êtes connecté.</h3> #}
     {% endif %}
         <hr>
     <!--Barre de recherche -->
