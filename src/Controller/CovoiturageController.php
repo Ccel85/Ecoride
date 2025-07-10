@@ -15,6 +15,7 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\CovoiturageMongoRepository;
+use Knp\Component\Pager\Paginator;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,6 +23,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 
 class CovoiturageController extends AbstractController
 {
@@ -270,6 +272,7 @@ class CovoiturageController extends AbstractController
         AvisRepository $avisRepository,
         DocumentManager $dm,
         EntityManagerInterface $entityManager,
+        PaginatorInterface $paginator,
         Request $request): Response
     {
         // Récupérer les données du formulaire
@@ -389,6 +392,12 @@ class CovoiturageController extends AbstractController
             unset($covoiturages[$key]); // Supprime ce covoiturage de la liste
             }
             }
+
+            $pagination = $paginator->paginate(
+            $covoiturages, 
+            $request->query->getInt('page', 1), // numéro de page
+            9 // nombre d'éléments par page
+            );
         }
         
             return $this->render('covoiturage/index.html.twig', [
@@ -405,7 +414,8 @@ class CovoiturageController extends AbstractController
             'avis'=>$avis,
             'conducteurs'=>$conducteurs,
             'submit' => $submit,
-            'voitures'=>$voitures
+            'voitures'=>$voitures,
+            'pagination' => $pagination,
             
         ]);
     
