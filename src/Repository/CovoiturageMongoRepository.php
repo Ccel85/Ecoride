@@ -5,7 +5,6 @@ namespace App\Repository;
 use MongoDB\BSON\UTCDateTime;
 use MongoDB\BSON\Regex;
 use App\Document\CovoiturageMongo;
-use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 
 class CovoiturageMongoRepository extends DocumentRepository

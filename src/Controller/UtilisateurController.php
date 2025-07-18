@@ -191,10 +191,7 @@ class UtilisateurController extends AbstractController
                 $passagerIds = $covoiturage->getPassagersIds();
                 $passagers = $em->getRepository(Utilisateur::class)->findBy(['id' => $passagerIds]);
                 $passager[$covoiturage->getId()] = $passagers;
-                //$passagers[$key] = $passager;
-                dump($passagerIds);
-                dump($passagers);
-                //dump($passagers[$key]);
+                
                 //selectionner les dates futures à la date du jour
                 $now = new \DateTimeImmutable();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
@@ -208,17 +205,17 @@ class UtilisateurController extends AbstractController
                 $validateUser = in_array($userId, $covoiturage->getValidateUsers());
                 
                 $isValidateUser = $validateUser ? true: false;
-                $covoiturage->isValidateUser = $isValidateUser;
+                //$covoiturage->isValidateUser = $isValidateUser;
                 
                  //AVIS LAISSE PAR L'UTILISATEUR
                 $avisUser = $avisRepository->findOneBy([
                     'passager' => $user,
                     'covoiturage'=>(string) $covoiturage->getId()
                 ]);
-                $covoiturage->avisUser = $avisUser;
+                //$covoiturage->avisUser = $avisUser;
                 
                 $isAvisUser = $avisUser ? true: false;
-                $covoiturage->isAvisUser = $isAvisUser;
+                //$covoiturage->isAvisUser = $isAvisUser;
                 
             }
         }
@@ -287,7 +284,8 @@ class UtilisateurController extends AbstractController
 
         $commentairesUser = $em->getRepository(Avis::class)->findCommentairesByUserOrdered($user);
         
-        $rateUser =round($em->getRepository(Avis::class)->rateUser($user),1);
+        $note = $em->getRepository(Avis::class)->rateUser($user);
+        $rateUser =$note !== null ? round($note,1): null;
         $voitureUser = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $user]);
         
         //récuperer les covoiturages validé par l'utilisateur

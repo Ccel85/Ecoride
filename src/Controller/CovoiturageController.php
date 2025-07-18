@@ -53,6 +53,7 @@ class CovoiturageController extends AbstractController
         VoitureRepository $voitureRepository
     ): Response {
 
+    /** @var \App\Entity\Utilisateur $utilisateur */
     $utilisateur = $security->getUser();
 
     if (!$utilisateur) {
@@ -91,19 +92,10 @@ class CovoiturageController extends AbstractController
         
         $utilisateur = $security->getUser();
 
-        //  Récupérer l'ID de la voiture sous forme d'entier
-    /*  $voiture = $form->get('voitureId')->getData();
-        $voitureId = $voiture ? (string) $voiture->getId() : null; // Convertit en string
-        dump($voitureId); */
-
         $voiture = $form->get('voitureId')->getData();
-    
-        dump($voiture); // Vérifie si c'est un objet Voiture
 
         //  Extraire l'ID sous forme de string
         $voitureId = $voiture ? (string) $voiture->getId() : null;
-
-    dump($voitureId); // Vérifie que c'est bien une string
     
         // Création du covoiturage
     
@@ -143,7 +135,7 @@ class CovoiturageController extends AbstractController
             CovoiturageMongo $covoiturage,
             $id): Response
         {
-
+            /** @var \App\Entity\Utilisateur $user */
             $user = $security->getUser();
             $userId = (string) $user->getId(); // Convertit l'ID en string
             if (!$user) {
@@ -229,6 +221,7 @@ class CovoiturageController extends AbstractController
         CovoiturageMongo $covoiturage): Response
     
     {
+        /** @var \App\Entity\Utilisateur $utilisateur */
         $utilisateur = $security->getUser();
         $userId = (string) $utilisateur->getId(); // Convertit l'ID en string
         
@@ -277,7 +270,6 @@ class CovoiturageController extends AbstractController
     {
         // Récupérer les données du formulaire
         $date = $request->query->get('date');
-        dump($date);
         $lieuDepart = $request->query->get('depart');
         $lieuArrivee = $request->query->get('arrivee');
         $prix = $request->query->get('prix');
@@ -327,7 +319,6 @@ class CovoiturageController extends AbstractController
                 if ($submit){
                     //Recuperer les covoiturages en fonction des criteres saisis
                     $covoiturages = $covoiturageRepository->findCovoiturage($dateDepart, $lieuDepart, $lieuArrivee, $prix);
-                    dump($covoiturages);
                         
                     // Aucun covoiturage exact, on cherche des covoiturages proches
                     if (empty($covoiturages)) {
@@ -367,7 +358,8 @@ class CovoiturageController extends AbstractController
             //Recherche les avis du covoiturage
             $avis = $avisRepository->findOneBy(['conducteur' => $conducteur]);
             $avisExistants[$key] = $avis ? true : false;
-            $rateUser =round($avisRepository->rateUser($conducteur),1);
+            $note = $avisRepository->rateUser($conducteur);
+            $rateUser =$note !== null ? round($note,1): null;
 
             //Filtre des covoiturages en fonction de la duree du voyage
             if (isset($intervalMax) && ($dureeVoyage->h > $intervalMax->h)) {
@@ -385,6 +377,7 @@ class CovoiturageController extends AbstractController
             }
 
              //Filtre des covoiturages si deja inscrit au voyage
+            /** @var \App\Entity\Utilisateur $user */
             $user = $security->getUser();
             if ($user){
                 $userId = $user->getId();
@@ -432,6 +425,7 @@ class CovoiturageController extends AbstractController
         ) : Response
     
     {
+        /** @var \App\Entity\Utilisateur $user */
         $user = $security->getUser();
         
         if (!$user){
@@ -509,6 +503,7 @@ class CovoiturageController extends AbstractController
     
     {
         //conducteur
+        /** @var \App\Entity\Utilisateur $user */
         $user = $security->getUser();
 
         if (!$user){
@@ -598,9 +593,12 @@ class CovoiturageController extends AbstractController
         ) : Response
         
     {
+        /** @var \App\Entity\Utilisateur $user */
+        $user = $security->getUser();
+
         //on recupere le covoiturage selon son ID
         $covoiturage = $documentManager->getRepository(CovoiturageMongo::class)->find($id);
-        $user = $security->getUser();
+
         $userId = (string) $user->getId(); // Convertit l'ID en string
         $prix = $covoiturage->getPrix();
         $credit = $user->getCredits();
@@ -642,6 +640,7 @@ class CovoiturageController extends AbstractController
         ):Response
 
         {
+            /** @var \App\Entity\Utilisateur $user */
             $user = $security->getUser();
 
             if (!$user){
@@ -675,6 +674,7 @@ class CovoiturageController extends AbstractController
         ):Response
 
     {
+        /** @var \App\Entity\Utilisateur $user */
         $user = $security->getUser();
 
         if (!$user){
@@ -779,7 +779,10 @@ class CovoiturageController extends AbstractController
             }
 
             // Récupération de l'utilisateur connecté
+
+            /** @var \App\Entity\Utilisateur $user */
             $user = $security->getUser();
+
             $userCovoiturage = null;
             if ($user) {
                 $userId = (string) $user->getId();
@@ -800,8 +803,8 @@ class CovoiturageController extends AbstractController
             $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
             //$voitures = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $conducteur]);
             $observations = $conducteur->getObservation();
-            $rating = $em->getRepository(Avis::class)->rateUser($conducteur);
-            $rateUser = $rating !== null ? round($rating, 1) : 0;
+            $note = $em->getRepository(Avis::class)->rateUser($conducteur);
+            $rateUser = $note !== null ? round($note, 1) : 0;
             
             // Scinder le texte par les virgules
             $observationExplode = explode(',' ,$observations);

@@ -91,7 +91,6 @@ class MailerController extends AbstractController
         //$covoiturage = $dm->find(CovoiturageMongo::class, $id);
         //recuperer le covoiturage en session:
         $covoiturage = $session->get('covoiturage');
-        dump($covoiturage);
         $urlCovoiturageRecherche = $urlGenerator->generate('app_covoiturage_recherche',[],
                                     UrlGeneratorInterface::ABSOLUTE_URL);
 

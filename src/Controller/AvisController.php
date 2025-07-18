@@ -272,7 +272,13 @@ final class AvisController extends AbstractController{
             $avisExiste = false;
         }
         $passager = $avis->getPassager();//passager lié à l'avis;
-        $rateUser =round($em->getRepository(Avis::class)->rateUser($conducteur),1);
+
+        //note moyenne du conducteur
+        $note = $em->getRepository(Avis::class)->rateUser($conducteur);
+        $rateUser =$note !== null ? round($note,1): null;
+        //$rateUser =round($em->getRepository(Avis::class)->rateUser($conducteur),1);
+
+        //récuperation des avis lié au conducteur
         $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
 
         return $this->render('avis/detail.html.twig', [

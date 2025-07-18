@@ -71,7 +71,6 @@
                             {% else %}
                             <p> Il n'y a pas de note.</p>
                             {% endif %}
-          {# <p><i class="bi bi-star-fill star"> {{ rateUser }}/5</i></p> #}
         </div>
       </div>
       <form method="POST"  id="avisFormAvis" action="{{ path('app_avis_update') }}">
@@ -122,15 +121,12 @@
           <p class="email">Email : {{conducteur.email}}</p>
         </div>
         <div class="infoUser d-flex align-items-center flex-column justify-content-end" >
-              <p class="text-center">Membre depuis <br> {{ conducteur.createdAt | date ('Y')}} </p>
-              {% if avisExiste == true %}
-                            <p><i class="bi bi-star-fill star">  {{ rateUser }}/5</i></p>
-                            {% else %}
-                            <p> Il n'y a pas de note.</p>
-                            {% endif %}
-              {#  <p>
-                <i class="bi bi-star-fill star"> {{ rateUser }}/5</i>
-              </p> #}
+          <p class="text-center">Membre depuis <br> {{ conducteur.createdAt | date ('Y')}} </p>
+          {% if avisExiste == true %}
+          <p><i class="bi bi-star-fill star">  {{ rateUser }}/5</i></p>
+          {% else %}
+          <p> Il n'y a pas de note.</p>
+          {% endif %}
         </div>
       </div>
       <!-- body -->
@@ -138,11 +134,8 @@
         <div class="d-flex justify-content-around ">
           <div class="commentaires flex-grow-1">
             {% for commentaire in commentaires %}
-              {# {% if commentaire.isvalid ==false or commentaire is empty %}
-              <p class="text-center">Il n'y a pas d'avis.</p> #}
               {% if commentaire.isValid == true %}
               <h4 class="text-decoration-underline text-center"> Avis:</h4>
-              {# {% if commentaire.isValid == true %} #}
               <div class="card commentaire mb-3 p-3">
                 <div class="text-secondary fs-7">Le {{ commentaire.createdAt|date('d-m-Y') }}
                 </div>
@@ -155,7 +148,6 @@
               </div>
               {% endif %}
               {% endfor %}
-            {# {% endif %} #}
           </div>
         </div>
       </div>

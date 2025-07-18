@@ -9,22 +9,6 @@
         <hr>
     {% endif %}
     <div class="dashboard d-flex flex-grow-1 mb-2 ">
-        {# Dropdown #}
-        {# <div class="dropdown text-down position-relative d-none text-white ">
-            <button class="d-block btn link-body-emphasis dropdown-toggle text-success"  data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-list text-success"></i>      
-            </button>
-            <ul class="dropdown-menu text-small ">
-                <li><a class="dropdown-item fs-5" href="{{ path('app_home') }}">Accueil</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a  class="dropdown-item fs-5" href="{{ path('app_employe') }}" >Gestion des comptes employés</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item fs-5" href="{{ path('app_utilisateur') }}" >Liste des covoiturages</a></li>
-            </ul>
-        </div> #}
-        {#  Fin du dropdown #}
         <!--SideBar-->
         <div  class="sidebar d-none d-lg-flex flex-column flex-shrink-0 " >
             <div class="d-flex align-items-center m-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -37,8 +21,6 @@
                 <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_employe') }}" >Gestion des comptes employés</a></li>
                 <hr class="text-white">
                 <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_utilisateur') }}" >Gestion des comptes utilisateurs</a></li>
-                {#  <li><hr class="text-white"></li> A developper!!
-                <li><a class="nav-link text-white fs-5 text-start" href="{{ path('app_utilisateur') }}" >Liste des covoiturages</a></li> #}
             </ul>
         </div>
         <!-- card-->
@@ -86,11 +68,6 @@
                     </div>
                 </div>
                 <div class="charts">
-                    {#   {% for year in yearPeriod %}
-                        <select>
-                            <option>{{year}}</option>
-                        </select>
-                    {% endfor %} #}
                     <div data-controller="chart-toggle">
                         <div class="d-flex d-sm-flex-column align-items-center justify-content-around">
                             <button  data-action="click->chart-toggle#showChart"  data-chart-toggle-target="buttonChart"
