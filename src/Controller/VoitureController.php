@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Voiture;
 use App\Form\VoitureFormType;
+use App\Document\CovoiturageMongo;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -101,34 +103,51 @@ class VoitureController extends AbstractController
  //Suppression voiture
 #[Route('/voiture/{id}/remove', name: 'app_voiture_remove' , requirements: ['id' => '\d+']) ]
 
-    public function RemoveVoiture(Security $security,Request $request,EntityManagerInterface $entityManager,Voiture $voiture): Response
+    public function RemoveVoiture(
+        int $id,
+        Security $security,
+        EntityManagerInterface $entityManager,
+        DocumentManager $dm,
+        ): Response
     {
         $utilisateur = $security->getUser();
-
-    if (!$utilisateur) {
+        $voiture = $entityManager->getRepository(Voiture::class)->find($id);
+    
+        if (!$utilisateur) {
         $this->addFlash('error', 'Utilisateur non connecté.');
         return $this->redirectToRoute('app_login');
     }
-    // Vérifier si l'utilisateur est autorisé à supprimer ce covoiturage
-    if (!$utilisateur->getVoiture()->contains($voiture)) {
-        $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer ce covoiturage.');
+        if (!$voiture) {
+        $this->addFlash('warning', 'Le véhicule n\'existe pas !');
         return $this->redirectToRoute('app_profil');
     }
-    if ($voiture->getCovoiturages()->count() > 0) {
-        $this->addFlash('warning', 'Cette voiture est associée à des covoiturages et ne peut pas être supprimée,veullez alors modifier de véhicule dans la modification de covoiturage.');
-        return $this->redirectToRoute('app_profil');
-    }
+
+        // Vérifier si l'utilisateur est autorisé à supprimer cette voiture
+        if (!$utilisateur->getVoiture()->contains($voiture)) {
+            $this->addFlash('error', 'Vous n\'êtes pas autorisé à supprimer ce véhicule.');
+            return $this->redirectToRoute('app_profil');
+        }
+
+                $voitureId = $voiture->getId();
+                dump($voitureId);
+                $voitureId = $dm->getRepository(CovoiturageMongo::class)->findBy(['voitureId' => $voitureId]);
+                dump($voitureId);
+
+                if ($voitureId) {
+                    $this->addFlash('warning', 'Cette voiture est associée à des covoiturages et ne peut pas être supprimée,veullez alors modifier de véhicule dans la modification de covoiturage.');
+                    return $this->redirectToRoute('app_profil');
+                }
             // Supprimez la voiture de l\'utilisateur
-        $utilisateur->removeVoiture($voiture);
+                $utilisateur->removeVoiture($voiture);
 
-        $entityManager->remove($voiture);
+                $entityManager->remove($voiture);
 
-        // Sauvegardez les modifications
-        $entityManager->flush();
+                // Sauvegardez les modifications
+                $entityManager->flush();
 
-        $this->addFlash('success', 'Le véhicule a été supprimé avec succès!');
+                $this->addFlash('success', 'Le véhicule a été supprimé avec succès!');
 
-        return $this->redirectToRoute('app_profil');
+                return $this->redirectToRoute('app_profil');
 
     }
 }

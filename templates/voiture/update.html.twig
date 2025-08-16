@@ -7,60 +7,102 @@
     <h1 class="text-center p-4">Modification des voitures</h1>
     <div class="row">
         <div class="form-group col-12 col-md-6 m-auto">
-
             {{ form_errors(form) }}
-            
+    
             {{ form_start(form) }}
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.immat, 'Immatriculation', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.immat, {
+                    'placeholder': '12-ABC-34'} ) }}
+                    {{ form_errors(form.immat) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.firstImmat, '1ere Immatriculation', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.firstImmat) }}
 
-            {{ form_row(form.immat, {
-                'label': 'Immat.',
-                'attr': {'class': 'form-control'}
-            }) }}
+                    {{ form_errors(form.firstImmat) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.constructeur, 'Constructeur', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.constructeur) }}
 
-            {{ form_row(form.firstImmat, {
-                'label': '1ere Immat.',
-                'attr': {'class': 'form-control'}
-            }) }}
+                    {{ form_errors(form.constructeur) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.modele, 'Modele', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.modele) }}
 
-            {{ form_row(form.constructeur, {
-                'label': 'Constructeur',
-                'label_attr': {
-                        'class': 'col-form-label',
-                },
-                    'attr': {
-                        'class': 'col-sm-8',
-                    },
-            }) }}
+                    {{ form_errors(form.modele) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.couleur, 'Couleur', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.couleur) }}
 
-            {{ form_row(form.modele, {
-                'label': 'Modele',
-                'attr': {'class': 'form-control'}
-            }) }}
+                    {{ form_errors(form.couleur) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.energie, 'Energie', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.energie) }}
 
-            {{ form_row(form.couleur, {
-                'label': 'Couleur',
-                'attr': {'class': 'form-control'}
-            }) }}
+                    {{ form_errors(form.energie) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.options, 'Options', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.options, {
+                    'attr': {'class': 'form-control', 'rows': '4'}
+                    }) }}
 
-            {{ form_row(form.nbrePlace, {
-                'label': 'nbre place',
-                'attr': {'class': 'form-control'
-                }
-            }) }}
+                    {{ form_errors(form.options) }}
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-sm-4">
+                    {{ form_label(form.nbrePlace, 'nbrePlace', 
+                    { 'label_attr': {'class': 'form-label'} }) }}
+                </div>
+                <div class="col-sm-8">
+                    {{ form_widget(form.nbrePlace) }}
 
-            {{ form_row(form.energie, {
-                'label': 'Energie',
-                'attr': {'class': 'form-control'}
-            }) }}
-
-            {{ form_row(form.options, {
-                'label': 'Options',
-                'attr': {'class': 'form-control'}
-            }) }}
-
+                    {{ form_errors(form.nbrePlace) }}
+                </div>
+            </div>
             <div class="d-flex justify-content-evenly">
                 <button type="submit" class="btn btn-success ">Enregistrer</button>
-            {{ form_end(form) }}
+                {{ form_end(form) }}
                 <button class="btn btn-success" href="{{ path('app_profil') }}" >
                 Retour</button>
             </div>

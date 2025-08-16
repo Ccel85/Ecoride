@@ -69,7 +69,9 @@ class CovoiturageMongo
     
     #[ODM\Field(type: 'collection')]
     private array $validateUsers = [];
-
+    
+    private ?float $rate = null;
+    private ?string $duree = null;
     private ?bool $dateFuture = null;
     private ?bool $dateAujourdhui = null;
 
@@ -301,36 +303,30 @@ class CovoiturageMongo
 
         return $this;
     }
-/* 
-    /**
-     * @return Collection<int, Avis>
-     
-    public function getAvis(): Collection
+
+    public function getDuree(): ?string
     {
-        return $this->avis;
+        return $this->duree;
     }
 
-    public function addAvi(Avis $avi): static
+    public function setDuree(?string $duree): static
     {
-        if (!$this->avis->contains($avi)) {
-            $this->avis->add($avi);
-            $avi->setCovoiturage($this);
-        }
+        $this->duree = $duree;
 
         return $this;
     }
 
-    public function removeAvis(Avis $avi): static
+    public function getRate(): ?float
     {
-        if ($this->avis->removeElement($avi)) {
-            // set the owning side to null (unless already changed)
-            if ($avi->getCovoiturage() === $this) {
-                $avi->setCovoiturage(null);
-            }
-        }
+        return $this->rate;
+    }
+
+    public function setRate(?float $rate): static
+    {
+        $this->rate = $rate;
 
         return $this;
-    } */
+    }
     
 
 }

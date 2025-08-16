@@ -51,6 +51,20 @@ public function invalidComments(): array
         ->getResult();
 }
 
+//Afficher les commentaires validés
+public function validComments(): array
+{
+    return $this->createQueryBuilder('a')
+        ->where('a.isValid = :valid')
+        ->andwhere('a.isSignal = :signal')
+        ->setParameter('valid', true)
+        ->setParameter('signal', false)
+        ->orderBy('a.id', 'ASC')
+        ->setMaxResults(10)
+        ->getQuery()
+        ->getResult();
+}
+
 
 
 //Afficher les commentaires signalés

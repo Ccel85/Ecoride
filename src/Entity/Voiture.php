@@ -19,7 +19,8 @@ class Voiture
     private ?int $id = null;
 
     #[Assert\NotBlank(message:"L'\immatriculation est obligatoire.")]
-    #[Assert\Regex('/[a-zA-Z][a-zA-Z]-[0-9][0-9][0-9]-[a-zA-Z][a-zA-Z]/i')]
+    #[Assert\Regex('/[a-zA-Z][a-zA-Z]-[0-9][0-9][0-9]-[a-zA-Z][a-zA-Z]/i',
+        message: "Le format doit être du type AB-123-CD")]
     #[ORM\Column(length: 255)]
     private ?string $immat = null;
 

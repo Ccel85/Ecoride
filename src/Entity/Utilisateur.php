@@ -176,7 +176,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getNom(): ?string
     {
-        return ucfirst(strtolower($this->nom));
+        if ($this->nom === null) {
+        return null;
+    }
+
+    return ucfirst(strtolower($this->nom));
     }
 
     public function setNom(string $nom): static
@@ -188,7 +192,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPrenom(): ?string
     {
-        return ucfirst(strtolower($this->prenom));
+        if ($this->prenom === null) {
+        return null;
+    }
+
+    return ucfirst(strtolower($this->prenom));
     }
 
     public function setPrenom(string $prenom): static

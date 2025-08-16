@@ -288,8 +288,11 @@ class CovoiturageController extends AbstractController
         $avisExistants[]= false;
 
         // Convertir les heures en minutes pour la comparaison
-        $intervalMax = $dureeMax ? new \DateInterval('PT' . ((int) $dureeMax) . 'H'):null;
-
+        //$intervalMax = $dureeMax ? new \DateInterval('PT' . ((int) $dureeMax) . 'H'):null;
+        
+        $minutesMax = $dureeMax ? (int) round($dureeMax * 60) : null;
+        $intervalMax = $minutesMax ? new \DateInterval('PT' . $minutesMax . 'M') : null;
+        dump($intervalMax);
         $buttonSearch = $request->query->has('valid');
         
         $submit = $buttonSearch ||
@@ -311,108 +314,115 @@ class CovoiturageController extends AbstractController
                         
                     }
                 } catch (\Exception $e) {
-                    // Si Mauvais format de date 
+                    // Si Mauvais format de date
                     $this->addFlash('warning', 'Format de date invalide. Résultats affichés à partir d’aujourd’hui.');
                     $dateDepart = (new \DateTime('today'));
                 }
+
                 $notCovoiturages = false;
-                if ($submit){
-                    //Recuperer les covoiturages en fonction des criteres saisis
+            
+            if ($submit){
+                //Recuperer les covoiturages en fonction des criteres saisis
                     $covoiturages = $covoiturageRepository->findCovoiturage($dateDepart, $lieuDepart, $lieuArrivee, $prix);
-                        
-                    // Aucun covoiturage exact, on cherche des covoiturages proches
+                    
+                // Aucun covoiturage exact, on cherche des covoiturages proches
                     if (empty($covoiturages)) {
                         $notCovoiturages = true;
                         $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee, $prix);
-                    
                     }
                 } else {
-                    // Aucun critère saisi => chercher autour de la date du jour
+                // Aucun critère saisi => chercher autour de la date du jour
                     $covoiturages = $covoiturageRepository->findCovoiturageByDateNear($dateDepart, $lieuDepart, $lieuArrivee, $prix);
-                    $notCovoiturages = true;
+                    $notCovoiturages = false;
                     
                 }
 
-        foreach ($covoiturages as $key => $covoiturage) {
+                foreach ($covoiturages as $key => $covoiturage) {
 
-            //On filtre les covoiturages futures
-            $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
+                    //On filtre les covoiturages futures
+                        $covoiturage->setDateFuture($covoiturage->getDateDepart() > new \DateTime());
 
-            //Calculer la durée du voyage
-            $dureeVoyage =  $covoiturage->getHeureDepart()->diff($covoiturage->getHeureArrivee());
+                    //Calculer la durée du voyage
+                        $dureeVoyage =  $covoiturage->getHeureDepart()->diff($covoiturage->getHeureArrivee());
+                        dump($dureeVoyage);
+                        $dureeVoyageMin = ($dureeVoyage->h * 60) + $dureeVoyage->i;
+                        $dureeVoyageMinute = $dureeVoyageMin ? new \DateInterval('PT' . $dureeVoyageMin . 'M') : null;
+                        dump($dureeVoyageMinute);
+                    //Rechercher le véhicule du covoiturage
+                        $voitureId = $covoiturage->getVoitureId();
+                        $voiture = $entityManager->getRepository(Voiture::class)->find($voitureId);
+                        $voitures[$key] = $voiture;
 
-            //Rechercher le véhicule du covoiturage
-            $voitureId = $covoiturage->getVoitureId();
-            $voiture = $entityManager->getRepository(Voiture::class)->find($voitureId);
-            $voitures[$key] = $voiture;
+                    //Rechercher l'objet conducteur en base
+                        $conducteurId = $covoiturage->getConducteurId(); // Récupérer l'unique conducteur
+                        $conducteur = $entityManager->getRepository(Utilisateur::class)->find($conducteurId);
+                        $conducteurs[$key] = $conducteur;
 
-            //Rechercher l'objet conducteur en base
-            $conducteurId = $covoiturage->getConducteurId(); // Récupérer l'unique conducteur
-            $conducteur = $entityManager->getRepository(Utilisateur::class)->find($conducteurId);
-            $conducteurs[$key] = $conducteur;
+                        if (!$conducteur) {
+                            throw new \Exception("Conducteur non trouvé avec l'ID: " . $conducteurId);
+                        }
 
-            if (!$conducteur) {
-                throw new \Exception("Conducteur non trouvé avec l'ID: " . $conducteurId);
+                    //Recherche les avis du covoiturage
+                        $avis = $avisRepository->findOneBy(['conducteur' => $conducteur]);
+                        $avisExistants[$key] = $avis ? true : false;
+                        $note = $avisRepository->rateUser($conducteur);
+                        $rateUser =$note !== null ? round($note,1): null;
+                        
+                    //Filtre des covoiturages en fonction de la duree du voyage
+                        if (isset($intervalMax) && ($dureeVoyageMinute->i > $intervalMax->i)) {
+                            unset($covoiturages [$key]); // Supprimer ce covoiturage
+                        } else {
+                            $duree = $covoiturage->setDuree($dureeVoyageMinute->format('%i min'));
+                            
+                        }
+
+                    //Filtre des covoiturages en fonction de la note utilisateur
+                        if (isset($rate) && ($rateUser < $rate)) {
+                            unset($covoiturages [$key]); // Supprimer ce covoiturage
+                        } else {
+                        // Ajouter la note directement à l'objet covoiturage
+                            $covoiturage->setRate($rateUser);
+                            
+                        }
+                        dump($covoiturage);
+
+                    //Filtre des covoiturages si deja inscrit au voyage
+                        /** @var \App\Entity\Utilisateur $user */
+                        $user = $security->getUser();
+                        if ($user){
+                            $userId = $user->getId();
+                            if (in_array($userId, $covoiturage->getPassagersIds())) {
+                        unset($covoiturages[$key]); // Supprime ce covoiturage de la liste
+                        }
+                        }
+
+                        $pagination = $paginator->paginate(
+                        $covoiturages,
+                        $request->query->getInt('page', 1), // numéro de page
+                        9 // nombre d'éléments par page
+                        );
             }
-
-            //Recherche les avis du covoiturage
-            $avis = $avisRepository->findOneBy(['conducteur' => $conducteur]);
-            $avisExistants[$key] = $avis ? true : false;
-            $note = $avisRepository->rateUser($conducteur);
-            $rateUser =$note !== null ? round($note,1): null;
-
-            //Filtre des covoiturages en fonction de la duree du voyage
-            if (isset($intervalMax) && ($dureeVoyage->h > $intervalMax->h)) {
-                unset($covoiturages [$key]); // Supprimer ce covoiturage
-            } else {
-                $covoiturage->duree = $dureeVoyage->format('%h h %i min');
-            }
-
-            //Filtre des covoiturages en fonction de la note utilisateur
-            if (isset($rate) && ($rateUser < $rate)) {
-                unset($covoiturages [$key]); // Supprimer ce covoiturage
-            } else {
-                // Ajouter la note directement à l'objet covoiturage
-                $covoiturage->rate = $rateUser;
-            }
-
-             //Filtre des covoiturages si deja inscrit au voyage
-            /** @var \App\Entity\Utilisateur $user */
-            $user = $security->getUser();
-            if ($user){
-                $userId = $user->getId();
-                if (in_array($userId, $covoiturage->getPassagersIds())) {
-            unset($covoiturages[$key]); // Supprime ce covoiturage de la liste
-            }
-            }
-
-            $pagination = $paginator->paginate(
-            $covoiturages, 
-            $request->query->getInt('page', 1), // numéro de page
-            9 // nombre d'éléments par page
-            );
-        }
-        
-            return $this->render('covoiturage/index.html.twig', [
-            'covoiturages'=>$covoiturages,
-            'notCovoiturages'=>$notCovoiturages,
-            //'dateFuture'=>$dateFuture,
-            'dateDepart'=>$dateDepart,
-            'lieuDepart'=>$lieuDepart,
-            'lieuArrivee'=>$lieuArrivee,
-            'dureeMax'=>$dureeMax,
-            'dureeVoyage'=>$dureeVoyage,
-            'rateUser'=>$rateUser,
-            'avisExistants' => $avisExistants,
-            'avis'=>$avis,
-            'conducteurs'=>$conducteurs,
-            'submit' => $submit,
-            'voitures'=>$voitures,
-            'pagination' => $pagination,
+                    
+                return $this->render('covoiturage/index.html.twig', [
+                    'covoiturages'=>$covoiturages,
+                    'notCovoiturages'=>$notCovoiturages,
+                    //'duree'=>$duree,
+                    'dateDepart'=>$dateDepart,
+                    'lieuDepart'=>$lieuDepart,
+                    'lieuArrivee'=>$lieuArrivee,
+                    'dureeMax'=>$dureeMax,
+                    'dureeVoyage'=>$dureeVoyage,
+                    'rateUser'=>$rateUser,
+                    'avisExistants' => $avisExistants,
+                    'avis'=>$avis,
+                    'conducteurs'=>$conducteurs,
+                    'submit' => $submit,
+                    'voitures'=>$voitures,
+                    'pagination' => $pagination,
+                    
+                ]);
             
-        ]);
-    
-    }
+                }
 
 //demande participation covoiturage par le passager
 #[Route('/covoiturage/{id}/participate', name: 'app_covoiturage_participate', requirements: ['id' => '.+'])]
@@ -468,7 +478,7 @@ class CovoiturageController extends AbstractController
         $documentManager->persist($covoiturage);
         $documentManager->flush();
 
-        //a partir de la envoyer email pour validation au conducteur et 
+        //a partir de la envoyer email pour validation au conducteur et
         return $this->redirectToRoute('app_send_email_reservation');
 
         //2- si validation  alors :
@@ -485,7 +495,7 @@ class CovoiturageController extends AbstractController
         //envoyer email de confirmation au passager
 
         //si refus du conducteur pour ce passager
-        //email a envoyer au passager de refus 
+        //email a envoyer au passager de refus
 
     }
 
@@ -515,7 +525,7 @@ class CovoiturageController extends AbstractController
         if (!$covoiturage) {
         throw $this->createNotFoundException('Covoiturage introuvable');
     }
-        /* //si validation  alors : 
+        /* //si validation  alors :
         $passager->setPassager(true);
         $entityManager->persist($passager);
         $entityManager->flush(); */
@@ -558,7 +568,7 @@ class CovoiturageController extends AbstractController
             if (!$passager) {
             throw $this->createNotFoundException('Passager introuvable');
         }
-        //email a envoyer au passager refusé 
+        //email a envoyer au passager refusé
         $placeDispo = $covoiturage->getPlaceDispo();
         $majPlace = $placeDispo + 1;
         $prix = $covoiturage->getPrix();
@@ -575,7 +585,7 @@ class CovoiturageController extends AbstractController
         $documentManager->flush();
 
 
-        //email a envoyer au passager de refus 
+        //email a envoyer au passager de refus
 
         $this->addFlash('success', 'Un mail notifiant le refus a été envoyé au passagé.');
         return $this->redirectToRoute('app_profil');
@@ -797,7 +807,7 @@ class CovoiturageController extends AbstractController
                 throw $this->createNotFoundException("Le conducteur n'existe pas.");
             }
             $voitureId = $covoiturage->getVoitureId();
-            $voiture = $em->getRepository(Voiture::class)->find($voitureId); 
+            $voiture = $em->getRepository(Voiture::class)->find($voitureId);
             //récupération des données:
             //récupérer les commentaires sur le conducteur:
             $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);

@@ -13,23 +13,23 @@
             {{ form_start(registrationForm) }}
 
                 {{ form_row(registrationForm.nom, {
-                    label: 'Nom',
-                    'attr': {'class': 'form-control','placeholder' : 'DOE'}
+                    
+                    'attr': {'class': 'form-control','placeholder' : 'NOM'}
                 }) }}
                 {{ form_row(registrationForm.prenom, {
-                    label: 'Prénom',
-                    'attr': {'class': 'form-control','placeholder' : 'John'}
+                    
+                    'attr': {'class': 'form-control','placeholder' : 'Prénom'}
                 }) }}
                 {{ form_row(registrationForm.pseudo, {
-                    label: 'Pseudo',
-                    'attr': {'class': 'form-control','placeholder' : 'jdoe'}
+                    
+                    'attr': {'class': 'form-control','placeholder' : 'Pseudo'}
                 }) }}
                 {{ form_row(registrationForm.email,
-                {'attr': {'class': 'form-control','placeholder' : '@'}
+                {'attr': {'class': 'form-control','placeholder' : 'mail@mail.com'}
                 }) }}
                 {{ form_row(registrationForm.plainPassword, {
-                    label: 'Mot de passe',
-                    'attr': {'class': 'form-control'}
+                    
+                    'attr': {'class': 'form-control','placeholder' : 'mot de passe'}
                 }) }}  
                 <div class='text-center m-4'>
                     <button type="submit" class="btn btn-success">Enregistrer</button>

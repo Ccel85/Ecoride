@@ -55,5 +55,62 @@
             </div>
         </div>
     </div>
+    <!--DERNIERS AVIS -->
+    {# <div class="dernier_avis">
+        <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for comment in avis %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ comment.rateComments}} / 5 </h5>
+                            <p class="card-text">{{ comment.comments}}</p>
+                            
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div> #}
+    {# <div class="container my-4">
+        <div class="d-flex overflow-auto gap-3 py-2">
+            {% for comment in avis %}
+            <div class="card flex-shrink-0" style="min-width: 250px;">
+                <div class="card-body">
+                    <p class="card-text">{{ comment.comments}} </p>
+                    <footer class=" mt-2">{{ comment.rateComments}} / 5 </footer>
+                </div>
+            </div>
+            {% endfor %}
+    </div> #}
+
+    {# test #}
+   {#  <div class="container my-5 position-relative">
+    <!-- Flèche gauche -->
+    <button id="scrollLeft" class="btn btn-light position-absolute top-50 start-0 translate-middle-y z-1">
+        &#8249;
+    </button>
+
+    <!-- Conteneur scrollable -->
+
+    <div id="cardContainer" class="d-flex overflow-auto gap-3 py-3 px-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for comment in avis %}
+            <div class="card col" >
+                <div class="card-body">
+                    <p class="card-text text-wrap">{{ comment.comments}}</p>
+                    <p class="">{{ comment.rateComments}} / 5</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Flèche droite -->
+    <button id="scrollRight" class="btn btn-light position-absolute top-50 end-0 translate-middle-y z-1">
+        &#8250;
+    </button>
+    </div> #}
+
 </div>
 {% endblock %}

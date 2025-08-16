@@ -28,7 +28,7 @@ final class AvisController extends AbstractController{
         $invalidComments = $avisRepositpory->invalidComments();
         $passagers = [];
 
-        //on recupere chaque passager pour chaque avis
+        //on recupere chaque passager pour chaque avis 
         foreach ($avis as $a) {
             $passagers[] = $a->getPassager();
         }

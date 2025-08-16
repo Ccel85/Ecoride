@@ -195,7 +195,10 @@ class UtilisateurController extends AbstractController
                 //selectionner les dates futures à la date du jour
                 $now = new \DateTimeImmutable();
                 $dateFuture = $covoiturage->getDateDepart() > $now;
-                $covoiturage->setDateFuture($dateFuture) ;
+                if ($dateFuture){
+                    $dateFuture = $covoiturage->setDateFuture($dateFuture);
+                }
+                //$covoiturage->setDateFuture($dateFuture) ;
 
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
@@ -226,7 +229,7 @@ class UtilisateurController extends AbstractController
                 'covoiturages'=> $covoiturages,
                 'observations'=>$observationExplode,
                 'dateAujourdhui'=>$dateAujourdhui,
-                'dateFutur'=>$dateFuture,
+                //'dateFuture'=>$dateFuture,
                 'isValidateUser'=>$isValidateUser,
                 'rate'=>$rateUser,
                 'isAvisUser' => $isAvisUser,
@@ -311,8 +314,10 @@ class UtilisateurController extends AbstractController
                 $passager[$covoiturage->getId()] = $passagers;
                 //verifier si le covoiturage est futur
                 $dateFuture = $covoiturage->getDateDepart() > $now;
-                $dateFuture = $covoiturage->setDateFuture($dateFuture) ;
-
+                //$dateFuture = $covoiturage->setDateFuture($dateFuture) ;
+                if ($dateFuture){
+                    $dateFuture = $covoiturage->setDateFuture($dateFuture);
+                }
                 //verifier si le covoiturage est d'aujourd'hui
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){

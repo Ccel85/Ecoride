@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class VoitureFormType extends AbstractType
 {
@@ -19,6 +20,7 @@ class VoitureFormType extends AbstractType
             ->add('immat',TextType::class,[
                 'required' => true,
                 'label' => 'Immatriculation',
+                
                 
             ])
             ->add('firstImmat',DateType::class, [
@@ -50,7 +52,7 @@ class VoitureFormType extends AbstractType
                     'Electrique' => 'Electrique'],
                     'label' => 'Énergie',
             ])
-            ->add('options',TextType::class,[
+            ->add('options',TextareaType::class,[
                 'label' => 'options',
                 'required' => false,
             ]);

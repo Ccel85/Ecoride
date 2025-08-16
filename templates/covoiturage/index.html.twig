@@ -55,93 +55,94 @@
             <p class="text-center fs-5 ms-4">Voici les covoiturages disponibles à compter du <span>{{ dateDepart|date('d-m-Y') }}</span>  :</p>
         {% endif %}
         </div>
-    <div class="container-fluid">
-        <div class="cards row  m-3 d-flex justify-content-evenly">
-
-            {% for key, covoiturage in pagination %}
-                {% set conducteur = conducteurs[key] %}
-                {% set avisExiste = avisExistants[key] %}
-                {% set voiture = voitures[key] %}
-                {% if covoiturage.placeDispo > 0 
-                and (app.user is null or conducteur.id != app.user.id)  %} 
-            <div class="col-12 col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-header text-center">
-                        <div class="conducteur d-flex flex-column align-items-center">
-                            <p class="m-1">Conducteur:</p>
-                            {% if conducteur.imageName is empty%}
-                            <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{ asset('logo/Logo.png') }}" alt="logo" width="80" height="80" > </i></a>
-                            {% else %}
-                            <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(conducteur, 'imageFile') }}" alt="logo" width="80" height="80" ></a>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="card-body">
-                            <p>Membre depuis <strong>{{ conducteur.createdAt | date ('Y')}}</strong> </p>
-                            {% if avisExiste == true %}
-                            <p><i class="bi bi-star-fill star">  {{ covoiturage.rate }}/5</i></p>
-                            {% else %}
-                            <p> Il n'y a pas d'avis déposé.</p>
-                            {% endif %}
-                            <div>
-                                <p>Départ le : {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
-                            </div>
-                            <div class="itineraire d-flex justify-content-evenly align-items-center">
-                                <div class="depart text-center">
-                                    <div class="fs-5 fw-bold">
-                                        {{ covoiturage.heureDepart|date('H:i') }}
-                                    </div>
-                                    <div class="fs-6 fw-bold">
-                                        {{ covoiturage.lieuDepart|capitalize }}
-                                    </div>
-                                </div>
-                                <div class="w-50">
-                                    <svg  viewBox="0 0 400 100" class="w-100 h-auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-                                        <!-- Premier cercle -->
-                                        <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
-                                        <!-- Ligne -->
-                                        <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
-                                        <!-- Deuxième cercle -->
-                                        <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
-                                    </svg>
-                                </div>
-                                <div class="arrivée text-center">
-                                    <div class="fs-5 fw-bold">
-                                    {{ covoiturage.heureArrivee|date('H:i') }}
-                                    </div>
-                                    <div class="fs-6 fw-bold">
-                                    {{ covoiturage.lieuArrivee|capitalize }}
-                                    </div>
-                                </div>
-                            </div>
-                            <p>Place disponible:<strong> {{ covoiturage.placeDispo}}</strong> </p>
-                            <p>Prix:<strong> {{ covoiturage.prix}} € </strong></p>
-                            <div  class="d-flex align-items-center">
-                                <span>Trajet écologique: {{voiture.energie|capitalize}} </span>
-                                {% if voiture.energie == 'Electrique' %}
-                                <div class="form-check form-switch m-4 ">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  checked disabled>
-                                    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
-                                </div>  
+    <div class="liste_covoiturage bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="cards row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                {% for key, covoiturage in pagination %}
+                    {% set conducteur = conducteurs[key] %}
+                    {% set avisExiste = avisExistants[key] %}
+                    {% set voiture = voitures[key] %}
+                    {% if covoiturage.placeDispo > 0 
+                    and (app.user is null or conducteur.id != app.user.id)  %} 
+                <div class="col">
+                    <div class="card h-100">
+                        <div class="card-header text-center">
+                            <div class="conducteur d-flex flex-column align-items-center">
+                                <p class="m-1">Conducteur:</p>
+                                {% if conducteur.imageName is empty%}
+                                <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{ asset('logo/Logo.png') }}" alt="logo" width="80" height="80" > </i></a>
                                 {% else %}
-                                <div class="form-check form-switch m-4 ">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  disabled>
-                                    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
-                                </div> 
+                                <a href="{{ path('app_profil_id', {'id': conducteur.id}) }}"><img class="icon-hover rounded-circle" src="{{ vich_uploader_asset(conducteur, 'imageFile') }}" alt="logo" width="80" height="80" ></a>
                                 {% endif %}
                             </div>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a class="btn btn-success " href="{{ path('app_covoiturage_id', {id: covoiturage.id}) }}" >
-                        Détail</a>
+                        </div>
+                        <div class="card-body">
+                                <p>Membre depuis <strong>{{ conducteur.createdAt | date ('Y')}}</strong> </p>
+                                {% if avisExiste == true %}
+                                <p><i class="bi bi-star-fill star">  {{ covoiturage.rate }}/5</i></p>
+                                {% else %}
+                                <p> Il n'y a pas d'avis déposé.</p>
+                                {% endif %}
+                                <div>
+                                    <p>Départ le : {{ covoiturage.dateDepart|date('d-m-Y') }}</p>
+                                </div>
+                                <div class="itineraire d-flex justify-content-evenly align-items-center">
+                                    <div class="depart text-center">
+                                        <div class="fs-5 fw-bold">
+                                            {{ covoiturage.heureDepart|date('H:i') }}
+                                        </div>
+                                        <div class="fs-6 fw-bold">
+                                            {{ covoiturage.lieuDepart|capitalize }}
+                                        </div>
+                                    </div>
+                                    <div class="w-50">
+                                        <svg  viewBox="0 0 400 100" class="w-100 h-auto" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Premier cercle -->
+                                            <circle cx="30" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+                                            <!-- Ligne -->
+                                            <line x1="50" y1="50" x2="350" y2="50" stroke="#39B54E" stroke-width="2" />
+                                            <!-- Deuxième cercle -->
+                                            <circle cx="370" cy="50" r="20" stroke="#324D4D" fill="#FFFFFF" />
+                                        </svg>
+                                    </div>
+                                    <div class="arrivée text-center">
+                                        <div class="fs-5 fw-bold">
+                                        {{ covoiturage.heureArrivee|date('H:i') }}
+                                        </div>
+                                        <div class="fs-6 fw-bold">
+                                        {{ covoiturage.lieuArrivee|capitalize }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <p>Place disponible:<strong> {{ covoiturage.placeDispo}}</strong> </p>
+                                <p>Prix:<strong> {{ covoiturage.prix}} € </strong></p>
+                                <div  class="d-flex align-items-center">
+                                    <span>Trajet écologique: {{voiture.energie|capitalize}} </span>
+                                    {% if voiture.energie == 'Electrique' %}
+                                    <div class="form-check form-switch m-4 ">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  checked disabled>
+                                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                                    </div>  
+                                    {% else %}
+                                    <div class="form-check form-switch m-4 ">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"  disabled>
+                                        <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                                    </div> 
+                                    {% endif %}
+                                </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a class="btn btn-success " href="{{ path('app_covoiturage_id', {id: covoiturage.id}) }}" >
+                            Détail</a>
+                        </div>
                     </div>
                 </div>
+                    {% endif %}
+                {% endfor %}
             </div>
-                {% endif %}
-            {% endfor %}
         </div>
     </div>
-   {#  <div class="d-flex justify-content-center">
+    {#  <div class="d-flex justify-content-center">
         <button class="btn btn-success m-2 " id="voirPlus"> Voir Plus </button>
     </div> #}
 {% endif %}
