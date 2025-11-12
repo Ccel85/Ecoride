@@ -13,14 +13,26 @@
             <div class="row mb-3">
                 <div class="col-sm-4">
                     {{ form_label(form.immat, 'Immatriculation', 
-                    { 'label_attr': {'class': 'form-label'} }) }}
+                        { 'label_attr': {'class': 'form-label'} }) }}
                 </div>
                 <div class="col-sm-8">
                     {{ form_widget(form.immat, {
-                    'placeholder': '12-ABC-34'} ) }}
-                    {{ form_errors(form.immat) }}
+                        'attr': {
+                            'class': 'form-control' ~ (form_errors(form.immat) ? ' is-invalid' : ''),
+                            'placeholder': '12-ABC-34',
+                            'pattern': '^[0-9]{2}-[A-Z]{3}-[0-9]{2}$',
+                            'title': 'Format attendu : 12-ABC-34'
+                        }
+                    }) }}
+
+                    {% if form_errors(form.immat) %}
+                        <div class="invalid-feedback d-block">
+                            {{ form_errors(form.immat) }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
+
             <div class="row mb-3">
                 <div class="col-sm-4">
                     {{ form_label(form.firstImmat, '1ere Immatriculation', 
@@ -82,9 +94,11 @@
                     { 'label_attr': {'class': 'form-label'} }) }}
                 </div>
                 <div class="col-sm-8">
-                    {{ form_widget(form.options, {
+                    {{ form_widget(form.options, 
+                    {
                     'attr': {'class': 'form-control', 'rows': '4'}
-                    }) }}
+                    }
+                    ) }}
 
                     {{ form_errors(form.options) }}
                 </div>
@@ -105,6 +119,11 @@
                 <a class="btn btn-success" href="{{ path('app_profil') }}" >
                 Retour</a>
             </div>
+            {% if form_errors(form.immat) %}
+                <div class="invalid-feedback d-block">
+                    {{ form_errors(form.immat) }}
+                </div>
+            {% endif %}
             {{ form_end(form) }}
         </div>
     </div>

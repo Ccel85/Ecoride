@@ -20,8 +20,12 @@ class VoitureFormType extends AbstractType
             ->add('immat',TextType::class,[
                 'required' => true,
                 'label' => 'Immatriculation',
-                
-                
+                'attr' => [
+                    'pattern' => '^[0-9]{2}-[A-Z]{3}-[0-9]{2}$',
+                    'title' => 'Format attendu : 12-ABC-34',
+                    'placeholder' => '12-ABC-34',
+                    'class' => 'form-control'
+    ],
             ])
             ->add('firstImmat',DateType::class, [
                 'label' => '1ère immatriculation',

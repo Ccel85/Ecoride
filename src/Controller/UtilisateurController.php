@@ -177,7 +177,7 @@ class UtilisateurController extends AbstractController
 
         $dateAujourdhui = false;
         $isValidateUser = false;
-        $avisUserExiste = false;
+        $isAvisUser = false;
         $isAvisUser = false;
         $avisUser = null;
         $conducteurs = null;
@@ -198,7 +198,7 @@ class UtilisateurController extends AbstractController
                 if ($dateFuture){
                     $dateFuture = $covoiturage->setDateFuture($dateFuture);
                 }
-                //$covoiturage->setDateFuture($dateFuture) ;
+                dump($dateFuture);
 
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
@@ -206,10 +206,10 @@ class UtilisateurController extends AbstractController
                 }
 
                 $validateUser = in_array($userId, $covoiturage->getValidateUsers());
-                
-                $isValidateUser = $validateUser ? true: false;
-                //$covoiturage->isValidateUser = $isValidateUser;
-                
+                dump($validateUser);
+                $isValidateUser = $validateUser ? true : false;
+                $covoiturage->isValidateUser = $isValidateUser;
+                dump($isValidateUser);
                  //AVIS LAISSE PAR L'UTILISATEUR
                 $avisUser = $avisRepository->findOneBy([
                     'passager' => $user,
@@ -218,7 +218,7 @@ class UtilisateurController extends AbstractController
                 //$covoiturage->avisUser = $avisUser;
                 
                 $isAvisUser = $avisUser ? true: false;
-                //$covoiturage->isAvisUser = $isAvisUser;
+                $covoiturage->isAvisUser = $isAvisUser;
                 
             }
         }
@@ -229,7 +229,7 @@ class UtilisateurController extends AbstractController
                 'covoiturages'=> $covoiturages,
                 'observations'=>$observationExplode,
                 'dateAujourdhui'=>$dateAujourdhui,
-                //'dateFuture'=>$dateFuture,
+                'dateFuture'=>$dateFuture,
                 'isValidateUser'=>$isValidateUser,
                 'rate'=>$rateUser,
                 'isAvisUser' => $isAvisUser,

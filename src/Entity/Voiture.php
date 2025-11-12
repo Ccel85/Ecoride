@@ -2,15 +2,20 @@
 
 namespace App\Entity;
 
-use Symfony\Component\Validator\Constraints as Assert;
-use App\Repository\VoitureRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\VoitureRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: VoitureRepository::class)]
 #[ORM\HasLifecycleCallbacks]
+#[UniqueEntity(
+    fields: ['immat'],
+    message: "Cette immatriculation existe déjà."
+)]
 class Voiture
 {
     #[ORM\Id]
@@ -21,7 +26,7 @@ class Voiture
     #[Assert\NotBlank(message:"L'\immatriculation est obligatoire.")]
     #[Assert\Regex('/[a-zA-Z][a-zA-Z]-[0-9][0-9][0-9]-[a-zA-Z][a-zA-Z]/i',
         message: "Le format doit être du type AB-123-CD")]
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $immat = null;
 
     #[Assert\NotBlank(message:"La date de première immatriculation est obligatoire.")]

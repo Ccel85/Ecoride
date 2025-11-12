@@ -299,14 +299,14 @@
                   {% endif %}
                 </div>
               {% endif %}
-              {# Bouton validation voyage #}
+              {# Gestion bouton validation voyage #}
               {% if app.user %}
-                {# Pas conducteur:Bouton validation voyage #}
+                {# Pas conducteur:Bouton validation voyage actif #}
                 {% if  covoiturage.id is not null 
                   and covoiturage.conducteurId != app.user.id   
                   and utilisateur.id == app.user.id  
                   and covoiturage.isArrived
-                  and isValidateUser == false %}
+                  and covoiturage.isValidateUser == false %}
                   <div class="boutons col-4 p-2 d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Valider votre voyage:</p>
                     <div data-controller ="sweet-alert" >
@@ -319,14 +319,15 @@
                       </a>
                     </div>
                   </div>
-                {# Pas conducteur:si l'utilsateur à valider le voyage mais n'a pas mis d'avis #}
+                {# Pas conducteur:si l'utilsateur à valider le voyage mais n'a pas mis d'avis 
+                Bouton  laisser un avis et signaler un voyage#}
                 {% elseif  covoiturage.id is not null 
                   and covoiturage.conducteurId != app.user.id 
                   and utilisateur.id == app.user.id  
                   and covoiturage.isArrived 
-                  and isValidateUser == true
-                  and isAvisUser == false
-                  %}           
+                  and covoiturage.isValidateUser == true
+                  and covoiturage.isAvisUser == false
+                  %}  
                   <div class="boutons col-auto p-2 d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Laisser un avis</p>
                     <div data-controller="sweet-alert">
@@ -349,20 +350,21 @@
                     </div>
                   </div>
                 {% endif %}
-                {# Pas conducteur:si voyage validé et avis déposé #}
+                {# Pas conducteur:si voyage validé et avis déposé
+                check avis déposé #}
                 {% if  covoiturage.id is not null 
                   and covoiturage.conducteurId != app.user.id 
                   and utilisateur.id == app.user.id  
                   and covoiturage.isArrived 
-                  and isValidateUser == true
-                  and isAvisUser == true
+                  and covoiturage.isValidateUser == true
+                  and covoiturage.isAvisUser == true
                   %}                    
                   <div class="boutons col-4 p-2 d-flex flex-column align-items-center text-decoration-underline ">
                     <p class="m-0">Avis déposé</p>
                     <i class="check bi bi-check-lg fs-1"></i>
                   </div>
                 {% endif %}
-                <div class="col-1"></div>
+                {# <div class="col-1"></div> #}
               {% endif %}
             </div>
                   <div class="row itineraire align-items-center p-3">
@@ -419,6 +421,7 @@
                       {% if covoiturage.conducteurId is not null 
                         and covoiturage.conducteurId == app.user.id 
                         and covoiturage.isGo == false and covoiturage.isArrived == false
+                        and dateFuture is true
                         %}
                           <div class="boutons col-auto ">
                             <div data-controller="sweet-alert">

@@ -810,7 +810,7 @@ class CovoiturageController extends AbstractController
             $voiture = $em->getRepository(Voiture::class)->find($voitureId);
             //récupération des données:
             //récupérer les commentaires sur le conducteur:
-            $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur]);
+            $commentsUser = $em->getRepository(Avis::class)->findBy(['conducteur' => $conducteur] , ['createdAt' => 'DESC'] );
             //$voitures = $em->getRepository(Voiture::class)->findBy(['utilisateur' => $conducteur]);
             $observations = $conducteur->getObservation();
             $note = $em->getRepository(Avis::class)->rateUser($conducteur);
