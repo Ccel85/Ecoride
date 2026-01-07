@@ -4,7 +4,7 @@ CREATE DATABASE IF NOT EXISTS `ecorides`
     COLLATE utf8_general_ci;
 
 -- Création de l’utilisateur BDD backoffice pour la création de compte
-CREATE USER 'user'@'localhost' IDENTIFIED BY 'test';
+CREATE USER 'user'@'localhost' IDENTIFIED BY '3f7zhhRn4NH69R';
 
     -- Attribution des droits sur la table "users"
 GRANT SELECT, INSERT, UPDATE, DELETE ON ecorides.utilisateur TO 'user'@'localhost';
@@ -25,7 +25,6 @@ CREATE TABLE `avis` (
     `conducteur_id` INTEGER NOT NULL,
     `passager_id` INTEGER NOT NULL,
     `is_signal` TINYINT(1) NOT NULL
-    PRIMARY KEY (`id`),
     KEY `IDX_8F91ABF062671590` (`covoiturage_id`),
     KEY `IDX_8F91ABF0F16F4AC6` (`conducteur_id`),
     KEY `IDX_8F91ABF071A51189` (`passager_id`),
@@ -34,29 +33,7 @@ CREATE TABLE `avis` (
     CONSTRAINT `FK_8F91ABF0F16F4AC6` FOREIGN KEY (`conducteur_id`) REFERENCES `utilisateur` (`id`)
     );
 
-/* CREATE TABLE `covoiturage` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `prix` INTEGER NOT NULL,
-    `date_depart` DATETIME NOT NULL,
-    `lieu_depart` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `heure_depart` DATETIME NOT NULL,
-    `lieu_arrivee` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `status` TINYINT(1) NOT NULL,
-    `place_dispo` INTEGER DEFAULT NULL,
-    `voiture_id` INTEGER NOT NULL,
-    `created_at` DATETIME NOT NULL,
-    `heure_arrivee` DATETIME NOT NULL,
-    `conducteur_id` INTEGER DEFAULT NULL,
-    `is_go` TINYINT (1) NOT NULL,
-    `is_arrived` TINYINT(1) NOT NULL,
-    PRIMARY KEY (`id`),
-    KEY `IDX_28C79E89181A8BA` (`voiture_id`),
-    KEY `IDX_28C79E89F16F4AC6` (`conducteur_id`),
-    CONSTRAINT `FK_28C79E89181A8BA` FOREIGN KEY (`voiture_id`) REFERENCES `voiture` (`id`),
-    CONSTRAINT `FK_28C79E89F16F4AC6` FOREIGN KEY (`conducteur_id`) REFERENCES `utilisateur` (`id`)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
- */
-CREATE TABLE `covoiturage_utilisateur` (
+/* CREATE TABLE `covoiturage_utilisateur` (
     `covoiturage_id` INTEGER NOT NULL,
     `utilisateur_id` INTEGER NOT NULL,
     PRIMARY KEY (
@@ -68,7 +45,8 @@ CREATE TABLE `covoiturage_utilisateur` (
     CONSTRAINT `FK_96E46B0D62671590` FOREIGN KEY (`covoiturage_id`) REFERENCES `covoiturage` (`id`) ON DELETE CASCADE,
     CONSTRAINT `FK_96E46B0DFB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'liee a la fonction validateUsers'
-
+ */
+ 
 CREATE TABLE `utilisateur` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(180) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -88,21 +66,8 @@ CREATE TABLE `utilisateur` (
     UNIQUE KEY `UNIQ_IDENTIFIER_EMAIL` (`email`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
 
-/* CREATE TABLE `utilisateur_covoiturage` (
-    `utilisateur_id` INTEGER NOT NULL,
-    `covoiturage_id` INTEGER NOT NULL,
-    PRIMARY KEY (
-        `utilisateur_id`,
-        `covoiturage_id`
-    ),
-    KEY `IDX_DC21931AFB88E14F` (`utilisateur_id`),
-    KEY `IDX_DC21931A62671590` (`covoiturage_id`),
-    CONSTRAINT `FK_DC21931A62671590` FOREIGN KEY (`covoiturage_id`) REFERENCES `covoiturage` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `FK_DC21931AFB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'liaison utilisateur/covoiturage'
- */
 CREATE TABLE `voiture` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `immat` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
     `first_immat` DATETIME NOT NULL,
     `constructeur` VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -113,7 +78,6 @@ CREATE TABLE `voiture` (
     `nbre_place` INTEGER NOT NULL,
     `utilisateur_id` INTEGER NOT NULL,
     `created_at` DATETIME NOT NULL COMMENT '(DC2Type:DATETIME_immutable)',
-    PRIMARY KEY (`id`),
     KEY `IDX_E9E2810FFB88E14F` (`utilisateur_id`),
     CONSTRAINT `FK_E9E2810FFB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
