@@ -27,10 +27,6 @@ class Avis
     #[Assert\Type(
         type: 'integer')]
     private ?int $rateComments = null;
-    
-    /* #[ORM\ManyToOne(inversedBy: 'avis')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Utilisateur $conducteur = null; */// Celui qui reçoit l'avis (le conducteur)
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'avisConducteur')]
     #[ORM\JoinColumn(nullable: false)]
@@ -39,16 +35,9 @@ class Avis
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-    /*  #[ORM\ManyToOne(inversedBy: 'avis')]// Celui qui créé l'avis (le passager)
-    private ?utilisateur $passager = null; */
-
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'avisPassager')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Utilisateur $passager = null; // Celui qui donne l'avis
-
-    /* #[ORM\ManyToOne(inversedBy: 'avis')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Covoiturage $covoiturage = null;  */
 
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $covoiturage = null; 

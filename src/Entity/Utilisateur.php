@@ -60,7 +60,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?int $credits = 0;
     
-    /* #[Ignore] */
+    #[Assert\Image(
+        maxSize: "1M",
+        mimeTypes: ["image/jpeg", "image/png", "image/webp"],
+        mimeTypesMessage: "Formats autorisés : JPG, PNG, WEBP")]
     #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'imageName')]
     private ?File $imageFile  = null;
 

@@ -196,7 +196,7 @@ class CovoiturageController extends AbstractController
             if (count($emails) > 0) {
                 $this->addFlash('success', 'Covoiturage supprimé avec succès!');
 
-                return $this->redirectToRoute('app_send_email_remove', ['id' => $id,/* 'urlCovoiturageRecherche' => $urlCovoiturageRecherche */]);
+                return $this->redirectToRoute('app_send_email_remove', ['id' => $id,]);
 
             } else {
                 $this->addFlash('success', 'Aucun passager n\'était inscrit.
@@ -204,10 +204,6 @@ class CovoiturageController extends AbstractController
 
                 return $this->redirectToRoute('app_profil');
             }
-
-         /*    $this->addFlash('success', 'Covoiturage supprimé avec succès!');
-
-            return $this->redirectToRoute('app_send_email_remove', ['id' => $id]); */
     }
 
 //Mise à jour des covoiturages par le conducteur

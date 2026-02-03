@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+#[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new Utilisateur();
@@ -43,9 +43,12 @@ class RegistrationController extends AbstractController
             'registrationForm' => $form,
         ]);
     }
-
-    #[Route('/admin/register', name: 'app_admin_register')]
-    public function adminRegister(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+// creation employe ,dashboard admin
+#[Route('/admin/register', name: 'app_admin_register')]
+    public function adminRegister(Request $request, 
+        UserPasswordHasherInterface $userPasswordHasher, 
+        EntityManagerInterface $entityManager):
+        Response
     {
         $user = new Utilisateur();
         $form = $this->createForm(RegistrationFormType::class, $user);

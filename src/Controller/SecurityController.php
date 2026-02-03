@@ -6,6 +6,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
@@ -17,9 +18,14 @@ class SecurityController extends AbstractController
         {
         //recuperer le login erreur
         $error = $authenticationUtils->getLastAuthenticationError();
-
-        // last username entered by the user
+        // recuperer le dernier nom entré
         $lastUsername = $authenticationUtils->getLastUsername();
+        //gérer les erreurs
+        if ($error instanceof BadCredentialsException){
+            $errorMessage = "Adresse email ou mot de passe incorrect.";
+        } else {
+            $errorMessage = null;
+        }
 
         $utilisateur = $security->getUser();
         
@@ -53,35 +59,9 @@ class SecurityController extends AbstractController
         }
         return $this->render('security/login.html.twig', [
             'last_username' => $lastUsername,
-            'error' => $error,
+            'error' => $errorMessage,
         ]);
     }
-
-        /* #[Route(path: '/connect', name: 'app_connect')]
-
-    public function connect(Security $security): Response
-    {
-        $utilisateur = $security->getUser();
-
-        // Vérifier si l'utilisateur a des rôles
-        if ($utilisateur) {
-            $roles = $utilisateur->getRoles(); // Récupère tous les rôles de l'utilisateur
-
-            // Vérifier les rôles et rediriger en fonction
-            if (in_array('ROLE_ADMIN', $roles)) {
-                // Si l'utilisateur est un administrateur, redirigez vers la page admin
-                return $this->redirectToRoute('app_admin_dashboard');
-            } elseif (in_array('ROLE_EMPLOYE', $roles)) {
-                // Si l'utilisateur est un éditeur, redirigez vers la page de l'éditeur
-                return $this->redirectToRoute('app_utilisateur');
-            } else {
-                // Sinon, redirigez vers la page par défaut (par exemple, l'accueil)
-                return $this->redirectToRoute('app_home');
-            }
-        }
-        // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
-        return $this->redirectToRoute('app_login');
-    }*/
 
     #[Route(path: '/logout', name: 'app_logout')]
     public function logout(): void

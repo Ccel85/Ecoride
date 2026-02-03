@@ -39,7 +39,7 @@ final class AvisController extends AbstractController{
             'passager'=>$passagers,
         ]);
     }
-//signalement
+// liste signalement
 #[Route('/signalement', name: 'app_signalement')]
 
     public function signalement(AvisRepository $avisRepositpory): Response
@@ -103,7 +103,7 @@ final class AvisController extends AbstractController{
                 'covoiturage'=>$covoiturage
             ]);
     }
-//signaler un avis
+//signaler un voyage
 #[Route('/avis/{id}/signaler', name: 'app_avis_signaler', requirements: ['id' => '.+'])]
 
     public function avisSignaler(

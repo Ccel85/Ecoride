@@ -1,86 +1,8 @@
--- Active: 1715943590648@@127.0.0.1@3306@ecoride
-CREATE DATABASE IF NOT EXISTS `ecorides`
-    CHARACTER SET utf8
-    COLLATE utf8_general_ci;
+USE ecoride
+CHARACTER SET utf8
+COLLATE utf8_general_ci;
 
--- Création de l’utilisateur BDD backoffice pour la création de compte
-CREATE USER 'user'@'localhost' IDENTIFIED BY '3f7zhhRn4NH69R';
 
-    -- Attribution des droits sur la table "users"
-GRANT SELECT, INSERT, UPDATE, DELETE ON ecorides.utilisateur TO 'user'@'localhost';
-
---création de compte utilisateur BDd tous privilèges 
-CREATE USER 'root'@'localhost' IDENTIFIED BY '';
-  GRANT ALL PRIVILEGES ON * . * TO 'root'@'localhost';
-
--- CREATION DES TABLES
-
-CREATE TABLE avis (
-    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-    is_valid TINYINT(1) NOT NULL,
-    comments VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    rate_comments INTEGER,
-    created_at DATETIME NOT NULL COMMENT '(DC2Type:datetime_immutable)', 
-    covoiturage_id INTEGER NOT NULL,
-    conducteur_id INTEGER NOT NULL,
-    passager_id INTEGER NOT NULL,
-    is_signal TINYINT(1) NOT NULL
-    KEY K_conducteur_id (conducteur_id),
-    KEY K_passager_id (passager_id),
-    CONSTRAINT FK_passager_id FOREIGN KEY (passager_id) REFERENCES utilisateur (id),
-    CONSTRAINT FK_conducteur_id FOREIGN KEY (conducteur_id) REFERENCES utilisateur (id)
-   /*  KEY `IDX_8F91ABF062671590` (`covoiturage_id`), */
-   /*  CONSTRAINT `FK_8F91ABF062671590` FOREIGN KEY (`covoiturage_id`) REFERENCES `covoiturage` (`id`), */
-    );
-
-/* CREATE TABLE `covoiturage_utilisateur` (
-    `covoiturage_id` INTEGER NOT NULL,
-    `utilisateur_id` INTEGER NOT NULL,
-    PRIMARY KEY (
-        `covoiturage_id`,
-        `utilisateur_id`
-    ),
-    KEY `IDX_96E46B0D62671590` (`covoiturage_id`),
-    KEY `IDX_96E46B0DFB88E14F` (`utilisateur_id`),
-    CONSTRAINT `FK_96E46B0D62671590` FOREIGN KEY (`covoiturage_id`) REFERENCES `covoiturage` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `FK_96E46B0DFB88E14F` FOREIGN KEY (`utilisateur_id`) REFERENCES `utilisateur` (`id`) ON DELETE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'liee a la fonction validateUsers'
- */
- 
-CREATE TABLE utilisateur (
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(180) COLLATE utf8mb4_unicode_ci NOT NULL,
-    roles JSON NOT NULL,
-    password VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    nom VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    prenom VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    pseudo VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    credits INTEGER DEFAULT NULL,
-    photo_path VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    is_actif TINYINT(1) NOT NULL,
-    created_at DATETIME NOT NULL COMMENT '(DC2Type:DATETIME_immutable)',
-    observation VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    is_conducteur TINYINT(1) NOT NULL,
-    is_passager TINYINT(1) NOT NULL,
-    UNIQUE KEY UNIQ_IDENTIFIER_EMAIL (email)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci 
-
-CREATE TABLE voiture (
-    id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    immat VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    first_immat DATETIME NOT NULL,
-    constructeur VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    modele VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    couleur VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    energie VARCHAR(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-    options VARCHAR(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-    nbre_place INTEGER NOT NULL,
-    utilisateur_id INTEGER NOT NULL,
-    created_at DATETIME NOT NULL COMMENT '(DC2Type:DATETIME_immutable)',
-    KEY K_utilisateur_id (utilisateur_id),
-    CONSTRAINT FK_utilisateur_id FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id)
-) ENGINE = InnoDB AUTO_INCREMENT = 1 DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
-/* 
 --INSERTION DES DONNEES
 
 INSERT INTO `utilisateur` (`id`, `email`, `roles`, `password`, `nom`, `prenom`, `pseudo`, `credits`, `photo_path`, `is_actif`, `created_at`, `observation`, `is_conducteur`, `is_passager`) VALUES
@@ -125,4 +47,4 @@ INSERT INTO `avis` (`id`, `is_valid`, `comments`, `rate_comments`, `created_at`,
 (5, 5, '2025-03-20 00:00:00', 'Nantes', '2025-01-07 20:00:00', 'Angers', 1, 4, 5, '2024-11-30 00:00:00', '2025-01-07 21:00:00', 9, 0, 0),
 (6, 8, '2025-03-24 00:00:00', 'Nantes', '1970-01-01 10:00:00', 'Rennes', 1, 3, 1, '2025-01-08 20:27:38', '1970-01-01 11:30:00', 1, 0, 0),
 (15, 5, '2025-03-31 00:00:00', 'Angers', '1970-01-01 10:00:00', 'Nantes', 1, 0, 11, '2025-01-20 18:26:54', '1970-01-01 12:00:00', 12, 0, 0),
-(21, 10, '2025-03-20 00:00:00', 'PARIS', '1970-01-01 18:00:00', 'NANTES', 1, 2, 6, '2025-02-15 12:49:20', '1970-01-01 22:00:00', 6, 0, 0); */ */
+(21, 10, '2025-03-20 00:00:00', 'PARIS', '1970-01-01 18:00:00', 'NANTES', 1, 2, 6, '2025-02-15 12:49:20', '1970-01-01 22:00:00', 6, 0, 0); */
