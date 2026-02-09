@@ -131,9 +131,9 @@ class VoitureController extends AbstractController
         }
 
         $voitureId = $voiture->getId();
-        dump($voitureId);
+        //dump($voitureId);
         $voitureId = $dm->getRepository(CovoiturageMongo::class)->findBy(['voitureId' => $voitureId]);
-        dump($voitureId);
+        //dump($voitureId);
 
         if ($voitureId) {
             $this->addFlash('warning', 'Cette voiture est associée à des covoiturages et ne peut pas être supprimée,veullez alors modifier de véhicule dans la modification de covoiturage.');

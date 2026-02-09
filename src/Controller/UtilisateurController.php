@@ -198,7 +198,7 @@ class UtilisateurController extends AbstractController
                 if ($dateFuture){
                     $dateFuture = $covoiturage->setDateFuture($dateFuture);
                 }
-                dump($dateFuture);
+                //dump($dateFuture);
 
                 $dateAujourdhui = $covoiturage->getDateDepart()->format('d-m-Y') === $now->format('d-m-Y');
                 if ($dateAujourdhui){
@@ -206,10 +206,10 @@ class UtilisateurController extends AbstractController
                 }
 
                 $validateUser = in_array($userId, $covoiturage->getValidateUsers());
-                dump($validateUser);
+                //dump($validateUser);
                 $isValidateUser = $validateUser ? true : false;
                 $covoiturage->isValidateUser = $isValidateUser;
-                dump($isValidateUser);
+                //dump($isValidateUser);
                  //AVIS LAISSE PAR L'UTILISATEUR
                 $avisUser = $avisRepository->findOneBy([
                     'passager' => $user,
@@ -391,8 +391,8 @@ class UtilisateurController extends AbstractController
                 return $this->redirectToRoute('app_profil', ['id' => $user->getId()]);
             }
             } catch (\Throwable $e) {
-                dump($e->getMessage());
-                dump($e->getTraceAsString());
+            /*  dump($e->getMessage());
+                dump($e->getTraceAsString()); */
                 throw $e; // ou return une réponse d'erreur
             }
 

@@ -288,7 +288,7 @@ class CovoiturageController extends AbstractController
         
         $minutesMax = $dureeMax ? (int) round($dureeMax * 60) : null;
         $intervalMax = $minutesMax ? new \DateInterval('PT' . $minutesMax . 'M') : null;
-        dump($intervalMax);
+        //dump($intervalMax);
         $buttonSearch = $request->query->has('valid');
         
         $submit = $buttonSearch ||
@@ -340,10 +340,10 @@ class CovoiturageController extends AbstractController
 
                     //Calculer la durée du voyage
                         $dureeVoyage =  $covoiturage->getHeureDepart()->diff($covoiturage->getHeureArrivee());
-                        dump($dureeVoyage);
+                        //dump($dureeVoyage);
                         $dureeVoyageMin = ($dureeVoyage->h * 60) + $dureeVoyage->i;
                         $dureeVoyageMinute = $dureeVoyageMin ? new \DateInterval('PT' . $dureeVoyageMin . 'M') : null;
-                        dump($dureeVoyageMinute);
+                        //dump($dureeVoyageMinute);
                     //Rechercher le véhicule du covoiturage
                         $voitureId = $covoiturage->getVoitureId();
                         $voiture = $entityManager->getRepository(Voiture::class)->find($voitureId);
@@ -380,7 +380,7 @@ class CovoiturageController extends AbstractController
                             $covoiturage->setRate($rateUser);
                             
                         }
-                        dump($covoiturage);
+                        //dump($covoiturage);
 
                     //Filtre des covoiturages si deja inscrit au voyage
                         /** @var \App\Entity\Utilisateur $user */
